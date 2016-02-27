@@ -1,4 +1,4 @@
-module InfNum (InfNum(..))
+module InfNum (InfNum(..), getValue)
     where
 
 data InfNum a = NegInf | Number a | PosInf
@@ -67,3 +67,8 @@ instance (Num a, Eq a) => Num (InfNum a) where
     signum NegInf       = Number (-1)
     signum PosInf       = Number 1
     signum (Number x)     = Number (signum x)
+
+getValue :: InfNum a -> a
+getValue PosInf = error "Can't get value of infinity"
+getValue NegInf = error "Can't get value of infinity"
+getValue (Number x) = x
