@@ -3,8 +3,8 @@ module Dijkstra ( Edge(..) , Vertex(..), Graph(..),
     where
 
 import InfNum
-import Data.List
-import Data.Map
+import qualified Data.List as List
+import qualified Data.Map as Map
 
 data Edge a = Edge { start :: Vertex a,
                      end   :: Vertex a,
@@ -37,48 +37,48 @@ addVertex graph vertex =
 
 {- Find paths through a graph. -}
 {-dijkstra :: (Eq a, Ord a) => a -> a -> Graph a -> [Edge a]-}
-dijkstra :: (Eq a, Ord a) => a -> a -> Graph a -> Map a Integer
+dijkstra :: (Eq a, Ord a) => a -> a -> Graph a -> Map.Map a Integer
 dijkstra vertex1 vertex2 graph =
-    case find (\x -> (vertexID x) == vertex1) (graphVertices graph)
+    case List.find (\x -> (vertexID x) == vertex1) (graphVertices graph)
     of Nothing -> error "Can't find start edge in graph"
        Just start ->
-           let distances = singleton (vertexID start) 0
-               unvisited = Data.List.filter (\x -> not (vertex1 == vertexID x))
+           let distances = Map.singleton (vertexID start) 0
+               unvisited = List.filter (\x -> not (vertex1 == vertexID x))
                    (graphVertices graph)
                distances' = dijkstra' unvisited start distances
            in distances'
     where
-    dijkstra' :: (Eq a, Ord a) => [Vertex a] -> Vertex a -> (Map a Integer) ->
-        (Map a Integer)
+    dijkstra' :: (Eq a, Ord a) => [Vertex a] -> Vertex a ->
+        (Map.Map a Integer) -> (Map.Map a Integer)
     dijkstra' [] current distances = distances
     dijkstra' unvisited current distances =
         let distances' = newDistances (vertexEdges current) distances
 
-            current' = Data.List.foldl
-                (\x y -> case Data.Map.lookup (vertexID x) distances'
+            current' = List.foldl
+                (\x y -> case Map.lookup (vertexID x) distances'
                     of Nothing -> y
-                       Just xValue -> case Data.Map.lookup (vertexID y) distances'
+                       Just xValue -> case Map.lookup (vertexID y) distances'
                         of Nothing -> x
                            Just yValue -> if xValue < yValue then x else y)
                 (head unvisited) unvisited
 
-            unvisited' = Data.List.delete current' unvisited
+            unvisited' = List.delete current' unvisited
         in dijkstra' unvisited' current' distances'
 
-    newDistances :: (Eq a, Ord a) => [Edge a] -> (Map a Integer) ->
-        (Map a Integer)
+    newDistances :: (Eq a, Ord a) => [Edge a] -> (Map.Map a Integer) ->
+        (Map.Map a Integer)
     newDistances [] distances = distances
     newDistances (edge:edges) distances =
-        let currentDist = Number $ distances Data.Map.! (vertexID $ start edge)
+        let currentDist = Number $ distances Map.! (vertexID $ start edge)
             tentativeDist = currentDist + (Number (cost edge))
-            prevDist = case Data.Map.lookup (vertexID (end edge)) distances
+            prevDist = case Map.lookup (vertexID (end edge)) distances
                 of Nothing   -> PosInf
                    Just dist -> Number dist
             distances' = if prevDist == PosInf
-                        then Data.Map.insert (vertexID $ end edge)
+                        then Map.insert (vertexID $ end edge)
                             (getValue tentativeDist) distances
                         else if tentativeDist < prevDist
-                             then update (\x -> Just (getValue tentativeDist))
+                             then Map.update (\x -> Just (getValue tentativeDist))
                                 (vertexID $ end edge) distances
                              else distances
         in newDistances edges distances'
