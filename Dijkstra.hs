@@ -42,7 +42,7 @@ dijkstra vertex1 vertex2 graph =
     case List.find (\x -> (vertexID x) == vertex1) (graphVertices graph) of
         Nothing -> error "Can't find start edge in graph"
         Just start ->
-            let distances = Map.singleton (vertexID start) 0
+            let distances = Map.singleton vertex1 0
                 unvisited = List.filter (\x -> not (vertex1 == vertexID x))
                     (graphVertices graph)
                 distances' = dijkstra' unvisited start distances
