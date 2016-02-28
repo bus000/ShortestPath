@@ -1,3 +1,16 @@
+{- |
+ - Module      :  Dijkstra
+ - Description :  Find shortest paths in graphs.
+ - Copyright   :  (c) <Authors or Affiliations>
+ - License     :  <license>
+ -
+ - Maintainer  :  magnus@stavngaard.dk
+ - Stability   :  experimental
+ - Portability :  portable
+ -
+ - Implementation of Dijkstras algorithm for finding the shortest path in a
+ - graph.
+ -}
 module Dijkstra ( Edge(..) , Vertex(..), Graph(..),
     Dijkstra.fromList, addVertex, dijkstra )
     where
@@ -6,39 +19,54 @@ import InfNum
 import qualified Data.List as List
 import qualified Data.Map as Map
 
-data Edge a = Edge { start :: Vertex a,
-                     end   :: Vertex a,
-                     cost  :: Integer }
-    deriving (Show)
+-- | Represents a connection between two vertices in a graph.
+data Edge a = Edge
+    { start :: Vertex a -- ^ The start of the edge.
+    , end   :: Vertex a -- ^ The end of the edge.
+    , cost  :: Integer  -- ^ The cost of using the edge.
+    } deriving (Show)
 
-data Vertex a = Vertex { vertexID :: a,
-                         vertexEdges :: [Edge a] }
-    deriving (Show)
+-- | Represents a vertex in a graph.
+data Vertex a = Vertex
+    { vertexID    :: a        -- ^ Unique ID of vertex.
+    , vertexEdges :: [Edge a] -- ^ List of outgoing edges.
+    } deriving (Show)
 
 instance (Eq a) => Eq (Vertex a) where
     v1 == v2 = vertexID v1 == vertexID v2
 
-data Graph a = Graph { graphVertices :: [Vertex a],
-                         graphEdges    :: [Edge a] }
-    deriving (Show)
+-- | Represents a mathematical graph.
+data Graph a = Graph
+    { graphVertices :: [Vertex a] -- ^ List of all vertices in the graph.
+    , graphEdges    :: [Edge a]   -- ^ List of all edges in the graph.
+    } deriving (Show)
 
 type Path a = [Vertex a]
 
-{- Construct graphs. -}
-fromList :: Eq a => [Vertex a] -> Graph a
-fromList verteces = let edges = getEdges(verteces)
-    in Graph verteces edges
+-- | Construct a new graph from a list of vertices.
+fromList :: Eq a
+    => [Vertex a] -- ^ List of vertices in graph.
+    -> Graph a    -- ^ New graph.
+fromList vertices = let edges = getEdges(vertices)
+    in Graph vertices edges
     where getEdges [] = []
-          getEdges (x:xs) = (vertexEdges x) ++ (getEdges verteces)
+          getEdges (x:xs) = (vertexEdges x) ++ (getEdges vertices)
 
-addVertex :: Graph a -> Vertex a -> Graph a
+-- | Add a new vertex to an existing graph.
+addVertex :: Graph a -- ^ Graph to insert vertex in.
+    -> Vertex a -- ^ Vertex to insert in graph.
+    -> Graph a  -- ^ Resulting graph with new vertex.
 addVertex graph vertex =
     let vertexes = graphVertices graph
         vertexes' = vertex : vertexes
     in Graph vertexes' (graphEdges graph)
 
-{- Find paths through a graph. -}
-dijkstra :: (Eq a, Ord a) => a -> a -> Graph a -> Maybe (Path a, Integer)
+-- | Find a path through a graph using Dijkstra's algorithm.
+dijkstra :: (Eq a, Ord a)
+    => a                       -- ^ Identification of start vertex.
+    -> a                       -- ^ Identification of end vertex.
+    -> Graph a                 -- ^ The graph to search for a path in.
+    -> Maybe (Path a, Integer) -- ^ The path from start to end and the length.
 dijkstra vertex1 vertex2 graph = do
     start <- List.find (\x -> (vertexID x) == vertex1) (graphVertices graph)
     end <- List.find (\x -> (vertexID x) == vertex2) (graphVertices graph)
