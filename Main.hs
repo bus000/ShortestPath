@@ -1,9 +1,21 @@
+{- |
+ - Module      :  Main
+ - Description :  Test the Dijkstra module.
+ - Copyright   :  (c) Magnus Stavngaard
+ - License     :  <license>
+ -
+ - Maintainer  :  magnus@stavngaard.dk
+ - Stability   :  experimental
+ - Portability :  portable
+ -
+ -}
 module Main
     where
 
 import Dijkstra
 import InfNum
 
+-- | Test the implementation of the Dijkstra algorithm.
 main :: IO ()
 main = do
     let vertex0 = Vertex { vertexID = 0, vertexEdges = [] }

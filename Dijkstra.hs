@@ -1,7 +1,7 @@
 {- |
  - Module      :  Dijkstra
  - Description :  Find shortest paths in graphs.
- - Copyright   :  (c) <Authors or Affiliations>
+ - Copyright   :  (c) Magnus Stavngaard
  - License     :  <license>
  -
  - Maintainer  :  magnus@stavngaard.dk
