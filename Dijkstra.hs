@@ -64,6 +64,13 @@ addVertex graph vertex =
         vertexes' = vertex : vertexes
     in Graph vertexes' (graphEdges graph)
 
+-- | Find a vertex in a list of vertices from its identification.
+findVertex :: (Eq a)
+    => a                -- ^ The identification of the vertex.
+    -> [Vertex a]       -- ^ List of vertices.
+    -> Maybe (Vertex a) -- ^ Nothing if not found else Just the found vertex.
+findVertex ident = List.find (\x -> (vertexID) x == ident)
+
 -- | Find a path through a graph using Dijkstra's algorithm.
 dijkstra :: (Eq a, Ord a)
     => a                       -- ^ Identification of start vertex.
@@ -71,8 +78,8 @@ dijkstra :: (Eq a, Ord a)
     -> Graph a                 -- ^ The graph to search for a path in.
     -> Maybe (Path a, Integer) -- ^ The path from start to end and the length.
 dijkstra vertex1 vertex2 graph = do
-    start <- List.find (\x -> (vertexID x) == vertex1) (graphVertices graph)
-    end <- List.find (\x -> (vertexID x) == vertex2) (graphVertices graph)
+    start <- findVertex vertex1 $ graphVertices graph
+    end <- findVertex vertex2 $ graphVertices graph
     let distances = Map.singleton vertex1 (0, Nothing)
         unvisited = List.filter (\x -> not (vertex1 == vertexID x))
             (graphVertices graph)
