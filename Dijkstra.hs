@@ -135,10 +135,9 @@ dijkstra vertex1 vertex2 graph = do
         Map.Map a (Integer, Maybe (Vertex a)) -> Maybe (Path a) ->
         Maybe (Path a)
     getpath' start end distances Nothing = Nothing
-    getpath' start end distances (Just path) =
-        if start == end then Just path else
-            Map.lookup (vertexID end) distances >>=
-            (\x -> Just $ snd x) >>=
-            (\x -> case x of
-                Nothing -> Nothing
-                Just end' -> getpath' start end' distances $ Just (end : path))
+    getpath' start end distances (Just path)
+        | start == end = Just path
+        | otherwise    = do
+            end' <- Map.lookup (vertexID end) distances
+            prev <- snd end'
+            getpath' start prev distances $ Just (prev : path)
