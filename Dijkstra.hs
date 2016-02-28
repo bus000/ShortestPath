@@ -118,13 +118,13 @@ dijkstra vertex1 vertex2 graph = do
                 Nothing   -> PosInf
                 Just (dist, prev) -> Number dist
             distances' = if prevDist == PosInf
-                        then Map.insert (vertexID $ end edge)
-                            (getValue tentativeDist, Just $ start edge) distances
-                        else if tentativeDist < prevDist
-                             then Map.update (\x -> Just
-                                 (getValue tentativeDist, Just $ start edge))
-                                 (vertexID $ end edge) distances
-                             else distances
+                then Map.insert (vertexID $ end edge)
+                    (getValue tentativeDist, Just $ start edge) distances
+                else if tentativeDist < prevDist
+                    then Map.update (\x -> Just
+                        (getValue tentativeDist, Just $ start edge))
+                        (vertexID $ end edge) distances
+                    else distances
         in newDistances edges distances'
 
     getpath :: (Eq a, Ord a) => Vertex a -> Vertex a ->
