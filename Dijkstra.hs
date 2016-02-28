@@ -47,10 +47,13 @@ type Path a = [Vertex a]
 fromList :: Eq a
     => [Vertex a] -- ^ List of vertices in graph.
     -> Graph a    -- ^ New graph.
-fromList vertices = let edges = getEdges(vertices)
-    in Graph vertices edges
-    where getEdges [] = []
-          getEdges (x:xs) = (vertexEdges x) ++ (getEdges vertices)
+fromList vertices = Graph
+    { graphEdges = getEdges vertices
+    , graphVertices = vertices
+    }
+  where
+    getEdges [] = []
+    getEdges (x:xs) = (vertexEdges x) ++ (getEdges vertices)
 
 -- | Add a new vertex to an existing graph.
 addVertex :: Graph a -- ^ Graph to insert vertex in.
@@ -78,7 +81,7 @@ dijkstra vertex1 vertex2 graph = do
     (dist, _) <- Map.lookup vertex2 distances'
     Just (path, dist)
 
-    where
+  where
     dijkstra' :: (Eq a, Ord a) => [Vertex a] -> Vertex a ->
         Map.Map a (Integer, Maybe (Vertex a)) ->
         Map.Map a (Integer, Maybe (Vertex a))
