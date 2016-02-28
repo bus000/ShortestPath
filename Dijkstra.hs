@@ -22,6 +22,8 @@ data Graph a = Graph { graphVertices :: [Vertex a],
                          graphEdges    :: [Edge a] }
     deriving (Show)
 
+type Path a = [Vertex a]
+
 {- Construct graphs. -}
 fromList :: Eq a => [Vertex a] -> Graph a
 fromList verteces = let edges = getEdges(verteces)
@@ -36,7 +38,7 @@ addVertex graph vertex =
     in Graph vertexes' (graphEdges graph)
 
 {- Find paths through a graph. -}
-dijkstra :: (Eq a, Ord a) => a -> a -> Graph a -> Maybe ([Vertex a], Integer)
+dijkstra :: (Eq a, Ord a) => a -> a -> Graph a -> Maybe (Path a, Integer)
 dijkstra vertex1 vertex2 graph = do
     start <- List.find (\x -> (vertexID x) == vertex1) (graphVertices graph)
     end <- List.find (\x -> (vertexID x) == vertex2) (graphVertices graph)
@@ -88,12 +90,12 @@ dijkstra vertex1 vertex2 graph = do
         in newDistances edges distances'
 
     getpath :: (Eq a, Ord a) => Vertex a -> Vertex a ->
-        Map.Map a (Integer, Maybe (Vertex a)) -> Maybe [Vertex a]
+        Map.Map a (Integer, Maybe (Vertex a)) -> Maybe (Path a)
     getpath start end distances = getpath' start end distances $ Just []
 
     getpath' :: (Eq a, Ord a) => Vertex a -> Vertex a ->
-        Map.Map a (Integer, Maybe (Vertex a)) -> Maybe [Vertex a] ->
-        Maybe [Vertex a]
+        Map.Map a (Integer, Maybe (Vertex a)) -> Maybe (Path a) ->
+        Maybe (Path a)
     getpath' start end distances Nothing = Nothing
     getpath' start end distances (Just path) =
         if start == end then Just path else
