@@ -36,20 +36,22 @@ addVertex graph vertex =
     in Graph vertexes' (graphEdges graph)
 
 {- Find paths through a graph. -}
-{-dijkstra :: (Eq a, Ord a) => a -> a -> Graph a -> ([Edge a], Integer)-}
-dijkstra :: (Eq a, Ord a) => a -> a -> Graph a -> Map.Map a Integer
-dijkstra vertex1 vertex2 graph =
-    case List.find (\x -> (vertexID x) == vertex1) (graphVertices graph) of
-        Nothing -> error "Can't find start edge in graph"
-        Just start ->
-            let distances = Map.singleton vertex1 0
-                unvisited = List.filter (\x -> not (vertex1 == vertexID x))
-                    (graphVertices graph)
-                distances' = dijkstra' unvisited start distances
-            in distances'
+dijkstra :: (Eq a, Ord a) => a -> a -> Graph a -> Maybe ([Vertex a], Integer)
+dijkstra vertex1 vertex2 graph = do
+    start <- List.find (\x -> (vertexID x) == vertex1) (graphVertices graph)
+    end <- List.find (\x -> (vertexID x) == vertex2) (graphVertices graph)
+    let distances = Map.singleton vertex1 (0, Nothing)
+        unvisited = List.filter (\x -> not (vertex1 == vertexID x))
+            (graphVertices graph)
+        distances' = dijkstra' unvisited start distances
+    path <- getpath start end distances'
+    (dist, _) <- Map.lookup vertex2 distances'
+    Just (path, dist)
+
     where
     dijkstra' :: (Eq a, Ord a) => [Vertex a] -> Vertex a ->
-        (Map.Map a Integer) -> (Map.Map a Integer)
+        Map.Map a (Integer, Maybe (Vertex a)) ->
+        Map.Map a (Integer, Maybe (Vertex a))
     dijkstra' [] current distances = distances
     dijkstra' unvisited current distances =
         let distances' = newDistances (vertexEdges current) distances
@@ -57,28 +59,46 @@ dijkstra vertex1 vertex2 graph =
             current' = List.foldl (\x y ->
                 case Map.lookup (vertexID x) distances' of
                     Nothing -> y
-                    Just xValue -> case Map.lookup (vertexID y) distances' of
+                    Just (xValue, _) -> case Map.lookup (vertexID y) distances' of
                         Nothing -> x
-                        Just yValue -> if xValue < yValue then x else y)
+                        Just (yValue, _) -> if xValue < yValue then x else y)
                 (head unvisited) unvisited
 
             unvisited' = List.delete current' unvisited
         in dijkstra' unvisited' current' distances'
 
-    newDistances :: (Eq a, Ord a) => [Edge a] -> (Map.Map a Integer) ->
-        (Map.Map a Integer)
+    newDistances :: (Eq a, Ord a) => [Edge a] ->
+        Map.Map a (Integer, Maybe (Vertex a)) ->
+        Map.Map a (Integer, Maybe (Vertex a))
     newDistances [] distances = distances
     newDistances (edge:edges) distances =
-        let currentDist = Number $ distances Map.! (vertexID $ start edge)
+        let currentDist = Number $ fst $ (distances) Map.! (vertexID $ start edge)
             tentativeDist = currentDist + (Number (cost edge))
             prevDist = case Map.lookup (vertexID (end edge)) distances of
                 Nothing   -> PosInf
-                Just dist -> Number dist
+                Just (dist, prev) -> Number dist
             distances' = if prevDist == PosInf
                         then Map.insert (vertexID $ end edge)
-                            (getValue tentativeDist) distances
+                            (getValue tentativeDist, Just $ start edge) distances
                         else if tentativeDist < prevDist
-                             then Map.update (\x -> Just (getValue tentativeDist))
-                                (vertexID $ end edge) distances
+                             then Map.update (\x -> Just
+                                 (getValue tentativeDist, Just $ start edge))
+                                 (vertexID $ end edge) distances
                              else distances
         in newDistances edges distances'
+
+    getpath :: (Eq a, Ord a) => Vertex a -> Vertex a ->
+        Map.Map a (Integer, Maybe (Vertex a)) -> Maybe [Vertex a]
+    getpath start end distances = getpath' start end distances $ Just []
+
+    getpath' :: (Eq a, Ord a) => Vertex a -> Vertex a ->
+        Map.Map a (Integer, Maybe (Vertex a)) -> Maybe [Vertex a] ->
+        Maybe [Vertex a]
+    getpath' start end distances Nothing = Nothing
+    getpath' start end distances (Just path) =
+        if start == end then Just path else
+            Map.lookup (vertexID end) distances >>=
+            (\x -> Just $ snd x) >>=
+            (\x -> case x of
+                Nothing -> Nothing
+                Just end' -> getpath' start end' distances $ Just (end : path))
