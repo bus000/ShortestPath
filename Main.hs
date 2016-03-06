@@ -48,9 +48,7 @@ main = do
         vertices = [vertex0', vertex1', vertex2', vertex3', vertex4', vertex5']
 
         graph = Graph vertices edges
-        graph' = dijkstra 0 5 graph
-    print "Distances"
 
-    case graph' of
+    case dijkstra 0 5 graph of
         Nothing -> putStrLn "Nothing"
         Just path -> putStrLn $ showPath path
