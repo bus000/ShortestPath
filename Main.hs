@@ -50,4 +50,7 @@ main = do
         graph = Graph vertices edges
         graph' = dijkstra 0 5 graph
     print "Distances"
-    print graph'
+
+    case graph' of
+        Nothing -> putStrLn "Nothing"
+        Just path -> putStrLn $ showPath path
