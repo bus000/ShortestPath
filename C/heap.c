@@ -93,24 +93,6 @@ int heap_decrease_element(min_heap_t *heap, void *el, void *newkey)
     return -1;
 }
 
-void heap_print(void *h, FILE *f, void (*print_el)(void *, FILE *))
-{
-    min_heap_t *heap = (min_heap_t *) h;
-    void *el;
-    void **array = heap->array;
-    uint32_t i;
-
-    fprintf(f, "[");
-    for (i = 0; i < heap->array_size-1; i++) {
-        el = array[i];
-        print_el(el, f);
-        fprintf(f, ",\n");
-    }
-    el = array[i];
-    print_el(el, f);
-    fprintf(f, "]\n");
-}
-
 static inline void exchange(void **array, uint32_t i1, uint32_t i2)
 {
     void *a = array[i1];
