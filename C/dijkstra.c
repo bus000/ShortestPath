@@ -63,6 +63,7 @@ static inline int dijkstra_finish(vertex_t *current, vertex_id_t end);
 static int dijkstra_algo(path_t *path, graph_t *graph, vertex_id_t end_vertex,
         min_heap_t *vertices);
 
+/* TODO: Make prettier. */
 int dijkstra(path_t *path, graph_t *graph, vertex_id_t start, vertex_id_t end)
 {
     vertex_t *start_vertex = find_vertex(graph, start);
