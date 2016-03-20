@@ -104,8 +104,6 @@ vertex_t * find_vertex(graph_t const *graph, vertex_id_t v);
 /* Free resources used by the graph. */
 void graph_free(graph_t *graph);
 
-#define INIT_PATH_LEN (128)
-
 /* Returns 0 if a path has been found, -1 if either start or end vertex is not
  * found in the graph. */
 int dijkstra(path_t *path, graph_t *graph, vertex_id_t start, vertex_id_t end);
