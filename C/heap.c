@@ -19,7 +19,7 @@ int heap_init(min_heap_t *heap, void **array, uint32_t array_size,
     return 0;
 }
 
-void * heap_peek_min(min_heap_t const *heap)
+inline void * heap_peek_min(min_heap_t const *heap)
 {
     return heap->array[0];
 }
