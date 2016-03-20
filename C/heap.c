@@ -3,31 +3,7 @@
 
 static void exchange(void **array, uint32_t i1, uint32_t i2);
 static void build_min_heap(min_heap_t *heap);
-
-int heap_min_heapify(min_heap_t *heap, uint32_t index)
-{
-    uint32_t l_index = LEFT(index);
-    uint32_t r_index = RIGHT(index);
-    int (*compare)(void const *el1, void const *el2) = heap->compare;
-    void **array = heap->array;
-    uint32_t smallest;
-    uint32_t array_size = heap->array_size;
-
-    if (l_index < array_size && compare(array[l_index], array[index]) < 0)
-        smallest = l_index;
-    else
-        smallest = index;
-
-    if (r_index < array_size && compare(array[r_index], array[smallest]) < 0)
-        smallest = r_index;
-
-    if (smallest != index) {
-        exchange(array, index, smallest);
-        heap_min_heapify(heap, smallest);
-    }
-
-    return 0;
-}
+static int heap_min_heapify(min_heap_t *heap, uint32_t index);
 
 int heap_init(min_heap_t *heap, void **array, uint32_t array_size,
         int (*compare)(void const *el1, void const *el2),
@@ -110,4 +86,29 @@ static void build_min_heap(min_heap_t *heap)
         i--;
     } while (i != 0);
     heap_min_heapify(heap, i);
+}
+
+static int heap_min_heapify(min_heap_t *heap, uint32_t index)
+{
+    uint32_t l_index = LEFT(index);
+    uint32_t r_index = RIGHT(index);
+    int (*compare)(void const *el1, void const *el2) = heap->compare;
+    void **array = heap->array;
+    uint32_t smallest;
+    uint32_t array_size = heap->array_size;
+
+    if (l_index < array_size && compare(array[l_index], array[index]) < 0)
+        smallest = l_index;
+    else
+        smallest = index;
+
+    if (r_index < array_size && compare(array[r_index], array[smallest]) < 0)
+        smallest = r_index;
+
+    if (smallest != index) {
+        exchange(array, index, smallest);
+        heap_min_heapify(heap, smallest);
+    }
+
+    return 0;
 }

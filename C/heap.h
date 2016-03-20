@@ -27,8 +27,6 @@ int heap_init(min_heap_t *heap, void **array, uint32_t array_size,
         int (*compare)(void const *el1, void const *el2),
         void (*decrease_key)(void *el, void *newkey));
 
-int heap_min_heapify(min_heap_t *heap, uint32_t index);
-
 void * heap_peek_min(min_heap_t const *heap);
 
 void * heap_extract_min(min_heap_t *heap);
