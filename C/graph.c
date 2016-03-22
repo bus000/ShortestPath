@@ -170,6 +170,7 @@ vertex_t * find_vertex(graph_t const *graph, vertex_id_t v)
     return v > graph->vertices_len ? NULL : &(graph->vertices[v]);
 }
 
+/* Help function for reachable. */
 static void reachable_prime(vertex_list_t *list, vertex_t *vertex)
 {
     int i;
