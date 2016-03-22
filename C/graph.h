@@ -28,6 +28,9 @@ struct Vertex {
     void *label;
     void (*free_label)(void *);
     void (*print_label)(void *, FILE *);
+
+    /* Special label just for marking if a vertex is visited or not. */
+    int visited;
 };
 
 struct Edge {

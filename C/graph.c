@@ -42,7 +42,8 @@ vertex_id_t graph_add_vertex(graph_t *graph)
         .edges = malloc(sizeof(edge_t) * INIT_EDGES_NUM),
         .label = NULL,
         .free_label = free_null_label,
-        .print_label = NULL };
+        .print_label = NULL,
+        .visited = 0 };
 
     if (vertex.edges == NULL)
         mem_err();
@@ -169,11 +170,15 @@ vertex_t * find_vertex(graph_t const *graph, vertex_id_t v)
     return v > graph->vertices_len ? NULL : &(graph->vertices[v]);
 }
 
-void reachable(vertex_list_t *list, vertex_t *vertex)
+static void reachable_prime(vertex_list_t *list, vertex_t *vertex)
 {
     int i;
     edge_t edge;
     vertex_t **vertices;
+
+    /* Don't run into an infinite loop. */
+    if (vertex->visited)
+        return;
 
     /* Resize vertex list if necessary. */
     if (list->len == list->size) {
@@ -184,12 +189,27 @@ void reachable(vertex_list_t *list, vertex_t *vertex)
             mem_err();
     }
 
+    vertex->visited = 1;
     list->vertices[list->len] = vertex;
     list->len += 1;
 
     for (i = 0; i < vertex->edges_len; i++) {
         edge = vertex->edges[i];
         reachable(list, edge.end);
+    }
+}
+
+void reachable(vertex_list_t *list, vertex_t *vertex)
+{
+    int i;
+    vertex_t *v;
+
+    reachable_prime(list, vertex);
+
+    /* Cleanup. */
+    for (i = 0; i < list->len; i++) {
+        v = list->vertices[i];
+        v->visited = 0;
     }
 }
 
