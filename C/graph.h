@@ -12,6 +12,7 @@ typedef struct Edge edge_t;
 
 #define INIT_GRAPH_SIZE (128)
 #define INIT_EDGES_NUM  (8)
+#define INIT_LIST_SIZE  (32)
 
 struct Vertex {
     /* A graph unique ID of a vertex. */
@@ -47,6 +48,12 @@ typedef struct {
     uint32_t vertices_size;
     vertex_t *vertices;
 } graph_t;
+
+typedef struct {
+    vertex_t **vertices;
+    uint32_t len;
+    uint32_t size;
+} vertex_list_t;
 
 typedef uint32_t vertex_id_t;
 
@@ -107,6 +114,11 @@ void graph_free(graph_t *graph);
 /* Returns 0 if a path has been found, -1 if either start or end vertex is not
  * found in the graph. */
 int dijkstra(path_t *path, graph_t *graph, vertex_id_t start, vertex_id_t end);
+
+/* Constructs the list of vertices reachable from the vertex with the ID
+ * given. The result is saved in the list pointer which is assumed to be an
+ * initialized vertex_list_t. */
+void reachable(vertex_list_t *list, vertex_t *vertex);
 
 /* MISC. */
 

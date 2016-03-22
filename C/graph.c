@@ -169,6 +169,30 @@ vertex_t * find_vertex(graph_t const *graph, vertex_id_t v)
     return v > graph->vertices_len ? NULL : &(graph->vertices[v]);
 }
 
+void reachable(vertex_list_t *list, vertex_t *vertex)
+{
+    int i;
+    edge_t edge;
+    vertex_t **vertices;
+
+    /* Resize vertex list if necessary. */
+    if (list->len == list->size) {
+        vertices = list->vertices;
+        list->size *= 2;
+        list->vertices = realloc(vertices, sizeof(vertex_t *) * list->size);
+        if (list->vertices == NULL)
+            mem_err();
+    }
+
+    list->vertices[list->len] = vertex;
+    list->len += 1;
+
+    for (i = 0; i < vertex->edges_len; i++) {
+        edge = vertex->edges[i];
+        reachable(list, edge.end);
+    }
+}
+
 void free_null_label(void *label)
 {
     /* Nop. */
