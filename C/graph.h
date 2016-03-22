@@ -115,10 +115,17 @@ void graph_free(graph_t *graph);
  * found in the graph. */
 int dijkstra(path_t *path, graph_t *graph, vertex_id_t start, vertex_id_t end);
 
+/* Initializes a new vertex list, this function should be called before the
+ * list is used. */
+int vertex_list_init(vertex_list_t *list);
+
 /* Constructs the list of vertices reachable from the vertex with the ID
  * given. The result is saved in the list pointer which is assumed to be an
  * initialized vertex_list_t. */
 void reachable(vertex_list_t *list, vertex_t *vertex);
+
+/* Free all the resources used by the vertex list. */
+void vertex_list_free(vertex_list_t *list);
 
 /* MISC. */
 
