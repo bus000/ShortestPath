@@ -4,7 +4,6 @@
 
 int graph_init(graph_t *graph)
 {
-    graph->next_vertex = 0;
     graph->vertices_len = 0;
     graph->vertices_size = INIT_GRAPH_SIZE;
 
@@ -36,7 +35,7 @@ int graph_adjesent(graph_t const *graph, vertex_id_t v1, vertex_id_t v2)
 
 vertex_id_t graph_add_vertex(graph_t *graph)
 {
-    vertex_t vertex = { .unique_id = graph->next_vertex,
+    vertex_t vertex = { .unique_id = get_unique_id(),
         .edges_len = 0,
         .edges_size = INIT_EDGES_NUM,
         .edges = malloc(sizeof(edge_t) * INIT_EDGES_NUM),
@@ -57,7 +56,6 @@ vertex_id_t graph_add_vertex(graph_t *graph)
     }
 
     graph->vertices[graph->vertices_len] = vertex;
-    graph->next_vertex += 1;
     graph->vertices_len += 1;
 
     return vertex.unique_id;
@@ -167,7 +165,16 @@ void graph_free(graph_t *graph)
 
 vertex_t * find_vertex(graph_t const *graph, vertex_id_t v)
 {
-    return v > graph->vertices_len ? NULL : &(graph->vertices[v]);
+    int i;
+    vertex_t *vertex;
+
+    for (i = 0; i < graph->vertices_len; i++) {
+        vertex = &(graph->vertices[i]);
+        if (vertex->unique_id == v)
+            return vertex;
+    }
+
+    return NULL;
 }
 
 /* Help function for reachable. */
@@ -227,4 +234,13 @@ linked_list_t graph_vertices(graph_t const *graph)
 void free_null_label(void *label)
 {
     /* Nop. */
+}
+
+vertex_id_t get_unique_id()
+{
+    static uint32_t unique_id = 0;
+
+    unique_id += 1;
+
+    return unique_id;
 }

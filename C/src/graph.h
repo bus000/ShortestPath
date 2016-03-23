@@ -44,9 +44,6 @@ struct Edge {
 };
 
 typedef struct {
-    /* The unique ID of the next vertex. */
-    uint32_t next_vertex;
-
     /* A list of vertices in the graph. */
     uint32_t vertices_len;
     uint32_t vertices_size;
@@ -140,5 +137,8 @@ linked_list_t graph_vertices(graph_t const *graph);
 
 /* A nop function for adding to graphs where label freeing is not necessary. */
 void free_null_label(void *label);
+
+/* Returns a different unique ID each time the function is called. */
+vertex_id_t get_unique_id();
 
 #endif
