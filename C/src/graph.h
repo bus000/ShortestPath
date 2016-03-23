@@ -64,6 +64,9 @@ typedef uint32_t vertex_id_t;
  * graph. */
 int graph_init(graph_t *graph);
 
+/* Initialize a new graph with the len vertices given. */
+int graph_init_vertices(graph_t *graph, vertex_t *vertices, uint32_t len);
+
 /* Return true if there is an edge from v1 to v2, false otherwise. */
 int graph_adjesent(graph_t const *graph, vertex_id_t v1, vertex_id_t v2);
 
