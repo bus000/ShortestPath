@@ -139,8 +139,8 @@ void graph_set_all_labels_f(graph_t *graph, void * common,
     void *label;
 
     for (i = 0; i < graph->vertices_len; i++) {
-        label = create_label(common, i);
         vertex = &graph->vertices[i];
+        label = create_label(common, vertex->unique_id);
 
         vertex->free_label(vertex->label);
 
