@@ -20,12 +20,11 @@ typedef struct DijkstraLabel {
 /* Used when initializing the dijkstra algorithm, i.e. setting the initial node
  * to 0 and all other nodes to infinity. */
 typedef struct {
-    /* Array containing the labels that should be assigned to the vertices. */
-    dijkstra_label_t *labels;
-
     /* The vertex identifier of the start vertex. */
     vertex_id_t start;
 } dijkstra_init_data_t;
+
+static void dijkstra_label_free(void *label);
 
 /* Print the label pointed to by l to the file f. */
 static void print_dijkstra_label(void *l, FILE *f);
@@ -69,7 +68,6 @@ int dijkstra(path_t *path, graph_t *graph, vertex_id_t start, vertex_id_t end)
     vertex_t *start_vertex = find_vertex(graph, start);
     vertex_t *end_vertex = find_vertex(graph, end);
     dijkstra_label_t *end_vertex_label;
-    dijkstra_label_t *labels;
     min_heap_t heap;
     int ret_code;
     int i;
@@ -81,28 +79,26 @@ int dijkstra(path_t *path, graph_t *graph, vertex_id_t start, vertex_id_t end)
 
     /* Prepare for running the algorithm. */
     path_init(path);
-    labels = malloc(sizeof(dijkstra_label_t) * graph->vertices_len);
     vertex_pointers = malloc(sizeof(vertex_t *) * graph->vertices_len);
-    init_data.labels = labels;
     init_data.start = start;
 
-    if (labels == NULL || vertex_pointers == NULL)
+    if (vertex_pointers == NULL)
         mem_err();
 
     for (i = 0; i < graph->vertices_len; i++) {
         vertex_pointers[i] = &graph->vertices[i];
     }
 
-    graph_set_all_labels_f(graph, &init_data, dijkstra_label, free_null_label,
-            print_dijkstra_label);
-    heap_init(&heap, (void **) vertex_pointers, graph->vertices_len, compare_vertices,
-            decrease_weight);
+    graph_set_all_labels_f(graph, &init_data, dijkstra_label,
+            dijkstra_label_free, print_dijkstra_label);
+    heap_init(&heap, (void **) vertex_pointers, graph->vertices_len,
+            compare_vertices, decrease_weight);
 
     ret_code = dijkstra_algo(path, graph, end, &heap);
     end_vertex_label = (dijkstra_label_t *) end_vertex->label;
     path->length = end_vertex_label->weight;
 
-    free(labels);
+    free(vertex_pointers);
 
     return ret_code;
 }
@@ -153,8 +149,7 @@ static void * dijkstra_label(void *common, vertex_id_t v)
 {
     dijkstra_init_data_t *init_data = (dijkstra_init_data_t *) common;
     vertex_id_t start = init_data->start;
-    dijkstra_label_t *label_array = init_data->labels;
-    dijkstra_label_t *label = &label_array[v];
+    dijkstra_label_t *label = malloc(sizeof(dijkstra_label_t));
 
     if (v == start) {
         label->infinity = 0;
@@ -217,4 +212,9 @@ static inline int dijkstra_finish(vertex_t *current, vertex_id_t end)
     return current != NULL &&
         current->unique_id != end &&
         !current_label->infinity;
+}
+
+static void dijkstra_label_free(void *label)
+{
+    free(label);
 }
