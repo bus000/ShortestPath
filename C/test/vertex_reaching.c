@@ -3,7 +3,7 @@
 
 static int vertex_compare(void const *el1, void const *el2);
 
-int main(int argc, char const **argv)
+int main(int argc, char const *argv[])
 {
     int i;
     graph_t graph;
