@@ -74,6 +74,9 @@ int graph_add_edge(graph_t *graph, vertex_id_t v1, vertex_id_t v2,
     if (vertex1->edges_len >= vertex1->edges_size) {
         vertex1->edges_size *= 2;
         vertex1->edges = realloc(vertex1->edges, vertex1->edges_size);
+
+        if (vertex1->edges == NULL)
+            mem_err();
     }
 
     vertex1->edges[vertex1->edges_len] = edge;
