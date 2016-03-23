@@ -264,11 +264,11 @@ int graph_contract(graph_t *graph, vertex_list_t *vertices)
         vertex = &(graph->vertices[i]);
         if (vertex->unique_id == 0) {
             move += 1;
-            graph->vertices_len -= 1;
         } else {
             graph->vertices[i-move] = *vertex;
         }
     }
+    graph->vertices_len -= move;
 
     /* Create new vertex representing removed vertices. */
     vertex = find_vertex(graph, graph_add_vertex(graph));
