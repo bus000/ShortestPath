@@ -2,73 +2,69 @@
 #include "thorup_dist.h"
 #include <stdlib.h>
 
-/* Returns true if input is even and false otherwise. */
-static int even(int n);
+static int get_two_layer_graphs(graph_t *newgraph, graph_t *oldgraph,
+        vertex_t *vertex);
 
-/* Add all vertices that should be in the layer from the list of vertices
- * vertices to the list layer and removes the same vertices from the list
- * vertices. */
-static int layer_even(vertex_list_t *layer, linked_list_t *vertices);
+/* Copies all vertices in the vertex list to a new buffer.
+ * TODO: handle the vertices edges, which points out of the list. */
+static vertex_t * pointer_list_to_list(vertex_list_t const *list);
 
-/* Add all vertices that should be in the layer from the list of vertices
- * vertices to the list layer and removes the same vertices from the list
- * vertices. */
-static int layer_odd(vertex_list_t *layer, linked_list_t *vertices);
-
-/* Assumes the graph is connected. */
-int thorup_layer(graph_t const *graph)
+int thorup_layer(graph_t *graph)
 {
-    int i;
-    vertex_t *start = find_vertex(graph, 0);
-    vertex_list_t *layer = malloc(sizeof(vertex_list_t));
-    linked_list_t layers, vertices = graph_vertices(graph);
+    /*vertex_t *start = find_vertex(graph, 0);*/
+    /*graph_t *newgraph = malloc(sizeof(graph_t));*/
 
-    if (layer == NULL || start == NULL)
+    /*if (newgraph == NULL)*/
+        /*mem_err();*/
+
+    /*graph_init(newgraph);*/
+
+    get_two_layer_graphs(graph, graph, NULL);
+
+    return 0;
+
+}
+
+static int get_two_layer_graphs(graph_t *newgraph, graph_t *oldgraph,
+        vertex_t *vertex)
+{
+    vertex_list_t reach;
+    vertex_t *vertices;
+
+    vertex_list_init(&reach);
+
+    /* Make graph of all vertices reachable from start. */
+    reachable(&reach, vertex);
+    vertices = pointer_list_to_list(&reach);
+    graph_init_vertices(newgraph, vertices, reach.len);
+
+    /* Remove all vertices from old graph that are in the newly created
+     * graph replacing them with a single new vertex. */
+
+    /* Find all vertices in the old graph that has a transition into the new
+     * graph, add these vertices to the new graph and remove them from the
+     * old. */
+
+    /* Let the new start vertex be all the vertices in the new graph contracted
+     * to a single vertex, repeat all steps. */
+
+    /* Free resources. */
+    vertex_list_free(&reach);
+
+    return 0;
+}
+
+/* TODO: Change edge pointers to go to correct places. */
+static vertex_t * pointer_list_to_list(vertex_list_t const *list)
+{
+    uint32_t i;
+    vertex_t *arr = malloc(sizeof(vertex_t) * list->len);
+
+    if (arr == NULL)
         mem_err();
 
-    /* Initialization. */
-    linked_list_init(&layers);
+    for (i = 0; i < list->len; i++)
+        arr[i] = *list->vertices[i];
 
-    /* Handle label 0. */
-    vertex_list_init(layer);
-    reachable(layer, start);
-    linked_list_add_end(&layers, layer);
-
-    for (i = 0; i < layer->len; i++)
-        linked_list_remove(&vertices, layer->vertices[i]);
-
-    /* Handle all other labels. */
-    for (i = 1; layers.len != 0; i++) {
-        layer = malloc(sizeof(vertex_list_t));
-        if (layer == NULL)
-            mem_err();
-
-        if (even(i))
-            layer_even(layer, &layers);
-        else
-            layer_odd(layer, &layers);
-
-        linked_list_add_end(&layers, layer);
-    }
-
-    /* Free resources used, TODO: free layer and layers and vertices. */
-
-    return 0;
-}
-
-static int layer_even(vertex_list_t *layer, linked_list_t *vertices)
-{
-
-    return 0;
-}
-
-static int layer_odd(vertex_list_t *layer, linked_list_t *vertices)
-{
-
-     return 0;
-}
-
-static inline int even(int n)
-{
-    return n % 2 == 0;
+    return arr;
 }

@@ -3,6 +3,6 @@
 
 #include "graph.h"
 
-int thorup_layer(graph_t const *graph);
+int thorup_layer(graph_t *graph);
 
 #endif
