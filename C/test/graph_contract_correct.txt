@@ -1,0 +1,7 @@
+[1, 2, 3, 4, 5, 10]
+graph.vertices_len = 8
+vertex 9 edge list length = 1
+11 points to new
+12 points to new
+6 points to new
+new length 0
