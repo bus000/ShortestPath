@@ -215,7 +215,7 @@ static void reachable_prime(vertex_list_t *list, vertex_t *vertex)
 
     for (i = 0; i < vertex->edges_len; i++) {
         edge = vertex->edges[i];
-        reachable(list, edge.end);
+        reachable_prime(list, edge.end);
     }
 }
 
@@ -241,6 +241,48 @@ linked_list_t graph_vertices(graph_t const *graph)
             graph->vertices_len);
 
     return list;
+}
+
+int graph_contract(graph_t *graph, vertex_list_t *vertices)
+{
+    uint32_t i, j;
+    uint32_t move = 0;
+    vertex_t *vertex;
+    edge_t *edges, *edge;
+    uint32_t edges_len;
+
+    /* Remove vertices from graph. */
+    for (i = 0; i < vertices->len; i++) {
+        vertex = vertices->vertices[i];
+        vertex->unique_id = 0;
+    }
+
+    /* Move all vertices in graph to start of list. */
+    for (i = 0; i < graph->vertices_len; i++) {
+        vertex = &(graph->vertices[i]);
+        if (vertex->unique_id == 0) {
+            move += 1;
+            graph->vertices_len -= 1;
+        } else {
+            graph->vertices[i-move] = *vertex;
+        }
+    }
+
+    /* Create new vertex representing removed vertices. */
+    vertex = find_vertex(graph, graph_add_vertex(graph));
+    for (i = 0; i < graph->vertices_len; i++) {
+        edges = graph->vertices[i].edges;
+        edges_len = graph->vertices[i].edges_len;
+        for (j = 0; j < edges_len; j++) {
+            edge = &(edges[j]);
+
+            if (vertex_list_contains(vertices, edge->end->unique_id)) {
+                edge->end = vertex;
+            }
+        }
+    }
+
+    return 0;
 }
 
 void free_null_label(void *label)
