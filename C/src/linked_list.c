@@ -70,6 +70,8 @@ int linked_list_remove(linked_list_t *list, void *item)
             element->next->prev = element->prev;
             free(element);
 
+            list->len -= 1;
+
             return 0;
         }
     }
