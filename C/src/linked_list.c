@@ -60,6 +60,23 @@ int linked_list_add_end(linked_list_t *list, void *item)
     return 0;
 }
 
+int linked_list_remove(linked_list_t *list, void *item)
+{
+    actual_list_t *element;
+
+    for (element = list->start; element != NULL; element = element->next) {
+        if (element->element == item) {
+            element->prev->next = element->next;
+            element->next->prev = element->prev;
+            free(element);
+
+            return 0;
+        }
+    }
+
+    return -1;
+}
+
 void linked_list_free(linked_list_t *list)
 {
     actual_list_t *element;
