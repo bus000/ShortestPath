@@ -128,6 +128,8 @@ int vertex_list_init(vertex_list_t *list);
  * initialized vertex_list_t. */
 void reachable(vertex_list_t *list, vertex_t *vertex);
 
+int vertex_list_contains(vertex_list_t *list, vertex_id_t v);
+
 /* Free all the resources used by the vertex list. */
 void vertex_list_free(vertex_list_t *list);
 
@@ -135,6 +137,8 @@ void vertex_list_free(vertex_list_t *list);
  * the graph. The vertices are not copied so should not be changed, but the
  * pointers are and they are allowed to be changed. */
 linked_list_t graph_vertices(graph_t const *graph);
+
+int graph_contract(graph_t *graph, vertex_list_t *vertices);
 
 /* MISC. */
 
