@@ -168,7 +168,9 @@ void graph_free(graph_t *graph)
     for (i = 0; i < graph->vertices_len; i++) {
         vertex = &graph->vertices[i];
         vertex->free_label(vertex->label);
-        free(vertex->edges);
+
+        if (vertex->edges_size > 0)
+            free(vertex->edges);
     }
 
     /* Free vertices. */
