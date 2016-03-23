@@ -9,6 +9,7 @@ typedef struct Edge edge_t;
 #include <inttypes.h>
 #include <stdio.h>
 #include "path.h"
+#include "linked_list.h"
 
 #define INIT_GRAPH_SIZE (128)
 #define INIT_EDGES_NUM  (8)
@@ -129,6 +130,11 @@ void reachable(vertex_list_t *list, vertex_t *vertex);
 
 /* Free all the resources used by the vertex list. */
 void vertex_list_free(vertex_list_t *list);
+
+/* Modifies the empty initialized list pointer to contain all the vertices in
+ * the graph. The vertices are not copied so should not be changed, but the
+ * pointers are and they are allowed to be changed. */
+linked_list_t graph_vertices(graph_t const *graph);
 
 /* MISC. */
 

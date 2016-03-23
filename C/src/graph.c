@@ -214,6 +214,16 @@ void reachable(vertex_list_t *list, vertex_t *vertex)
     }
 }
 
+linked_list_t graph_vertices(graph_t const *graph)
+{
+    linked_list_t list;
+
+    linked_list_from_array(&list, (void **) graph->vertices,
+            graph->vertices_len);
+
+    return list;
+}
+
 void free_null_label(void *label)
 {
     /* Nop. */
