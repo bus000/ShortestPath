@@ -2,6 +2,9 @@
 #include "error.h"
 #include <stdlib.h>
 
+/* Return true if a path from current to vertex exist, and false otherwise. */
+static int does_reach(vertex_t const *current, vertex_t const *vertex);
+
 int graph_init(graph_t *graph)
 {
     graph->vertices_len = 0;
@@ -287,6 +290,22 @@ int graph_contract(graph_t *graph, vertex_list_t *vertices)
     return 0;
 }
 
+void reaching(vertex_list_t *list, vertex_t *vertex, graph_t const *graph)
+{
+    uint32_t i;
+    vertex_t *current;
+    vertex_id_t cur_id;
+
+    vertex_list_add(list, vertex);
+
+    for (i = 0; i < graph->vertices_len; i++) {
+        current = &(graph->vertices[i]);
+        cur_id = current->unique_id;
+        if (!vertex_list_contains(list, cur_id) && does_reach(current, vertex))
+            vertex_list_add(list, current);
+    }
+}
+
 void free_null_label(void *label)
 {
     /* Nop. */
@@ -299,4 +318,22 @@ vertex_id_t get_unique_id()
     unique_id += 1;
 
     return unique_id;
+}
+
+static int does_reach(vertex_t const *current, vertex_t const *vertex)
+{
+    uint32_t i;
+    edge_t edge;
+
+    if (current->unique_id == vertex->unique_id)
+        return 1;
+
+    for (i = 0; i < current->edges_len; i++) {
+        edge = current->edges[i];
+
+        if (does_reach(edge.end, vertex))
+            return 1;
+    }
+
+    return 0;
 }
