@@ -37,6 +37,7 @@ static int get_two_layer_graphs(graph_t *newgraph, graph_t *oldgraph,
     reachable(&reach, vertex);
     vertices = pointer_list_to_list(&reach);
     graph_init_vertices(newgraph, vertices, reach.len);
+    graph_contract(oldgraph, &reach);
 
     /* Remove all vertices from old graph that are in the newly created
      * graph replacing them with a single new vertex. */
