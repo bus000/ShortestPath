@@ -135,6 +135,9 @@ void reaching(vertex_list_t *list, vertex_t *vertex, graph_t const *graph);
  * otherwise. */
 int vertex_list_contains(vertex_list_t *list, vertex_id_t v);
 
+/* Add a new vertex to a vertex list. */
+int vertex_list_add(vertex_list_t *list, vertex_t *vertex);
+
 /* Free all the resources used by the vertex list. */
 void vertex_list_free(vertex_list_t *list);
 

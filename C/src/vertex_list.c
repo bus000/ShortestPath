@@ -33,3 +33,22 @@ void vertex_list_free(vertex_list_t *list)
     if (list->size != 0)
         free(list->vertices);
 }
+
+int vertex_list_add(vertex_list_t *list, vertex_t *vertex)
+{
+    size_t newsize;
+
+    if (list->len == list->size) {
+        list->size *= 2;
+        newsize = sizeof(vertex_t *) * list->size;
+        list->vertices = realloc(list->vertices, newsize);
+
+        if (list->vertices == NULL)
+            mem_err();
+    }
+
+    list->vertices[list->len] = vertex;
+    list->len += 1;
+
+    return 0;
+}
