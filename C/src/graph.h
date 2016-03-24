@@ -131,6 +131,8 @@ void reachable(vertex_list_t *list, vertex_t *vertex);
 /* Construct the list of vertices that can reach the vertex given. */
 void reaching(vertex_list_t *list, vertex_t *vertex, graph_t const *graph);
 
+/* Returns true if the list contains a vertex with the given ID, false
+ * otherwise. */
 int vertex_list_contains(vertex_list_t *list, vertex_id_t v);
 
 /* Free all the resources used by the vertex list. */
