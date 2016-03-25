@@ -290,6 +290,9 @@ int graph_contract(graph_t *graph, vertex_list_t *vertices)
     return 0;
 }
 
+/* TODO: When calling does_reach all vertices on the path up until finding the
+ * vertex should also be added to the list as they can obviously also reach the
+ * vertex. */
 void reaching(vertex_list_t *list, vertex_t *vertex, graph_t const *graph)
 {
     uint32_t i;
