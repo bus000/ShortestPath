@@ -15,9 +15,8 @@ int main(int argc, char const *argv[])
     graph_init(&graph);
     vertex_list_init(&vertex_list);
 
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < 10; i++)
         vertices[i] = graph_add_vertex(&graph);
-    }
 
     graph_add_edge(&graph, vertices[0], vertices[8], 10);
     graph_add_edge(&graph, vertices[8], vertices[1], 10);
