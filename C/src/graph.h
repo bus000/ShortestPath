@@ -150,6 +150,9 @@ linked_list_t graph_vertices(graph_t const *graph);
  * vertex, all ingoing edges is replaced by a reference to this new vertex. */
 vertex_id_t graph_contract(graph_t *graph, vertex_list_t *vertices);
 
+/* TODO: find better name and comment on what function does. */
+vertex_id_t graph_contract2(graph_t *graph, vertex_list_t *vertices);
+
 /* MISC. */
 
 /* A nop function for adding to graphs where label freeing is not necessary. */

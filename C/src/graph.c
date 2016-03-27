@@ -274,6 +274,31 @@ vertex_id_t graph_contract(graph_t *graph, vertex_list_t *vertices)
 
     return vertex->unique_id;
 }
+
+/* TODO: Find more descriptive name. */
+vertex_id_t graph_contract2(graph_t *graph, vertex_list_t *vertices)
+{
+    uint32_t i, j, edges_len;
+    edge_t *edges, *edge;
+    vertex_id_t vertex;
+
+    remove_vertices(graph, vertices);
+
+    /* Create new vertex representing removed vertices. */
+    vertex = graph_add_vertex(graph);
+    for (i = 0; i < vertices->len; i++) {
+        edges = vertices->vertices[i]->edges;
+        edges_len = vertices->vertices[i]->edges_len;
+        for (j = 0; j < edges_len; j++) {
+            edge = &(edges[j]);
+
+            if (!vertex_list_contains(vertices, edge->end->unique_id))
+                graph_add_edge(graph, vertex, edge->end->unique_id,
+                        edge->weight);
+        }
+    }
+
+    return vertex;
 }
 
 /* TODO: When calling does_reach all vertices on the path up until finding the
