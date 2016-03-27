@@ -5,6 +5,9 @@
 /* Return true if a path from current to vertex exist, and false otherwise. */
 static int does_reach(vertex_t const *current, vertex_t const *vertex);
 
+/* Remove all the vertices in the list from the graph. */
+static void remove_vertices(graph_t * graph, vertex_list_t *list);
+
 int graph_init(graph_t *graph)
 {
     graph->vertices_len = 0;
@@ -248,30 +251,13 @@ linked_list_t graph_vertices(graph_t const *graph)
     return list;
 }
 
-int graph_contract(graph_t *graph, vertex_list_t *vertices)
+vertex_id_t graph_contract(graph_t *graph, vertex_list_t *vertices)
 {
-    uint32_t i, j;
-    uint32_t move = 0;
+    uint32_t i, j, edges_len;
     vertex_t *vertex;
     edge_t *edges, *edge;
-    uint32_t edges_len;
 
-    /* Remove vertices from graph. */
-    for (i = 0; i < vertices->len; i++) {
-        vertex = vertices->vertices[i];
-        vertex->unique_id = 0;
-    }
-
-    /* Move all vertices in graph to start of list. */
-    for (i = 0; i < graph->vertices_len; i++) {
-        vertex = &(graph->vertices[i]);
-        if (vertex->unique_id == 0) {
-            move += 1;
-        } else {
-            graph->vertices[i-move] = *vertex;
-        }
-    }
-    graph->vertices_len -= move;
+    remove_vertices(graph, vertices);
 
     /* Create new vertex representing removed vertices. */
     vertex = find_vertex(graph, graph_add_vertex(graph));
@@ -281,13 +267,13 @@ int graph_contract(graph_t *graph, vertex_list_t *vertices)
         for (j = 0; j < edges_len; j++) {
             edge = &(edges[j]);
 
-            if (vertex_list_contains(vertices, edge->end->unique_id)) {
+            if (vertex_list_contains(vertices, edge->end->unique_id))
                 edge->end = vertex;
-            }
         }
     }
 
-    return 0;
+    return vertex->unique_id;
+}
 }
 
 /* TODO: When calling does_reach all vertices on the path up until finding the
@@ -339,4 +325,28 @@ static int does_reach(vertex_t const *current, vertex_t const *vertex)
     }
 
     return 0;
+}
+
+static void remove_vertices(graph_t * graph, vertex_list_t *vertices)
+{
+    uint32_t i;
+    uint32_t move = 0;
+    vertex_t *vertex;
+
+    /* Remove vertices from graph. */
+    for (i = 0; i < vertices->len; i++) {
+        vertex = vertices->vertices[i];
+        vertex->unique_id = 0;
+    }
+
+    /* Move all vertices in graph to start of list. */
+    for (i = 0; i < graph->vertices_len; i++) {
+        vertex = &(graph->vertices[i]);
+        if (vertex->unique_id == 0) {
+            move += 1;
+        } else {
+            graph->vertices[i-move] = *vertex;
+        }
+    }
+    graph->vertices_len -= move;
 }

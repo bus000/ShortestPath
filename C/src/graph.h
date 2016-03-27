@@ -146,7 +146,9 @@ void vertex_list_free(vertex_list_t *list);
  * pointers are and they are allowed to be changed. */
 linked_list_t graph_vertices(graph_t const *graph);
 
-int graph_contract(graph_t *graph, vertex_list_t *vertices);
+/* Remove all vertices in the list of vertices replacing them with a single new
+ * vertex, all ingoing edges is replaced by a reference to this new vertex. */
+vertex_id_t graph_contract(graph_t *graph, vertex_list_t *vertices);
 
 /* MISC. */
 
