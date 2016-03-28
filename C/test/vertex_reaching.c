@@ -1,4 +1,5 @@
 #include "../src/graph.h"
+#include "../src/vertex.h"
 #include <stdlib.h>
 
 static int vertex_compare(void const *el1, void const *el2);
@@ -12,6 +13,7 @@ int main(int argc, char const *argv[])
     vertex_t *vertex;
 
     /* Initialize graph. */
+    vertices_init();
     graph_init(&graph);
     vertex_list_init(&vertex_list);
 

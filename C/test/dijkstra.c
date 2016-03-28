@@ -1,4 +1,5 @@
 #include "../src/graph.h"
+#include "../src/vertex.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -8,6 +9,7 @@ int main(int argc, char const *argv[])
     vertex_id_t v0, v1, v2, v3, v4, v5;
     path_t path;
 
+    vertices_init();
     graph_init(&graph);
 
     /* Create test graph. */

@@ -7,11 +7,12 @@ static int vertex_compare(void const *el1, void const *el2);
 
 int main(int argc, char const *argv[])
 {
-    uint32_t i;
+    int i;
     graph_t graph;
     vertex_id_t vertices[14] = { 0 };
     vertex_list_t vertex_list;
 
+    /* Initialize graph. */
     vertices_init();
     graph_init(&graph);
     vertex_list_init(&vertex_list);
@@ -54,8 +55,9 @@ int main(int argc, char const *argv[])
     graph_add_edge(&graph, vertices[12], vertices[11], 1);
     graph_add_edge(&graph, vertices[13], vertices[12], 1);
 
-    /* Get subset of vertices. */
-    reachable(&vertex_list, find_vertex(&graph, vertices[1]));
+    vertex_t *vertex2 = find_vertex(&graph, vertices[2]);
+
+    reaching(&vertex_list, vertex2, &graph);
     qsort(vertex_list.vertices, vertex_list.len, sizeof(vertex_t *),
             vertex_compare);
 
@@ -64,30 +66,6 @@ int main(int argc, char const *argv[])
         printf("%u, ", vertex_list.vertices[i]->unique_id);
     }
     printf("%u]\n", vertex_list.vertices[i]->unique_id);
-
-    /* Contract all vertices reachable from vertex1 to a single vertex. */
-    graph_contract(&graph, &vertex_list);
-
-    printf("graph.vertices_len = %u\n", graph.vertices_len);
-
-    /* Verify that 6, 8, 9, 11, and 12 points to the new vertex. */
-    vertex_t *vertex9 = find_vertex(&graph, vertices[9]);
-    printf("vertex 9 edge list length = %u\n", vertex9->edges_len);
-    vertex_t *new = vertex9->edges[0].end;
-
-    if (find_vertex(&graph, vertices[11])->edges[0].end == new)
-        printf("11 points to new\n");
-
-    if (find_vertex(&graph, vertices[12])->edges[0].end == new ||
-            find_vertex(&graph, vertices[12])->edges[1].end == new)
-        printf("12 points to new\n");
-
-    if (find_vertex(&graph, vertices[6])->edges[0].end == new ||
-            find_vertex(&graph, vertices[6])->edges[1].end == new)
-        printf("6 points to new\n");
-
-    /* Verify that the new vertex points to nothing. */
-    printf("new length %u\n", new->edges_len);
 
     graph_free(&graph);
     vertex_list_free(&vertex_list);
