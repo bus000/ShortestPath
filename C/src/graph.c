@@ -1,5 +1,6 @@
 #include "graph.h"
 #include "error.h"
+#include "vertex.h"
 #include <stdlib.h>
 
 /* Return true if a path from current to vertex exist, and false otherwise. */
@@ -12,14 +13,15 @@ int graph_init(graph_t *graph)
 {
     graph->vertices_len = 0;
     graph->vertices_size = INIT_GRAPH_SIZE;
+    graph->vertices = malloc(sizeof(vertex_t *) * INIT_GRAPH_SIZE);
 
-    if ((graph->vertices = malloc(sizeof(vertex_t) * INIT_GRAPH_SIZE)) == NULL)
+    if (graph->vertices == NULL)
         mem_err();
 
     return 0;
 }
 
-int graph_init_vertices(graph_t *graph, vertex_t *vertices, uint32_t len)
+int graph_init_vertices(graph_t *graph, vertex_t **vertices, uint32_t len)
 {
     graph->vertices = vertices;
     graph->vertices_len = len;
@@ -50,17 +52,7 @@ int graph_adjesent(graph_t const *graph, vertex_id_t v1, vertex_id_t v2)
 
 vertex_id_t graph_add_vertex(graph_t *graph)
 {
-    vertex_t vertex = { .unique_id = get_unique_id(),
-        .edges_len = 0,
-        .edges_size = INIT_EDGES_NUM,
-        .edges = malloc(sizeof(edge_t) * INIT_EDGES_NUM),
-        .label = NULL,
-        .free_label = free_null_label,
-        .print_label = NULL,
-        .visited = 0 };
-
-    if (vertex.edges == NULL)
-        mem_err();
+    vertex_t *vertex = new_vertex();
 
     if (graph->vertices_len >= graph->vertices_size) {
         graph->vertices_size *= 2;
@@ -73,7 +65,7 @@ vertex_id_t graph_add_vertex(graph_t *graph)
     graph->vertices[graph->vertices_len] = vertex;
     graph->vertices_len += 1;
 
-    return vertex.unique_id;
+    return vertex->unique_id;
 }
 
 int graph_add_edge(graph_t *graph, vertex_id_t v1, vertex_id_t v2,
@@ -131,7 +123,7 @@ void graph_set_all_labels(graph_t *graph, void *label,
     vertex_t *vertex;
 
     for (i = 0; i < graph->vertices_len; i++) {
-        vertex = &graph->vertices[i];
+        vertex = graph->vertices[i];
         vertex->free_label(vertex->label);
         vertex->label = label;
         vertex->free_label = free_label;
@@ -154,7 +146,7 @@ void graph_set_all_labels_f(graph_t *graph, void * common,
     void *label;
 
     for (i = 0; i < graph->vertices_len; i++) {
-        vertex = &graph->vertices[i];
+        vertex = graph->vertices[i];
         label = create_label(common, vertex->unique_id);
 
         vertex->free_label(vertex->label);
@@ -172,7 +164,7 @@ void graph_free(graph_t *graph)
 
     /* Free labels, and edges. */
     for (i = 0; i < graph->vertices_len; i++) {
-        vertex = &graph->vertices[i];
+        vertex = graph->vertices[i];
         vertex->free_label(vertex->label);
 
         if (vertex->edges_size > 0)
@@ -189,7 +181,7 @@ vertex_t * find_vertex(graph_t const *graph, vertex_id_t v)
     vertex_t *vertex;
 
     for (i = 0; i < graph->vertices_len; i++) {
-        vertex = &(graph->vertices[i]);
+        vertex = graph->vertices[i];
         if (vertex->unique_id == v)
             return vertex;
     }
@@ -262,8 +254,8 @@ vertex_id_t graph_contract(graph_t *graph, vertex_list_t *vertices)
     /* Create new vertex representing removed vertices. */
     vertex = find_vertex(graph, graph_add_vertex(graph));
     for (i = 0; i < graph->vertices_len; i++) {
-        edges = graph->vertices[i].edges;
-        edges_len = graph->vertices[i].edges_len;
+        edges = graph->vertices[i]->edges;
+        edges_len = graph->vertices[i]->edges_len;
         for (j = 0; j < edges_len; j++) {
             edge = &(edges[j]);
 
@@ -313,25 +305,11 @@ void reaching(vertex_list_t *list, vertex_t *vertex, graph_t const *graph)
     vertex_list_add(list, vertex);
 
     for (i = 0; i < graph->vertices_len; i++) {
-        current = &(graph->vertices[i]);
+        current = graph->vertices[i];
         cur_id = current->unique_id;
         if (!vertex_list_contains(list, cur_id) && does_reach(current, vertex))
             vertex_list_add(list, current);
     }
-}
-
-void free_null_label(void *label)
-{
-    /* Nop. */
-}
-
-vertex_id_t get_unique_id()
-{
-    static uint32_t unique_id = 0;
-
-    unique_id += 1;
-
-    return unique_id;
 }
 
 static int does_reach(vertex_t const *current, vertex_t const *vertex)
@@ -366,11 +344,11 @@ static void remove_vertices(graph_t * graph, vertex_list_t *vertices)
 
     /* Move all vertices in graph to start of list. */
     for (i = 0; i < graph->vertices_len; i++) {
-        vertex = &(graph->vertices[i]);
+        vertex = graph->vertices[i];
         if (vertex->unique_id == 0) {
             move += 1;
         } else {
-            graph->vertices[i-move] = *vertex;
+            graph->vertices[i-move] = vertex;
         }
     }
     graph->vertices_len -= move;

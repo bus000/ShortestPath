@@ -1,7 +1,7 @@
 #ifndef PATH_H
 #define PATH_H
 
-#include "graph.h"
+#include "vertex.h"
 
 #define INIT_PATH_LEN (128)
 

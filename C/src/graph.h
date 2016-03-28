@@ -1,53 +1,19 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-struct Vertex;
-struct Edge;
-typedef struct Vertex vertex_t;
-typedef struct Edge edge_t;
-
 #include <inttypes.h>
 #include <stdio.h>
 #include "path.h"
 #include "linked_list.h"
 
 #define INIT_GRAPH_SIZE (128)
-#define INIT_EDGES_NUM  (8)
 #define INIT_LIST_SIZE  (32)
-
-struct Vertex {
-    /* A graph unique ID of a vertex. */
-    uint32_t unique_id;
-
-    /* List of edges going out from this vertex. */
-    uint32_t edges_len;
-    uint32_t edges_size;
-    edge_t *edges;
-
-    /* Graph labelling, when changed, it should include a new function to free
-     * resources used by the label. */
-    void *label;
-    void (*free_label)(void *);
-    void (*print_label)(void *, FILE *);
-
-    /* Special label just for marking if a vertex is visited or not. */
-    int visited;
-};
-
-struct Edge {
-    /* The higher the weight, the greater the cost to use the edge. */
-    uint32_t weight;
-
-    /* Pointers to the two vertices this edge connects. */
-    vertex_t *start;
-    vertex_t *end;
-};
 
 typedef struct {
     /* A list of vertices in the graph. */
     uint32_t vertices_len;
     uint32_t vertices_size;
-    vertex_t *vertices;
+    vertex_t **vertices;
 } graph_t;
 
 typedef struct {
@@ -56,8 +22,6 @@ typedef struct {
     uint32_t size;
 } vertex_list_t;
 
-typedef uint32_t vertex_id_t;
-
 /* FUNCTIONS. */
 
 /* Initialize a new graph. This function has to be called before any using the
@@ -65,7 +29,7 @@ typedef uint32_t vertex_id_t;
 int graph_init(graph_t *graph);
 
 /* Initialize a new graph with the len vertices given. */
-int graph_init_vertices(graph_t *graph, vertex_t *vertices, uint32_t len);
+int graph_init_vertices(graph_t *graph, vertex_t **vertices, uint32_t len);
 
 /* Return true if there is an edge from v1 to v2, false otherwise. */
 int graph_adjesent(graph_t const *graph, vertex_id_t v1, vertex_id_t v2);
@@ -154,11 +118,5 @@ vertex_id_t graph_contract(graph_t *graph, vertex_list_t *vertices);
 vertex_id_t graph_contract2(graph_t *graph, vertex_list_t *vertices);
 
 /* MISC. */
-
-/* A nop function for adding to graphs where label freeing is not necessary. */
-void free_null_label(void *label);
-
-/* Returns a different unique ID each time the function is called. */
-vertex_id_t get_unique_id();
 
 #endif

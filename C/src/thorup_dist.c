@@ -5,10 +5,6 @@
 static int get_two_layer_graphs(graph_t *newgraph, graph_t *oldgraph,
         vertex_t *vertex);
 
-/* Copies all vertices in the vertex list to a new buffer.
- * TODO: handle the vertices edges, which points out of the list. */
-static vertex_t * pointer_list_to_list(vertex_list_t const *list);
-
 int thorup_layer(graph_t *graph)
 {
     /*vertex_t *start = find_vertex(graph, 0);*/
@@ -31,15 +27,13 @@ static int get_two_layer_graphs(graph_t *newgraph, graph_t *oldgraph,
     vertex_id_t new;
     vertex_list_t reachable_list;
     vertex_list_t reaching_list;
-    vertex_t *vertices;
 
     vertex_list_init(&reachable_list);
     vertex_list_init(&reaching_list);
 
     /* Make graph of all vertices reachable from start. */
     reachable(&reachable_list, vertex);
-    vertices = pointer_list_to_list(&reachable_list);
-    graph_init_vertices(newgraph, vertices, reachable_list.len);
+    graph_init_vertices(newgraph, reachable_list.vertices, reachable_list.len);
     graph_contract(oldgraph, &reachable_list);
 
     /* Remove all vertices from old graph that are in the newly created
@@ -58,22 +52,6 @@ static int get_two_layer_graphs(graph_t *newgraph, graph_t *oldgraph,
     /* Free resources. */
     vertex_list_free(&reachable_list);
     vertex_list_free(&reaching_list);
-    free(vertices);
 
     return 0;
-}
-
-/* TODO: Change edge pointers to go to correct places. */
-static vertex_t * pointer_list_to_list(vertex_list_t const *list)
-{
-    uint32_t i;
-    vertex_t *arr = malloc(sizeof(vertex_t) * list->len);
-
-    if (arr == NULL)
-        mem_err();
-
-    for (i = 0; i < list->len; i++)
-        arr[i] = *list->vertices[i];
-
-    return arr;
 }

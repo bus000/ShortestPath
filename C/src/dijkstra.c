@@ -86,7 +86,7 @@ int dijkstra(path_t *path, graph_t *graph, vertex_id_t start, vertex_id_t end)
         mem_err();
 
     for (i = 0; i < graph->vertices_len; i++) {
-        vertex_pointers[i] = &graph->vertices[i];
+        vertex_pointers[i] = graph->vertices[i];
     }
 
     graph_set_all_labels_f(graph, &init_data, dijkstra_label,
