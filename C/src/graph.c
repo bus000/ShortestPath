@@ -135,24 +135,13 @@ static void reachable_prime(vertex_list_t *list, vertex_t *vertex)
 {
     int i;
     edge_t edge;
-    vertex_t **vertices;
 
     /* Don't run into an infinite loop. */
     if (vertex->visited)
         return;
 
-    /* Resize vertex list if necessary. */
-    if (list->len == list->size) {
-        vertices = list->vertices;
-        list->size *= 2;
-        list->vertices = realloc(vertices, sizeof(vertex_t *) * list->size);
-        if (list->vertices == NULL)
-            mem_err();
-    }
-
     vertex->visited = 1;
-    list->vertices[list->len] = vertex;
-    list->len += 1;
+    vertex_list_add(list, vertex);
 
     for (i = 0; i < vertex->edges_len; i++) {
         edge = vertex->edges[i];
