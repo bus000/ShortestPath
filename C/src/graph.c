@@ -283,3 +283,8 @@ static void remove_vertices(graph_t * graph, vertex_list_t *vertices)
     }
     graph->vertices_len -= move;
 }
+
+vertex_t * graph_first_vertex(graph_t *graph)
+{
+    return graph->vertices_len == 0 ? NULL : graph->vertices[0];
+}
