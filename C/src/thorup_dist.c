@@ -1,57 +1,114 @@
 #include "error.h"
 #include "thorup_dist.h"
+#include "graph_labeling.h"
 #include <stdlib.h>
 
-static int get_two_layer_graphs(graph_t *newgraph, graph_t *oldgraph,
-        vertex_t *vertex);
+/* Takes a graph and sets its layer accordingly. */
+static int layering(graph_t *graph, vertex_t *start);
 
-int thorup_layer(graph_t *graph)
+/* Set the layer of all vertices in the list to the layer given. */
+static int set_layer(vertex_list_t *list, uint32_t layer);
+
+static int even(uint32_t i);
+
+static void reachable_for_each(vertex_list_t *dest, vertex_list_t *src);
+static void reaching_for_each(vertex_list_t *dest, vertex_list_t *src,
+        graph_t *graph);
+
+typedef struct {
+    uint32_t layer;
+} thorup_label_t;
+
+static thorup_label_t default_label = { .layer = -1 };
+
+int thorup_reach_oracle(reachability_oracle_t *oracle, graph_t *graph)
 {
-    /*vertex_t *start = find_vertex(graph, 0);*/
-    /*graph_t *newgraph = malloc(sizeof(graph_t));*/
+    vertex_t *start = graph_first_vertex(graph);
 
-    /*if (newgraph == NULL)*/
-        /*mem_err();*/
+    if (start == NULL)
+        return -1;
 
-    /*graph_init(newgraph);*/
+    graph_init_labels(graph, &default_label, sizeof(thorup_label_t));
 
-    get_two_layer_graphs(graph, graph, NULL);
+    layering(graph, start);
 
     return 0;
-
 }
 
-static int get_two_layer_graphs(graph_t *newgraph, graph_t *oldgraph,
-        vertex_t *vertex)
+static int layering(graph_t *graph, vertex_t *start)
 {
-    vertex_id_t new;
-    vertex_list_t reachable_list;
-    vertex_list_t reaching_list;
+    uint32_t i;
+    vertex_list_t inside, outside, tmp;
+    int changed = 1;
 
-    vertex_list_init(&reachable_list);
-    vertex_list_init(&reaching_list);
+    vertex_list_init(&inside);
+    vertex_list_add(&inside, start);
+    vertex_list_init(&outside);
 
-    /* Make graph of all vertices reachable from start. */
-    reachable(&reachable_list, vertex);
-    graph_init_vertices(newgraph, reachable_list.vertices, reachable_list.len);
-    graph_contract(oldgraph, &reachable_list);
+    for (i = 0; changed != 0; i++) {
+        if (even(i)) {
+            reachable_for_each(&outside, &inside);
+        } else {
+            reaching_for_each(&outside, &inside, graph);
+        }
 
-    /* Remove all vertices from old graph that are in the newly created
-     * graph replacing them with a single new vertex, "new". */
-    new = graph_contract(oldgraph, &reachable_list);
+        changed = set_layer(&outside, i);
+        tmp = inside;
+        inside = outside;
+        outside = tmp;
+        vertex_list_empty(&outside);
+    }
 
-    printf("%u\n", new);
-
-    /* Find all vertices in the old graph that has a transition into the new
-     * graph, add these vertices to the new graph and remove them from the
-     * old. */
-
-    /* Let the new start vertex be all the vertices in the new graph contracted
-     * to a single vertex, repeat all steps. */
-
-    /* Free resources. */
-    vertex_list_free(&reachable_list);
-    vertex_list_free(&reaching_list);
+    /* Free heap space used. */
+    vertex_list_free(&inside);
+    vertex_list_free(&outside);
 
     return 0;
+}
+
+static int set_layer(vertex_list_t *list, uint32_t layer)
+{
+    uint32_t i;
+    vertex_t *vertex;
+    thorup_label_t *thorup_label;
+    int changed = 0;
+
+    for (i = 0; i < list->len; i++) {
+        vertex = list->vertices[i];
+        thorup_label = (thorup_label_t *) vertex->label;
+        if (thorup_label->layer == -1) {
+            thorup_label->layer = layer;
+            changed += 1;
+        }
+    }
+
+    return changed;
+}
+
+static inline int even(uint32_t i)
+{
+    return !(i % 2);
+}
+
+static void reachable_for_each(vertex_list_t *dest, vertex_list_t *src)
+{
+    uint32_t i;
+    vertex_t *vertex;
+
+    for (i = 0; i < src->len; i++) {
+        vertex = src->vertices[i];
+        reachable(dest, vertex);
+    }
+}
+
+static void reaching_for_each(vertex_list_t *dest, vertex_list_t *src,
+        graph_t *graph)
+{
+    uint32_t i;
+    vertex_t *vertex;
+
+    for (i = 0; i < src->len; i++) {
+        vertex = src->vertices[i];
+        reaching(dest, vertex, graph);
+    }
 }

@@ -3,6 +3,10 @@
 
 #include "graph.h"
 
-int thorup_layer(graph_t *graph);
+typedef struct {
+
+} reachability_oracle_t;
+
+int thorup_reach_oracle(reachability_oracle_t *oracle, graph_t *graph);
 
 #endif
