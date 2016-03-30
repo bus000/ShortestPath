@@ -52,3 +52,8 @@ int vertex_list_add(vertex_list_t *list, vertex_t *vertex)
 
     return 0;
 }
+
+void vertex_list_empty(vertex_list_t *list)
+{
+    list->len = 0;
+}

@@ -76,6 +76,9 @@ void reaching(vertex_list_t *list, vertex_t *vertex, graph_t const *graph);
  * otherwise. */
 int vertex_list_contains(vertex_list_t *list, vertex_id_t v);
 
+/* Removes all elements from the list making it empty again. */
+void vertex_list_empty(vertex_list_t *list);
+
 /* Add a new vertex to a vertex list. */
 int vertex_list_add(vertex_list_t *list, vertex_t *vertex);
 
@@ -85,6 +88,7 @@ void vertex_list_free(vertex_list_t *list);
 /* Modifies the empty initialized list pointer to contain all the vertices in
  * the graph. The vertices are not copied so should not be changed, but the
  * pointers are and they are allowed to be changed. */
+/* TODO: remove? */
 linked_list_t graph_vertices(graph_t const *graph);
 
 /* Remove all vertices in the list of vertices replacing them with a single new
