@@ -18,6 +18,10 @@ int graph_init(graph_t *graph)
     if (graph->vertices == NULL)
         mem_err();
 
+    graph->labels = NULL;
+    graph->labels_size = 0;
+    graph->label_size = 0;
+
     return 0;
 }
 
@@ -92,80 +96,14 @@ int graph_add_edge(graph_t *graph, vertex_id_t v1, vertex_id_t v2,
     return 0;
 }
 
-void * graph_get_label(graph_t const *graph, vertex_id_t v)
-{
-    vertex_t *vertex = find_vertex(graph, v);
-
-    return vertex == NULL ? NULL : vertex->label;
-}
-
-int graph_set_vertex_label(graph_t *graph, vertex_id_t v, void *label,
-        void (*free_label)(void *))
-{
-    vertex_t *vertex = find_vertex(graph, v);
-
-    if (vertex == NULL)
-        return -1;
-
-    vertex->free_label(vertex->label);
-
-    vertex->label = label;
-    vertex->free_label = free_label;
-
-    return 0;
-}
-
-void graph_set_all_labels(graph_t *graph, void *label,
-        void (*free_label)(void *),
-        void (*print_label)(void *, FILE *))
-{
-    int i;
-    vertex_t *vertex;
-
-    for (i = 0; i < graph->vertices_len; i++) {
-        vertex = graph->vertices[i];
-        vertex->free_label(vertex->label);
-        vertex->label = label;
-        vertex->free_label = free_label;
-        vertex->print_label = print_label;
-    }
-}
-
-void graph_null_all_labels(graph_t *graph)
-{
-    graph_set_all_labels(graph, NULL, free_null_label, NULL);
-}
-
-void graph_set_all_labels_f(graph_t *graph, void * common,
-        void * (*create_label)(void *common, vertex_id_t v),
-        void (*free_label)(void *),
-        void (*print_label)(void *, FILE *))
-{
-    uint32_t i;
-    vertex_t *vertex;
-    void *label;
-
-    for (i = 0; i < graph->vertices_len; i++) {
-        vertex = graph->vertices[i];
-        label = create_label(common, vertex->unique_id);
-
-        vertex->free_label(vertex->label);
-
-        vertex->label = label;
-        vertex->free_label = free_label;
-        vertex->print_label = print_label;
-    }
-}
-
 void graph_free(graph_t *graph)
 {
     int i;
     vertex_t *vertex;
 
-    /* Free labels, and edges. */
+    /* Free edges. */
     for (i = 0; i < graph->vertices_len; i++) {
         vertex = graph->vertices[i];
-        vertex->free_label(vertex->label);
 
         if (vertex->edges_size > 0)
             free(vertex->edges);
@@ -173,6 +111,9 @@ void graph_free(graph_t *graph)
 
     /* Free vertices. */
     free(graph->vertices);
+
+    if (graph->labels_size != 0)
+        free(graph->labels);
 }
 
 vertex_t * find_vertex(graph_t const *graph, vertex_id_t v)

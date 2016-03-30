@@ -38,8 +38,6 @@ vertex_t * new_vertex(void)
     vertex->edges_size = INIT_EDGES_NUM;
     vertex->edges = malloc(sizeof(edge_t) * INIT_EDGES_NUM);
     vertex->label = NULL;
-    vertex->free_label = free_null_label;
-    vertex->print_label = NULL;
     vertex->visited = 0;
 
     if (vertex->edges == NULL)

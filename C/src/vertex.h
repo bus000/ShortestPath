@@ -22,11 +22,8 @@ struct Vertex {
     uint32_t edges_size;
     edge_t *edges;
 
-    /* Graph labelling, when changed, it should include a new function to free
-     * resources used by the label. */
+    /* Pointer to a graph label. */
     void *label;
-    void (*free_label)(void *);
-    void (*print_label)(void *, FILE *);
 
     /* Special label just for marking if a vertex is visited or not. */
     int visited;
