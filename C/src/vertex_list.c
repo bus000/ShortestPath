@@ -2,6 +2,7 @@
 #include "graph.h"
 #include "error.h"
 #include "vertex_list.h"
+#include <string.h>
 
 int vertex_list_init(vertex_list_t *list)
 {
@@ -11,6 +12,21 @@ int vertex_list_init(vertex_list_t *list)
 
     if (list->vertices == NULL)
         mem_err();
+
+    return 0;
+}
+
+int vertex_list_init_array(vertex_list_t *list, vertex_t **vertices,
+        size_t len)
+{
+    list->vertices = malloc(sizeof(vertex_t *) * len);
+
+    if (list->vertices == NULL)
+        mem_err();
+
+    list->len = len;
+    list->size = len;
+    memcpy(list->vertices, vertices, sizeof(vertex_t *) * len);
 
     return 0;
 }
