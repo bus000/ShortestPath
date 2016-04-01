@@ -1,5 +1,6 @@
 #include "vertex.h"
 #include "error.h"
+#include "vertex_list.h"
 #include <stdlib.h>
 
 vertex_t *vertices;
