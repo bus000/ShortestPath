@@ -24,12 +24,6 @@ typedef struct {
     size_t label_size;
 } graph_t;
 
-typedef struct {
-    vertex_t **vertices;
-    uint32_t len;
-    uint32_t size;
-} vertex_list_t;
-
 /* FUNCTIONS. */
 
 /* Initialize a new graph. This function has to be called before any using the
@@ -63,10 +57,6 @@ void graph_free(graph_t *graph);
  * found in the graph. */
 int dijkstra(path_t *path, graph_t *graph, vertex_id_t start, vertex_id_t end);
 
-/* Initializes a new vertex list, this function should be called before the
- * list is used. */
-int vertex_list_init(vertex_list_t *list);
-
 /* Constructs the list of vertices reachable from the vertex with the ID
  * given. The result is saved in the list pointer which is assumed to be an
  * initialized vertex_list_t. */
@@ -74,19 +64,6 @@ void reachable(vertex_list_t *list, vertex_t *vertex);
 
 /* Construct the list of vertices that can reach the vertex given. */
 void reaching(vertex_list_t *list, vertex_t *vertex, graph_t const *graph);
-
-/* Returns true if the list contains a vertex with the given ID, false
- * otherwise. */
-int vertex_list_contains(vertex_list_t *list, vertex_id_t v);
-
-/* Removes all elements from the list making it empty again. */
-void vertex_list_empty(vertex_list_t *list);
-
-/* Add a new vertex to a vertex list. */
-int vertex_list_add(vertex_list_t *list, vertex_t *vertex);
-
-/* Free all the resources used by the vertex list. */
-void vertex_list_free(vertex_list_t *list);
 
 /* Modifies the empty initialized list pointer to contain all the vertices in
  * the graph. The vertices are not copied so should not be changed, but the

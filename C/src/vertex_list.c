@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "graph.h"
 #include "error.h"
+#include "vertex_list.h"
 
 int vertex_list_init(vertex_list_t *list)
 {
@@ -14,7 +15,7 @@ int vertex_list_init(vertex_list_t *list)
     return 0;
 }
 
-int vertex_list_contains(vertex_list_t *list, vertex_id_t v)
+int vertex_list_contains(vertex_list_t const *list, vertex_id_t v)
 {
     uint32_t i;
     vertex_t *vertex;
@@ -56,4 +57,18 @@ int vertex_list_add(vertex_list_t *list, vertex_t *vertex)
 void vertex_list_empty(vertex_list_t *list)
 {
     list->len = 0;
+}
+
+uint32_t vertex_list_get_index_of(vertex_list_t const *list, vertex_id_t v)
+{
+    uint32_t i;
+    vertex_t *vertex;
+
+    for (i = 0; i < list->len; i++) {
+        vertex = list->vertices[i];
+        if (vertex->unique_id == v)
+            return i;
+    }
+
+    return -1;
 }
