@@ -81,4 +81,6 @@ vertex_id_t graph_contract2(graph_t *graph, vertex_list_t *vertices);
 
 vertex_t * graph_first_vertex(graph_t *graph);
 
+graph_t graph_copy(graph_t const *graph);
+
 #endif
