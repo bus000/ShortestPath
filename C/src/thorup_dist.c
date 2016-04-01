@@ -37,7 +37,7 @@ int thorup_reach_oracle(reachability_oracle_t *oracle, graph_t *graph)
 
 static int layering(graph_t *graph, vertex_t *start)
 {
-    uint32_t i;
+    uint32_t layer;
     vertex_list_t inside, outside, tmp;
     int changed = 1;
 
@@ -45,14 +45,14 @@ static int layering(graph_t *graph, vertex_t *start)
     vertex_list_add(&inside, start);
     vertex_list_init(&outside);
 
-    for (i = 0; changed != 0; i++) {
-        if (even(i)) {
+    for (layer = 0; changed != 0; layer++) {
+        if (even(layer)) {
             reachable_for_each(&outside, &inside);
         } else {
             reaching_for_each(&outside, &inside, graph);
         }
 
-        changed = set_layer(&outside, i);
+        changed = set_layer(&outside, layer);
         tmp = inside;
         inside = outside;
         outside = tmp;
