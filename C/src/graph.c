@@ -54,10 +54,8 @@ int graph_adjesent(graph_t const *graph, vertex_id_t v1, vertex_id_t v2)
     return 0;
 }
 
-vertex_id_t graph_add_vertex(graph_t *graph)
+void graph_add_vertex_pointer(graph_t *graph, vertex_t *vertex)
 {
-    vertex_t *vertex = new_vertex();
-
     if (graph->vertices_len >= graph->vertices_size) {
         graph->vertices_size *= 2;
         graph->vertices = realloc(graph->vertices, graph->vertices_size);
@@ -68,6 +66,13 @@ vertex_id_t graph_add_vertex(graph_t *graph)
 
     graph->vertices[graph->vertices_len] = vertex;
     graph->vertices_len += 1;
+}
+
+vertex_id_t graph_add_vertex(graph_t *graph)
+{
+    vertex_t *vertex = new_vertex();
+
+    graph_add_vertex_pointer(graph, vertex);
 
     return vertex->unique_id;
 }
