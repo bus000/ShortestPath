@@ -3,7 +3,8 @@
 #include "graph_labeling.h"
 #include <stdlib.h>
 
-/* Takes a graph and sets its layer accordingly. */
+/* Takes a graph and partitions it in to layers. Returns the number of layers
+ * partitioned into. */
 static int layering(graph_t *graph, vertex_t *start);
 
 /* Set the layer of all vertices in the list to the layer given. */
@@ -63,7 +64,7 @@ static int layering(graph_t *graph, vertex_t *start)
     vertex_list_free(&inside);
     vertex_list_free(&outside);
 
-    return 0;
+    return layer;
 }
 
 static int set_layer(vertex_list_t *list, uint32_t layer)
