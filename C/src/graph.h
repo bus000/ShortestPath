@@ -39,14 +39,13 @@ int graph_init(graph_t *graph);
 /* Initialize a new graph with the len vertices given. */
 int graph_init_vertices(graph_t *graph, vertex_t **vertices, uint32_t len);
 
-int graph_init_root(graph_t *graph, vertex_list_t *vertices,
-        vertex_list_t *root);
-
 /* Return true if there is an edge from v1 to v2, false otherwise. */
 int graph_adjesent(graph_t const *graph, vertex_id_t v1, vertex_id_t v2);
 
 /* Add a new vertex to the graph and returns the unique ID of the new vertex. */
 vertex_id_t graph_add_vertex(graph_t *graph);
+
+void graph_add_vertex_pointer(graph_t *graph, vertex_t *vertex);
 
 /* Adds the edge from the vertices x to y, if it is not there. Returns 0 on
  * success, -1 if one of the edges is not found. */
