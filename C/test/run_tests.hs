@@ -3,11 +3,12 @@
 import System.IO
 import System.Directory
 import System.Process
-import Text.Show
 
 data TestEnv = TestEnv FilePath FilePath deriving (Eq, Show)
 
-data Test = Test TestEnv Bool deriving (Eq, Show)
+data Test = TestSuccess FilePath String String
+          | TestError FilePath String
+    deriving (Eq, Show)
 
 testBin :: String
 testBin = "./test_bin/"
@@ -20,47 +21,63 @@ getTestEnv [] = []
 getTestEnv (file:files) =
     (TestEnv (testBin ++ file) (file ++ outPost)) : (getTestEnv files)
 
-runTest :: [TestEnv] -> [IO Bool]
-runTest [] = []
-runTest (test:tests) = (runTest' test) : (runTest tests)
+getTests :: [TestEnv] -> IO [Test]
+getTests [] = return []
+getTests (env:envs) = do
+    test <- getTest env
+    tests <- getTests envs
+    return (test:tests)
+
   where
-    runProg :: FilePath -> IO String
-    runProg exec = do
-        (_, Just handleOut, _, _) <- createProcess (proc exec [])
-            { std_out = CreatePipe }
-        output <- hGetContents handleOut
-        return output
+    getTest :: TestEnv -> IO (Test)
+    getTest (TestEnv exec output) = do
+        execExist <- doesFileExist exec
+        outputExist <- doesFileExist output
 
-    {-runTest' :: TestEnv -> Either String IO Bool-}
-    runTest' (TestEnv exec correct) = do
-        let output = runProg exec
-        outString <- output
-        {-fileExists <- doesFileExist correct-}
-        expected <- readFile correct
-        (return $ outString == expected)
+        case (execExist, outputExist) of
+            (False, False) ->
+                return $ TestError exec ("Error: could not find files " ++ exec
+                    ++ " " ++ output)
+            (False, True) ->
+                return $ TestError exec ("Error: could not find file " ++ exec)
+            (True, False) ->
+                return $ TestError exec ("Error: could not find file "
+                    ++ output)
+            (True, True) -> do
+                (_, Just handleOut, _, _) <- createProcess (proc exec [])
+                    { std_out = CreatePipe }
+                execout <- hGetContents handleOut
+                expected <- readFile output
 
-resultString :: [Test] -> String
-resultString tests =
-    let filenames = map (\(Test (TestEnv cFile outfile) result) -> cFile) tests
+                return $ (TestSuccess exec execout expected)
+
+showTests :: [Test] -> String
+showTests tests =
+    let filenames = map (\x -> case x of
+            (TestSuccess name _ _) -> name
+            (TestError name _) -> name) tests
         maxStrLen = maximum (map length filenames)
-    in resultString' tests (maxStrLen + 5)
-  where
-    resultString' [] _ = ""
-    resultString' ((Test (TestEnv cFile outFile) result):tests) len =
-        let filename = cFile ++ (repeat ' ')
-        in take len filename ++ (show result) ++ "\n" ++
-            (resultString tests)
+    in showTests' tests (maxStrLen + 5)
 
-main ::IO ()
+  where
+    showTests' :: [Test] -> Int -> String
+    showTests' [] _ = ""
+    showTests' ((TestSuccess program programOut expected):tests) len =
+        let program' = take len (program ++ (repeat ' '))
+        in if programOut == expected
+            then program' ++ "OK\n" ++ (showTests' tests len)
+            else program' ++ "ERROR\n" ++ (showTests' tests len)
+    showTests' ((TestError program errorMsg):tests) len =
+        let program' = take len (program ++ (repeat ' '))
+        in program' ++ errorMsg ++ "\n" ++ (showTests' tests len)
+
 main = do
-    putStrLn "Testing"
+    putStrLn "TESTING"
     binContents <- getDirectoryContents testBin
 
     let cFiles = filter (\x -> x /= "." && x /= "..") binContents
         testEnv = getTestEnv cFiles
 
-    testResult <- sequence $ runTest testEnv
+    testResult <- getTests testEnv
 
-    let tests = map (\(env, res) -> Test env res) (zip testEnv testResult)
-
-    putStr $ resultString tests
+    putStr $ showTests testResult
