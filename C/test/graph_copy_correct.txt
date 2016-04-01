@@ -1,0 +1,20 @@
+vertex1 edges 2
+vertex2 edges 1
+vertex3 edges 1
+vertex4 edges 1
+vertex5 edges 0
+
+vertex1:
+6 -> 7
+6 -> 10
+
+vertex2:
+7 -> 8
+
+vertex3:
+8 -> 9
+
+vertex4:
+9 -> 6
+
+vertex5:
