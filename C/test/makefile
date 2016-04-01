@@ -11,7 +11,7 @@ LFLAGS    =-lm
 .PHONY: clean $(TARGETS)
 
 all: $(TARGETS)
-	./run_tests.py
+	./run_tests.hs
 
 $(TARGETS): $(OBJECTS) $(BIN_DIR)
 	$(CC) $(CFLAGS) $@.o $(EXOBJECTS) -o $(BIN_DIR)/$@ $(LFLAGS)
