@@ -31,8 +31,10 @@ int vertex_list_contains(vertex_list_t const *list, vertex_id_t v)
 
 void vertex_list_free(vertex_list_t *list)
 {
-    if (list->size != 0)
+    if (list->size != 0) {
         free(list->vertices);
+        list->size = 0;
+    }
 }
 
 int vertex_list_add(vertex_list_t *list, vertex_t *vertex)
