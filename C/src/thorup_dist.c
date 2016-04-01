@@ -16,6 +16,8 @@ static void reachable_for_each(vertex_list_t *dest, vertex_list_t *src);
 static void reaching_for_each(vertex_list_t *dest, vertex_list_t *src,
         graph_t *graph);
 
+static int partition(graph_t const *graph, graph_t *graphs,  uint32_t layers);
+
 typedef struct {
     uint32_t layer;
 } thorup_label_t;
@@ -25,13 +27,44 @@ static thorup_label_t default_label = { .layer = -1 };
 int thorup_reach_oracle(reachability_oracle_t *oracle, graph_t *graph)
 {
     vertex_t *start = graph_first_vertex(graph);
+    graph_t *graphs;
+    uint32_t layers;
 
     if (start == NULL)
         return -1;
 
     graph_init_labels(graph, &default_label, sizeof(thorup_label_t));
 
-    layering(graph, start);
+    layers = layering(graph, start);
+    if ((graphs = malloc(sizeof(graph) * layers)) == NULL)
+        mem_err();
+
+    partition(graph, graphs, layers);
+
+    return 0;
+}
+
+static int partition(graph_t const *graph, graph_t *graphs, uint32_t layers)
+{
+    uint32_t i, j;
+    /*graph_t *current_graph;*/
+    vertex_t *vertex;
+    thorup_label_t *label;
+
+    for (i = 0; i < layers; i++) {
+        /*current_graph = &(graphs[i]);*/
+
+        for (j = 0; j < graph->vertices_len; j++) {
+            vertex = graph->vertices[j];
+            label = vertex->label;
+
+            if (label->layer == i || label->layer == i + 1) {
+                printf("adding vertex %u to graph %u\n", vertex->unique_id-1, i);
+            } else if (label->layer < i) {
+                printf("adding vertex %u to root %u\n", vertex->unique_id-1, i);
+            }
+        }
+    }
 
     return 0;
 }
