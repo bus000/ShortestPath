@@ -164,6 +164,15 @@ linked_list_t graph_vertices(graph_t const *graph)
     return list;
 }
 
+vertex_list_t graph_vertices_list(graph_t const *graph)
+{
+    vertex_list_t list;
+
+    vertex_list_init_array(&list, graph->vertices, graph->vertices_len);
+
+    return list;
+}
+
 vertex_id_t graph_contract(graph_t *graph, vertex_list_t *vertices)
 {
     uint32_t i, j, edges_len;

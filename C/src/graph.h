@@ -70,6 +70,7 @@ void reaching(vertex_list_t *list, vertex_t *vertex, graph_t const *graph);
  * pointers are and they are allowed to be changed. */
 /* TODO: remove? */
 linked_list_t graph_vertices(graph_t const *graph);
+vertex_list_t graph_vertices_list(graph_t const *graph);
 
 /* Remove all vertices in the list of vertices replacing them with a single new
  * vertex, all ingoing edges is replaced by a reference to this new vertex. */
