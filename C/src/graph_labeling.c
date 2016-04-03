@@ -3,15 +3,15 @@
 #include "error.h"
 #include "graph_labeling.h"
 
+/* TODO: use graph_init_labels_size for the parts that are the same. */
 void graph_init_labels(graph_t *graph, void const *label, size_t label_size)
 {
     uint32_t i;
     vertex_t *vertex;
     void *cur_label;
 
-    if (graph->labels_size != 0) {
+    if (graph->labels_size != 0)
         free(graph->labels);
-    }
 
     graph->labels = malloc(label_size * graph->vertices_len);
     graph->labels_size = graph->vertices_len;
@@ -27,6 +27,20 @@ void graph_init_labels(graph_t *graph, void const *label, size_t label_size)
         vertex->label = cur_label;
         memcpy(cur_label, label, label_size);
     }
+}
+
+void graph_init_labels_size(graph_t *graph, size_t labels_size,
+        size_t label_size)
+{
+    if (graph->labels_size != 0)
+        free(graph->labels);
+
+    graph->labels = malloc(labels_size);
+    graph->labels_size = labels_size / label_size;
+    graph->label_size = label_size;
+
+    if (graph->labels == NULL)
+        mem_err();
 }
 
 int graph_set_label(graph_t *graph, vertex_t *vertex, void const *label)

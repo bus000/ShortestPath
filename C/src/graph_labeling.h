@@ -8,6 +8,9 @@
  * never be changed in the original version. */
 void graph_init_labels(graph_t *graph, void const *label, size_t label_size);
 
+void graph_init_labels_size(graph_t *graph, size_t labels_size,
+        size_t label_size);
+
 /* Set the label of the vertex vertex to the label label. The label is assumed
  * to have size graph->label_size. If this is not the case, graph_init_labels
  * should be called again with a different label size.
