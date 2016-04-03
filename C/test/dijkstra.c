@@ -37,6 +37,7 @@ int main(int argc, char const *argv[])
 
     path_free(&path);
     graph_free(&graph);
+    vertices_free();
 
     return EXIT_SUCCESS;
 }
