@@ -83,4 +83,6 @@ vertex_t * graph_first_vertex(graph_t *graph);
 
 graph_t graph_copy(graph_t const *graph);
 
+void graph_remove_vertices(graph_t *graph, vertex_list_t const *vertices);
+
 #endif

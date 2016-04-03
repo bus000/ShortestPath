@@ -6,9 +6,6 @@
 /* Return true if a path from current to vertex exist, and false otherwise. */
 static int does_reach(vertex_t const *current, vertex_t const *vertex);
 
-/* Remove all the vertices in the list from the graph. */
-static void remove_vertices(graph_t * graph, vertex_list_t *list);
-
 int graph_init(graph_t *graph)
 {
     graph->vertices_len = 0;
@@ -265,11 +262,14 @@ static int does_reach(vertex_t const *current, vertex_t const *vertex)
     return 0;
 }
 
-static void remove_vertices(graph_t * graph, vertex_list_t *vertices)
+void graph_remove_vertices(graph_t *graph, vertex_list_t const *vertices)
 {
     uint32_t i;
     uint32_t move = 0;
     vertex_t *vertex;
+
+    if (vertices->len == 0)
+        return;
 
     /* Remove vertices from graph. */
     for (i = 0; i < vertices->len; i++) {
