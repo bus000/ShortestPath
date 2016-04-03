@@ -1,10 +1,1 @@
-vertex 0 has label 0
-vertex 1 has label 1
-vertex 2 has label 1
-vertex 3 has label 0
-vertex 4 has label 1
-vertex 5 has label 2
-vertex 6 has label 2
-vertex 7 has label 1
-vertex 8 has label 2
-vertex 9 has label 2
+graphs number = 2

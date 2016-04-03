@@ -9,7 +9,7 @@ int main(int argc, char const *argv[])
     vertex_id_t vertices[10] = { 0 };
     reachability_oracle_t oracle;
     vertex_t *vertex;
-    uint32_t *label;
+    /*uint32_t *label;*/
 
     vertices_init();
     graph_init(&graph);
@@ -29,12 +29,20 @@ int main(int argc, char const *argv[])
     graph_add_edge(&graph, vertices[9], vertices[8], 1);
 
     thorup_reach_oracle(&oracle, &graph);
-    for (i = 0; i < 10; i++) {
-        vertex = find_vertex(&graph, vertices[i]);
-        label = (uint32_t *) vertex->label;
+    graph_free(&graph);
 
-        printf("vertex %u has label %u\n", vertex->unique_id - 1, *label);
+    printf("graphs number = %u\n", oracle.graphs_len);
+    printf("graphs 1 number = %u\n", oracle.graphs[0].vertices_len);
+    printf("graphs 2 number = %u\n", oracle.graphs[1].vertices_len);
+
+    graph = oracle.graphs[0];
+    for (i = 0; i < graph.vertices_len; i++) {
+        vertex = graph.vertices[i];
+        printf("containing vertex %u\n", vertex->unique_id);
     }
+
+    reach_oracle_free(&oracle);
+    vertices_free();
 
     return 0;
 }
