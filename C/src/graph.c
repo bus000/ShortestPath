@@ -179,7 +179,10 @@ vertex_id_t graph_contract(graph_t *graph, vertex_list_t *vertices)
     vertex_t *vertex;
     edge_t *edges, *edge;
 
-    remove_vertices(graph, vertices);
+    if (vertices->len == 0)
+        return 0;
+
+    graph_remove_vertices(graph, vertices);
 
     /* Create new vertex representing removed vertices. */
     vertex = find_vertex(graph, graph_add_vertex(graph));
@@ -204,7 +207,10 @@ vertex_id_t graph_contract2(graph_t *graph, vertex_list_t *vertices)
     edge_t *edges, *edge;
     vertex_id_t vertex;
 
-    remove_vertices(graph, vertices);
+    if (vertices->len == 0)
+        return 0;
+
+    graph_remove_vertices(graph, vertices);
 
     /* Create new vertex representing removed vertices. */
     vertex = graph_add_vertex(graph);
