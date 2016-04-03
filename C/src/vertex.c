@@ -58,7 +58,19 @@ static vertex_id_t get_unique_id()
     return unique_id;
 }
 
-void free_null_label(void *label)
+void vertex_free(vertex_t *vertex)
 {
-    /* Nop. */
+    if (vertex->edges_size != 0)
+        free(vertex->edges);
+}
+
+void vertices_free(void)
+{
+    uint32_t i;
+
+    for (i = 0; i < vertices_len; i++) {
+        vertex_free(&vertices[i]);
+    }
+
+    free(vertices);
 }

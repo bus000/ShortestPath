@@ -100,17 +100,6 @@ int graph_add_edge(graph_t *graph, vertex_id_t v1, vertex_id_t v2,
 
 void graph_free(graph_t *graph)
 {
-    int i;
-    vertex_t *vertex;
-
-    /* Free edges. */
-    for (i = 0; i < graph->vertices_len; i++) {
-        vertex = graph->vertices[i];
-
-        if (vertex->edges_size > 0)
-            free(vertex->edges);
-    }
-
     /* Free vertices. */
     free(graph->vertices);
 

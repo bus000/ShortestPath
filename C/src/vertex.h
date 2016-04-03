@@ -46,7 +46,8 @@ void vertices_init(void);
  * not be created. */
 vertex_t * new_vertex(void);
 
-/* A nop function for adding to graphs where label freeing is not necessary. */
-void free_null_label(void *label);
+void vertex_free(vertex_t *vertex);
+
+void vertices_free(void);
 
 #endif
