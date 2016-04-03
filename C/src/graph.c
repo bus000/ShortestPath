@@ -287,7 +287,7 @@ void graph_remove_vertices(graph_t *graph, vertex_list_t const *vertices)
     graph->vertices_len -= move;
 }
 
-vertex_t * graph_first_vertex(graph_t *graph)
+vertex_t * graph_first_vertex(graph_t const *graph)
 {
     return graph->vertices_len == 0 ? NULL : graph->vertices[0];
 }
