@@ -1,6 +1,8 @@
 #include "graph.h"
 #include "vertex.h"
 #include "map.h"
+#include "graph_labeling.h"
+#include <string.h>
 
 static int hash(void const *v);
 static int cmp_keys(void const *v1, void const *v2);
@@ -16,6 +18,10 @@ graph_t graph_copy(graph_t const *graph)
     map_init(&map, 64, hash, cmp_keys);
     graph_init(&new_graph);
 
+    if (graph->label_size != 0)
+        graph_init_labels_size(&new_graph,
+                graph->labels_size * graph->label_size, graph->label_size);
+
     /* Create same number of vertices in new graph as in old graph. Connecting
      * the old graph vertex to the new one in the map. */
     for (i = 0; i < graph->vertices_len; i++) {
@@ -23,6 +29,11 @@ graph_t graph_copy(graph_t const *graph)
         vertex_new = new_vertex();
         map_put(&map, vertex, vertex_new);
         graph_add_vertex_pointer(&new_graph, vertex_new);
+
+        if (graph->label_size != 0) {
+            vertex_new->label = new_graph.labels + i * new_graph.label_size;
+            memcpy(vertex_new->label, vertex->label, graph->label_size);
+        }
     }
 
     /* Add edges. */
