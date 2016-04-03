@@ -29,4 +29,7 @@ void vertex_list_free(vertex_list_t *list);
 
 uint32_t vertex_list_index_of(vertex_list_t const *list, vertex_id_t v);
 
+uint32_t vertex_list_filter(vertex_list_t *list,
+        int (*f)(vertex_t const *vertex));
+
 #endif

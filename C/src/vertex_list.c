@@ -90,3 +90,30 @@ uint32_t vertex_list_get_index_of(vertex_list_t const *list, vertex_id_t v)
 
     return -1;
 }
+
+uint32_t vertex_list_filter(vertex_list_t *list,
+        int (*f)(vertex_t const *vertex))
+{
+    uint32_t i, move = 0;
+    vertex_t *vertex;
+
+    for (i = 0; i < list->len; i++) {
+        vertex = list->vertices[i];
+
+        if (!f(vertex))
+            list->vertices[i] = NULL;
+    }
+
+    /* Move all vertices in graph to start of list. */
+    for (i = 0; i < list->len; i++) {
+        vertex = list->vertices[i];
+        if (vertex == NULL) {
+            move += 1;
+        } else {
+            list->vertices[i-move] = vertex;
+        }
+    }
+    list->len -= move;
+
+    return move;
+}
