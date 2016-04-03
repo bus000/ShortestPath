@@ -8,7 +8,7 @@
 static int layering(graph_t *graph, vertex_t *start);
 
 /* Set the layer of all vertices in the list to the layer given. */
-static int set_layer(vertex_list_t *list, uint32_t layer);
+static uint32_t set_layer(vertex_list_t *list, uint32_t layer);
 
 static int even(uint32_t i);
 
@@ -17,6 +17,9 @@ static void reaching_for_each(vertex_list_t *dest, vertex_list_t *src,
         graph_t *graph);
 
 static int partition(graph_t const *graph, graph_t *graphs,  uint32_t layers);
+
+static void remove_inside(vertex_list_t *list, uint32_t layer);
+static void remove_outside(vertex_list_t *list, uint32_t layer);
 
 typedef struct {
     uint32_t layer;
@@ -35,45 +38,84 @@ int thorup_reach_oracle(reachability_oracle_t *oracle, graph_t *graph)
 
     graph_init_labels(graph, &default_label, sizeof(thorup_label_t));
 
-    layers = layering(graph, start);
-    if ((graphs = malloc(sizeof(graph) * layers)) == NULL)
+    layers = layering(graph, start) - 1;
+    if ((graphs = malloc(sizeof(graph_t) * layers)) == NULL)
         mem_err();
 
     partition(graph, graphs, layers);
+
+    oracle->graphs = graphs;
+    oracle->graphs_len = layers;
 
     return 0;
 }
 
 static int partition(graph_t const *graph, graph_t *graphs, uint32_t layers)
 {
-    uint32_t i, j;
-    /*graph_t *current_graph;*/
-    vertex_t *vertex;
-    thorup_label_t *label;
+    uint32_t i;
+    vertex_list_t inside;
+    vertex_list_t outside;
 
     for (i = 0; i < layers; i++) {
-        /*current_graph = &(graphs[i]);*/
+        graphs[i] = graph_copy(graph);
 
-        for (j = 0; j < graph->vertices_len; j++) {
-            vertex = graph->vertices[j];
-            label = vertex->label;
+        outside = graph_vertices_list(&(graphs[i]));
+        inside = graph_vertices_list(&(graphs[i]));
+        remove_inside(&outside, i);
+        remove_outside(&inside, i);
 
-            if (label->layer == i || label->layer == i + 1) {
-                printf("adding vertex %u to graph %u\n", vertex->unique_id-1, i);
-            } else if (label->layer < i) {
-                printf("adding vertex %u to root %u\n", vertex->unique_id-1, i);
-            }
-        }
+        graph_remove_vertices(&graphs[i], &outside);
+        if (!even(i))
+            graph_contract(&graphs[i], &inside);
+        else
+            graph_contract2(&graphs[i], &inside);
+
+        vertex_list_free(&outside);
+        vertex_list_free(&inside);
     }
 
+    /* Free space used on heap. */
+    vertex_list_free(&inside);
+    vertex_list_free(&outside);
+
     return 0;
+}
+
+static uint32_t remove_layer_n = -1; /* 0 */
+
+static int lesser_remove(vertex_t const *vertex)
+{
+    thorup_label_t const *label = (thorup_label_t const *) vertex->label;
+
+    return label->layer > remove_layer_n + 1;
+}
+
+static int greater_remove(vertex_t const *vertex)
+{
+    thorup_label_t const *label = (thorup_label_t const *) vertex->label;
+
+    return label->layer < remove_layer_n;
+}
+
+static void remove_outside(vertex_list_t *list, uint32_t layer)
+{
+    remove_layer_n = layer;
+
+    vertex_list_filter(list, greater_remove);
+}
+
+static void remove_inside(vertex_list_t *list, uint32_t layer)
+{
+    remove_layer_n = layer;
+
+    vertex_list_filter(list, lesser_remove);
 }
 
 static int layering(graph_t *graph, vertex_t *start)
 {
     uint32_t layer;
     vertex_list_t inside, outside, tmp;
-    int changed = 1;
+    uint32_t changed = 1;
 
     vertex_list_init(&inside);
     vertex_list_add(&inside, start);
@@ -97,15 +139,15 @@ static int layering(graph_t *graph, vertex_t *start)
     vertex_list_free(&inside);
     vertex_list_free(&outside);
 
-    return layer;
+    return layer - 1;
 }
 
-static int set_layer(vertex_list_t *list, uint32_t layer)
+static uint32_t set_layer(vertex_list_t *list, uint32_t layer)
 {
     uint32_t i;
     vertex_t *vertex;
     thorup_label_t *thorup_label;
-    int changed = 0;
+    uint32_t changed = 0;
 
     for (i = 0; i < list->len; i++) {
         vertex = list->vertices[i];
@@ -145,4 +187,14 @@ static void reaching_for_each(vertex_list_t *dest, vertex_list_t *src,
         vertex = src->vertices[i];
         reaching(dest, vertex, graph);
     }
+}
+
+void reach_oracle_free(reachability_oracle_t *oracle)
+{
+    uint32_t i;
+
+    for (i = 0; i < oracle->graphs_len; i++)
+        graph_free(&(oracle->graphs[i]));
+
+    free(oracle->graphs);
 }
