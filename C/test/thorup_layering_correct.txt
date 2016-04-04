@@ -1,1 +1,6 @@
-graphs number = 2
+number of graphs 5
+graph 0 has 13 vertices
+graph 1 has 25 vertices
+graph 2 has 18 vertices
+graph 3 has 3 vertices
+graph 4 has 3 vertices

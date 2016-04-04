@@ -2,44 +2,76 @@
 #include "../src/graph.h"
 #include <stdio.h>
 
+#define VERTEX_NUMBER (32)
+
 int main(int argc, char const *argv[])
 {
     uint32_t i;
     graph_t graph;
-    vertex_id_t vertices[10] = { 0 };
+    vertex_id_t vertices[VERTEX_NUMBER + 1] = { 0 };
     reachability_oracle_t oracle;
-    vertex_t *vertex;
 
     vertices_init();
     graph_init(&graph);
 
-    for (i = 0; i < 10; i++)
+    for (i = 1; i < VERTEX_NUMBER + 1; i++)
         vertices[i] = graph_add_vertex(&graph);
 
-    graph_add_edge(&graph, vertices[0], vertices[3], 1);
-    graph_add_edge(&graph, vertices[1], vertices[0], 1);
-    graph_add_edge(&graph, vertices[2], vertices[0], 1);
-    graph_add_edge(&graph, vertices[2], vertices[6], 1);
-    graph_add_edge(&graph, vertices[3], vertices[0], 1);
-    graph_add_edge(&graph, vertices[4], vertices[0], 1);
-    graph_add_edge(&graph, vertices[4], vertices[5], 1);
-    graph_add_edge(&graph, vertices[4], vertices[9], 1);
-    graph_add_edge(&graph, vertices[7], vertices[2], 1);
-    graph_add_edge(&graph, vertices[9], vertices[8], 1);
+    graph_add_edge(&graph, vertices[1], vertices[2], 2);
+    graph_add_edge(&graph, vertices[1], vertices[3], 2);
+    graph_add_edge(&graph, vertices[1], vertices[4], 2);
+    graph_add_edge(&graph, vertices[1], vertices[5], 2);
+    graph_add_edge(&graph, vertices[6], vertices[2], 2);
+    graph_add_edge(&graph, vertices[6], vertices[14], 2);
+    graph_add_edge(&graph, vertices[6], vertices[15], 2);
+    graph_add_edge(&graph, vertices[6], vertices[29], 2);
+    graph_add_edge(&graph, vertices[7], vertices[2], 2);
+    graph_add_edge(&graph, vertices[7], vertices[3], 2);
+    graph_add_edge(&graph, vertices[7], vertices[15], 2);
+    graph_add_edge(&graph, vertices[7], vertices[16], 2);
+    graph_add_edge(&graph, vertices[7], vertices[17], 2);
+    graph_add_edge(&graph, vertices[8], vertices[3], 2);
+    graph_add_edge(&graph, vertices[8], vertices[17], 2);
+    graph_add_edge(&graph, vertices[8], vertices[18], 2);
+    graph_add_edge(&graph, vertices[8], vertices[19], 2);
+    graph_add_edge(&graph, vertices[9], vertices[3], 2);
+    graph_add_edge(&graph, vertices[9], vertices[4], 2);
+    graph_add_edge(&graph, vertices[9], vertices[19], 2);
+    graph_add_edge(&graph, vertices[9], vertices[20], 2);
+    graph_add_edge(&graph, vertices[9], vertices[21], 2);
+    graph_add_edge(&graph, vertices[10], vertices[4], 2);
+    graph_add_edge(&graph, vertices[10], vertices[21], 2);
+    graph_add_edge(&graph, vertices[10], vertices[22], 2);
+    graph_add_edge(&graph, vertices[10], vertices[23], 2);
+    graph_add_edge(&graph, vertices[11], vertices[4], 2);
+    graph_add_edge(&graph, vertices[11], vertices[5], 2);
+    graph_add_edge(&graph, vertices[11], vertices[23], 2);
+    graph_add_edge(&graph, vertices[11], vertices[24], 2);
+    graph_add_edge(&graph, vertices[11], vertices[25], 2);
+    graph_add_edge(&graph, vertices[12], vertices[5], 2);
+    graph_add_edge(&graph, vertices[12], vertices[25], 2);
+    graph_add_edge(&graph, vertices[12], vertices[26], 2);
+    graph_add_edge(&graph, vertices[12], vertices[27], 2);
+    graph_add_edge(&graph, vertices[13], vertices[2], 2);
+    graph_add_edge(&graph, vertices[13], vertices[5], 2);
+    graph_add_edge(&graph, vertices[13], vertices[27], 2);
+    graph_add_edge(&graph, vertices[13], vertices[28], 2);
+    graph_add_edge(&graph, vertices[13], vertices[29], 2);
+
+    graph_add_edge(&graph, vertices[30], vertices[16], 2);
+    graph_add_edge(&graph, vertices[30], vertices[31], 2);
+    graph_add_edge(&graph, vertices[32], vertices[31], 2);
 
     thorup_reach_oracle(&oracle, &graph);
-    graph_free(&graph);
 
-    printf("graphs number = %u\n", oracle.graphs_len);
-    printf("graphs 1 number = %u\n", oracle.graphs[0].vertices_len);
-    printf("graphs 2 number = %u\n", oracle.graphs[1].vertices_len);
+    printf("number of graphs %u\n", oracle.graphs_len);
 
-    graph = oracle.graphs[0];
-    for (i = 0; i < graph.vertices_len; i++) {
-        vertex = graph.vertices[i];
-        printf("containing vertex %u\n", vertex->unique_id);
+    for (i = 0; i < 5; i++) {
+        graph_t *current_graph = &(oracle.graphs[i]);
+        printf("graph %u has %u vertices\n", i, current_graph->vertices_len);
     }
 
+    graph_free(&graph);
     reach_oracle_free(&oracle);
     vertices_free();
 
