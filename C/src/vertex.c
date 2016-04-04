@@ -22,6 +22,11 @@ void vertices_init(void)
 
 vertex_t * new_vertex(void)
 {
+    return new_vertex_id(get_unique_id());
+}
+
+vertex_t * new_vertex_id(vertex_id_t id)
+{
     vertex_t *vertex;
 
     if (vertices_len >= vertices_size) {
@@ -34,7 +39,7 @@ vertex_t * new_vertex(void)
 
     vertex = &(vertices[vertices_len]);
 
-    vertex->unique_id = get_unique_id();
+    vertex->unique_id = id;
     vertex->edges_len = 0;
     vertex->edges_size = INIT_EDGES_NUM;
     vertex->edges = malloc(sizeof(edge_t) * INIT_EDGES_NUM);

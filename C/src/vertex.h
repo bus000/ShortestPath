@@ -46,6 +46,8 @@ void vertices_init(void);
  * not be created. */
 vertex_t * new_vertex(void);
 
+vertex_t * new_vertex_id(vertex_id_t id);
+
 void vertex_free(vertex_t *vertex);
 
 void vertices_free(void);
