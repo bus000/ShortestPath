@@ -24,11 +24,11 @@ int main(int argc, char const *argv[])
 
     graph_free(&graph);
 
-    vertex_t *vertex1 = find_vertex(&cpy, 6);
-    vertex_t *vertex2 = find_vertex(&cpy, 7);
-    vertex_t *vertex3 = find_vertex(&cpy, 8);
-    vertex_t *vertex4 = find_vertex(&cpy, 9);
-    vertex_t *vertex5 = find_vertex(&cpy, 10);
+    vertex_t *vertex1 = find_vertex(&cpy, 1);
+    vertex_t *vertex2 = find_vertex(&cpy, 2);
+    vertex_t *vertex3 = find_vertex(&cpy, 3);
+    vertex_t *vertex4 = find_vertex(&cpy, 4);
+    vertex_t *vertex5 = find_vertex(&cpy, 5);
 
     printf("vertex1 edges %u\n", vertex1->edges_len);
     printf("vertex2 edges %u\n", vertex2->edges_len);

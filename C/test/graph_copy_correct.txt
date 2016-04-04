@@ -5,16 +5,16 @@ vertex4 edges 1
 vertex5 edges 0
 
 vertex1:
-6 -> 7
-6 -> 10
+1 -> 2
+1 -> 5
 
 vertex2:
-7 -> 8
+2 -> 3
 
 vertex3:
-8 -> 9
+3 -> 4
 
 vertex4:
-9 -> 6
+4 -> 1
 
 vertex5:
