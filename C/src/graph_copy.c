@@ -26,7 +26,8 @@ graph_t graph_copy(graph_t const *graph)
      * the old graph vertex to the new one in the map. */
     for (i = 0; i < graph->vertices_len; i++) {
         vertex = graph->vertices[i];
-        vertex_new = new_vertex();
+        vertex_new = new_vertex_id(vertex->unique_id);
+
         map_put(&map, vertex, vertex_new);
         graph_add_vertex_pointer(&new_graph, vertex_new);
 
