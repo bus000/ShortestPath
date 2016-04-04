@@ -1,5 +1,5 @@
 CC      =gcc
-CFLAGS  =-Wall -Werror -Wno-parentheses -std=gnu99 -D DEBUG_LEVEL=ERROR_LVL
+CFLAGS  =-Wall -g -Werror -Wno-parentheses -std=gnu99
 SOURCES =$(wildcard *.c)$
 OBJECTS =$(SOURCES:.c=.o)$
 TARGET  =../bin/diff
