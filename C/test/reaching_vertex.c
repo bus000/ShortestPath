@@ -69,6 +69,7 @@ int main(int argc, char const *argv[])
 
     graph_free(&graph);
     vertex_list_free(&vertex_list);
+    vertices_free();
 
     return 0;
 }

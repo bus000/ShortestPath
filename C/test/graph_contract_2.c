@@ -60,6 +60,7 @@ int main(int argc, char const *argv[])
 
     vertex_list_free(&reaching_list);
     graph_free(&graph);
+    vertices_free();
 
     return 0;
 }

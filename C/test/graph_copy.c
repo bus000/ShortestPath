@@ -62,6 +62,7 @@ int main(int argc, char const *argv[])
                 vertex5->edges[i].end->unique_id);
 
     graph_free(&cpy);
+    vertices_free();
 
     return 0;
 }
