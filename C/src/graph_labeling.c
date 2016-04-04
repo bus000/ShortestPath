@@ -13,6 +13,9 @@ void graph_init_labels(graph_t *graph, void const *label, size_t label_size)
     if (graph->labels_size != 0)
         free(graph->labels);
 
+    if (graph->vertices_len == 0)
+        return;
+
     graph->labels = malloc(label_size * graph->vertices_len);
     graph->labels_size = graph->vertices_len;
     graph->label_size = label_size;
