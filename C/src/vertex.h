@@ -4,8 +4,9 @@
 #include "inttypes.h"
 #include <stdio.h>
 
-#define INIT_VERTICES_SIZE (128)
-#define INIT_EDGES_NUM  (8)
+#define INIT_VERTICES_ARRAY (8)
+#define INIT_VERTICES_SIZE  (128)
+#define INIT_EDGES_NUM      (8)
 
 struct Vertex;
 struct Edge;
