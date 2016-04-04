@@ -198,3 +198,17 @@ void reach_oracle_free(reachability_oracle_t *oracle)
 
     free(oracle->graphs);
 }
+
+int reachability(reachability_oracle_t const *oracle, vertex_t const *v1,
+        vertex_t const *v2)
+{
+    thorup_label_t const *l1 = (thorup_label_t const *) v1->label;
+    thorup_label_t const *l2 = (thorup_label_t const *) v2->label;
+    int64_t layer1 = l1->layer;
+    int64_t layer2 = l2->layer;
+
+    if (labs(layer1 - layer2) > 1)
+        return 0;
+    else
+        return 1;
+}
