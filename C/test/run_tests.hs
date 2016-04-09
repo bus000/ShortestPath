@@ -4,6 +4,8 @@ import System.IO
 import System.Directory
 import System.Process
 import Data.List
+import System.Environment
+import System.Exit
 
 data TestEnv = TestEnv FilePath FilePath deriving (Eq, Show)
 
@@ -86,13 +88,45 @@ showTests tests =
         let program' = take len (program ++ (repeat ' '))
         in program' ++ errorMsg ++ "\n" ++ (showTests' tests len)
 
+data Function = Version | Usage | DoTest FilePath FilePath
+
+parse :: [String] -> Function
+parse [] = Usage
+parse argv
+    | elem "-v" argv || elem "--version" argv = Version
+    | elem "-h" argv || elem "--help" argv = Usage
+    | otherwise =
+        case length argv of
+            2 -> DoTest (argv !! 0) (argv !! 1)
+            _ -> Usage
+
 main = do
-    putStrLn "TESTING"
-    binContents <- getDirectoryContents testBin
+    args <- getArgs
 
-    let cFiles = filter (\x -> x /= "." && x /= "..") binContents
-        testEnv = getTestEnv cFiles
+    case parse args of
+        Version -> do
+            putStrLn "1.0"
+            exitSuccess
+        Usage -> do
+            programName <- getProgName
+            putStrLn $ "usage: " ++ programName ++
+                "[-h help] [-v version] binfolder outfolder\n" ++
+                "   -h: display usage string\n" ++
+                "   -v: display version information\n" ++
+                "binfolder: name of folder containing binaries to run\n" ++
+                "outfolder: name of folder containing expected output of " ++
+                "binaries"
 
-    testResult <- getTests testEnv
+            exitSuccess
 
-    putStr $ showTests testResult
+        DoTest binFolder outFolder -> do
+
+            putStrLn "TESTING"
+            binContents <- getDirectoryContents testBin
+
+            let cFiles = filter (\x -> x /= "." && x /= "..") binContents
+                testEnv = getTestEnv cFiles
+
+            testResult <- getTests testEnv
+
+            putStr $ showTests testResult
