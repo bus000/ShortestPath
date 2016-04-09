@@ -3,6 +3,7 @@
 import System.IO
 import System.Directory
 import System.Process
+import Data.List
 
 data TestEnv = TestEnv FilePath FilePath deriving (Eq, Show)
 
@@ -36,20 +37,34 @@ getTests (env:envs) = do
 
         case (execExist, outputExist) of
             (False, False) ->
-                return $ TestError exec ("Error: could not find files " ++ exec
-                    ++ " " ++ output)
+                return $ TestError exec (errFindFiles [exec, output])
             (False, True) ->
-                return $ TestError exec ("Error: could not find file " ++ exec)
+                return $ TestError exec (errFindFiles [exec])
             (True, False) ->
-                return $ TestError exec ("Error: could not find file "
-                    ++ output)
-            (True, True) -> do
-                (_, Just handleOut, _, _) <- createProcess (proc exec [])
-                    { std_out = CreatePipe }
+                return $ TestError exec (errFindFiles [output])
+            (True, True) ->
+                runTest $ TestEnv exec output
+
+    runTest :: TestEnv -> IO (Test)
+    runTest (TestEnv exec output) = do
+        process <- createProcess (proc exec []) { std_out = CreatePipe }
+        case process of
+            (_, Just handleOut, _, _) -> do
                 execout <- hGetContents handleOut
                 expected <- readFile output
-
                 return $ (TestSuccess exec execout expected)
+
+            (_, Nothing, _, _) ->
+                return $ TestError exec errOpenHandle
+
+    errFindFiles :: [FilePath] -> String
+    errFindFiles files =
+        if length files == 1
+            then "Error: could not find file " ++ (head files)
+            else "Error: could not find files " ++ (intercalate " " files)
+
+    errOpenHandle :: String
+    errOpenHandle = "Error: could not open handle"
 
 showTests :: [Test] -> String
 showTests tests =
