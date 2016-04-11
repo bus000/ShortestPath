@@ -53,9 +53,12 @@ int graph_adjesent(graph_t const *graph, vertex_id_t v1, vertex_id_t v2)
 
 void graph_add_vertex_pointer(graph_t *graph, vertex_t *vertex)
 {
+    size_t newsize;
+
     if (graph->vertices_len >= graph->vertices_size) {
         graph->vertices_size *= 2;
-        graph->vertices = realloc(graph->vertices, graph->vertices_size);
+        newsize = sizeof(vertex_t *) * graph->vertices_size;
+        graph->vertices = realloc(graph->vertices, newsize);
 
         if (graph->vertices == NULL)
             mem_err();
