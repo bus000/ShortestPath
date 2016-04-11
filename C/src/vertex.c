@@ -58,10 +58,13 @@ vertex_t * new_vertex_id(vertex_id_t id)
     vertex->outgoing_len = 0;
     vertex->outgoing_size = INIT_EDGES_NUM;
     vertex->outgoing = malloc(sizeof(edge_t) * INIT_EDGES_NUM);
+    vertex->incoming_len = 0;
+    vertex->incoming_size = INIT_EDGES_NUM;
+    vertex->incoming = malloc(sizeof(edge_t) * INIT_EDGES_NUM);
     vertex->label = NULL;
     vertex->visited = 0;
 
-    if (vertex->outgoing == NULL)
+    if (vertex->outgoing == NULL || vertex->incoming == NULL)
         mem_err();
 
     return vertex;

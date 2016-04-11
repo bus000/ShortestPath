@@ -23,6 +23,11 @@ struct Vertex {
     uint32_t outgoing_size;
     edge_t *outgoing;
 
+    /* List of edges coming in to this vertex. */
+    uint32_t incoming_len;
+    uint32_t incoming_size;
+    edge_t *incoming;
+
     /* Pointer to a graph label. */
     void *label;
 

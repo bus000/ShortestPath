@@ -80,20 +80,35 @@ vertex_id_t graph_add_vertex(graph_t *graph)
 void graph_add_edge_pointer(graph_t *graph, vertex_t *vertex1,
         vertex_t *vertex2, uint32_t weight)
 {
-    edge_t edge = { .weight = weight, .start = vertex1, .end = vertex2 };
+    edge_t out = { .weight = weight, .start = vertex1, .end = vertex2 };
+    edge_t in = { .weight = weight, .start = vertex2, .end = vertex1 };
 
+    /* Add outgoing edge. */
     if (vertex1->outgoing_len >= vertex1->outgoing_size) {
         vertex1->outgoing_size = vertex1->outgoing_size == 0 ? 2 :
             vertex1->outgoing_size * 2;
         vertex1->outgoing = realloc(vertex1->outgoing,
-                sizeof(edge_t) *vertex1->outgoing_size);
+                sizeof(edge_t) * vertex1->outgoing_size);
 
         if (vertex1->outgoing == NULL)
             mem_err();
     }
 
-    vertex1->outgoing[vertex1->outgoing_len] = edge;
+    vertex1->outgoing[vertex1->outgoing_len] = out;
     vertex1->outgoing_len += 1;
+
+    /* Add incoming edge. */
+    if (vertex2->incoming_len >= vertex2->incoming_size) {
+        vertex2->incoming_size *= 2;
+        vertex2->incoming = realloc(vertex2->incoming,
+                sizeof(edge_t) * vertex2->incoming_size);
+
+        if (vertex2->incoming == NULL)
+            mem_err();
+    }
+
+    vertex2->incoming[vertex2->incoming_len] = in;
+    vertex2->incoming_len += 1;
 }
 
 int graph_add_edge(graph_t *graph, vertex_id_t v1, vertex_id_t v2,
