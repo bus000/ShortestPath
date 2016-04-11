@@ -1,0 +1,4 @@
+*.exrc
+*.o
+tags
+tmux
