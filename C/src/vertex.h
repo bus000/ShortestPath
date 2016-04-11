@@ -19,9 +19,9 @@ struct Vertex {
     vertex_id_t unique_id;
 
     /* List of edges going out from this vertex. */
-    uint32_t edges_len;
-    uint32_t edges_size;
-    edge_t *edges;
+    uint32_t outgoing_len;
+    uint32_t outgoing_size;
+    edge_t *outgoing;
 
     /* Pointer to a graph label. */
     void *label;

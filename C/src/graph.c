@@ -41,8 +41,8 @@ int graph_adjesent(graph_t const *graph, vertex_id_t v1, vertex_id_t v2)
         return 0;
     }
 
-    for (i = 0; i < vertex1->edges_len; i++) {
-        edge = vertex1->edges[i];
+    for (i = 0; i < vertex1->outgoing_len; i++) {
+        edge = vertex1->outgoing[i];
 
         if (edge.end->unique_id == v2)
             return 1;
@@ -82,18 +82,18 @@ void graph_add_edge_pointer(graph_t *graph, vertex_t *vertex1,
 {
     edge_t edge = { .weight = weight, .start = vertex1, .end = vertex2 };
 
-    if (vertex1->edges_len >= vertex1->edges_size) {
-        vertex1->edges_size = vertex1->edges_size == 0 ? 2 :
-            vertex1->edges_size * 2;
-        vertex1->edges = realloc(vertex1->edges,
-                sizeof(edge_t) *vertex1->edges_size);
+    if (vertex1->outgoing_len >= vertex1->outgoing_size) {
+        vertex1->outgoing_size = vertex1->outgoing_size == 0 ? 2 :
+            vertex1->outgoing_size * 2;
+        vertex1->outgoing = realloc(vertex1->outgoing,
+                sizeof(edge_t) *vertex1->outgoing_size);
 
-        if (vertex1->edges == NULL)
+        if (vertex1->outgoing == NULL)
             mem_err();
     }
 
-    vertex1->edges[vertex1->edges_len] = edge;
-    vertex1->edges_len += 1;
+    vertex1->outgoing[vertex1->outgoing_len] = edge;
+    vertex1->outgoing_len += 1;
 }
 
 int graph_add_edge(graph_t *graph, vertex_id_t v1, vertex_id_t v2,
@@ -146,8 +146,8 @@ static void reachable_prime(vertex_list_t *list, vertex_t *vertex)
     vertex->visited = 1;
     vertex_list_add(list, vertex);
 
-    for (i = 0; i < vertex->edges_len; i++) {
-        edge = vertex->edges[i];
+    for (i = 0; i < vertex->outgoing_len; i++) {
+        edge = vertex->outgoing[i];
         reachable_prime(list, edge.end);
     }
 }
@@ -199,8 +199,8 @@ vertex_id_t graph_contract(graph_t *graph, vertex_list_t *vertices)
     /* Create new vertex representing removed vertices. */
     vertex = find_vertex(graph, graph_add_vertex(graph));
     for (i = 0; i < graph->vertices_len; i++) {
-        edges = graph->vertices[i]->edges;
-        edges_len = graph->vertices[i]->edges_len;
+        edges = graph->vertices[i]->outgoing;
+        edges_len = graph->vertices[i]->outgoing_len;
         for (j = 0; j < edges_len; j++) {
             edge = &(edges[j]);
 
@@ -227,8 +227,8 @@ vertex_id_t graph_contract2(graph_t *graph, vertex_list_t *vertices)
     /* Create new vertex representing removed vertices. */
     vertex = graph_add_vertex(graph);
     for (i = 0; i < vertices->len; i++) {
-        edges = vertices->vertices[i]->edges;
-        edges_len = vertices->vertices[i]->edges_len;
+        edges = vertices->vertices[i]->outgoing;
+        edges_len = vertices->vertices[i]->outgoing_len;
         for (j = 0; j < edges_len; j++) {
             edge = &(edges[j]);
 
@@ -268,8 +268,8 @@ static int does_reach(vertex_t const *current, vertex_t const *vertex)
     if (current->unique_id == vertex->unique_id)
         return 1;
 
-    for (i = 0; i < current->edges_len; i++) {
-        edge = current->edges[i];
+    for (i = 0; i < current->outgoing_len; i++) {
+        edge = current->outgoing[i];
 
         if (does_reach(edge.end, vertex))
             return 1;

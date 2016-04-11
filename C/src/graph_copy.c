@@ -42,8 +42,8 @@ graph_t graph_copy(graph_t const *graph)
         vertex = graph->vertices[i];
         vertex_new = (vertex_t *) map_get(&map, vertex);
 
-        for (j = 0; j < vertex->edges_len; j++) {
-            edge = vertex->edges[j];
+        for (j = 0; j < vertex->outgoing_len; j++) {
+            edge = vertex->outgoing[j];
             edge_end = (vertex_t *) map_get(&map, edge.end);
 
             graph_add_edge(&new_graph, vertex_new->unique_id,

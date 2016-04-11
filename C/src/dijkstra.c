@@ -96,11 +96,11 @@ static int dijkstra_algo(path_t *path, graph_t *graph, vertex_id_t end_vertex,
     vertex_t *current = heap_extract_min(vertices), *end;
     dijkstra_l_t *current_label = current->label, *end_label;
     uint32_t current_dist = current_label->weight, newdist;
-    edge_t *edges = current->edges, *edge;
+    edge_t *edges = current->outgoing, *edge;
 
     while (dijkstra_finish(current, end_vertex)) {
         /* Loop through edges. */
-        for (i = 0; i < current->edges_len; i++) {
+        for (i = 0; i < current->outgoing_len; i++) {
             edge = &edges[i];
             end = edge->end;
             end_label = (dijkstra_l_t *) end->label;
@@ -113,7 +113,7 @@ static int dijkstra_algo(path_t *path, graph_t *graph, vertex_id_t end_vertex,
         /* Update current node to new shortest distance. */
         current = heap_extract_min(vertices);
         current_label = current->label;
-        edges = current->edges;
+        edges = current->outgoing;
         current_dist = current_label->weight;
     }
 

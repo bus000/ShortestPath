@@ -55,13 +55,13 @@ vertex_t * new_vertex_id(vertex_id_t id)
     next_vertex += 1;
 
     vertex->unique_id = id;
-    vertex->edges_len = 0;
-    vertex->edges_size = INIT_EDGES_NUM;
-    vertex->edges = malloc(sizeof(edge_t) * INIT_EDGES_NUM);
+    vertex->outgoing_len = 0;
+    vertex->outgoing_size = INIT_EDGES_NUM;
+    vertex->outgoing = malloc(sizeof(edge_t) * INIT_EDGES_NUM);
     vertex->label = NULL;
     vertex->visited = 0;
 
-    if (vertex->edges == NULL)
+    if (vertex->outgoing == NULL)
         mem_err();
 
     return vertex;
@@ -78,8 +78,8 @@ static vertex_id_t get_unique_id()
 
 void vertex_free(vertex_t *vertex)
 {
-    if (vertex->edges_size != 0)
-        free(vertex->edges);
+    if (vertex->outgoing_size != 0)
+        free(vertex->outgoing);
 }
 
 void vertices_free(void)
