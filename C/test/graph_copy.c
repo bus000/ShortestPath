@@ -41,25 +41,45 @@ int main(int argc, char const *argv[])
         printf("%u -> %u\n", vertex1->outgoing[i].start->unique_id,
                 vertex1->outgoing[i].end->unique_id);
 
+    for (i = 0; i < vertex1->incoming_len; i++)
+        printf("%u -> %u\n", vertex1->incoming[i].start->unique_id,
+                vertex1->incoming[i].end->unique_id);
+
     printf("\nvertex2:\n");
     for (i = 0; i < vertex2->outgoing_len; i++)
         printf("%u -> %u\n", vertex2->outgoing[i].start->unique_id,
                 vertex2->outgoing[i].end->unique_id);
+
+    for (i = 0; i < vertex1->incoming_len; i++)
+        printf("%u -> %u\n", vertex2->incoming[i].start->unique_id,
+                vertex2->incoming[i].end->unique_id);
 
     printf("\nvertex3:\n");
     for (i = 0; i < vertex3->outgoing_len; i++)
         printf("%u -> %u\n", vertex3->outgoing[i].start->unique_id,
                 vertex3->outgoing[i].end->unique_id);
 
+    for (i = 0; i < vertex3->incoming_len; i++)
+        printf("%u -> %u\n", vertex3->incoming[i].start->unique_id,
+                vertex3->incoming[i].end->unique_id);
+
     printf("\nvertex4:\n");
     for (i = 0; i < vertex4->outgoing_len; i++)
         printf("%u -> %u\n", vertex4->outgoing[i].start->unique_id,
                 vertex4->outgoing[i].end->unique_id);
 
+    for (i = 0; i < vertex4->incoming_len; i++)
+        printf("%u -> %u\n", vertex4->incoming[i].start->unique_id,
+                vertex4->incoming[i].end->unique_id);
+
     printf("\nvertex5:\n");
     for (i = 0; i < vertex5->outgoing_len; i++)
         printf("%u -> %u\n", vertex5->outgoing[i].start->unique_id,
                 vertex5->outgoing[i].end->unique_id);
+
+    for (i = 0; i < vertex5->incoming_len; i++)
+        printf("%u -> %u\n", vertex5->incoming[i].start->unique_id,
+                vertex5->incoming[i].end->unique_id);
 
     graph_free(&cpy);
     vertices_free();

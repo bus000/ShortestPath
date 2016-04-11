@@ -73,6 +73,7 @@ int main(int argc, char const *argv[])
     /* Verify that 6, 8, 9, 11, and 12 points to the new vertex. */
     vertex_t *vertex9 = find_vertex(&graph, vertices[9]);
     printf("vertex 9 edge list length = %u\n", vertex9->outgoing_len);
+    printf("vertex 9 incoming list length = %u\n", vertex9->incoming_len);
     /* TODO: TEST INCOMMING LEN. */
     vertex_t *new = vertex9->outgoing[0].end;
 
