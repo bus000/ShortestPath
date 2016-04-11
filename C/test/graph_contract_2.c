@@ -50,8 +50,8 @@ int main(int argc, char const *argv[])
     edge_t edge;
     vertex_id_t edge_end;
 
-    for (i = 0; i < newvertex->edges_len; i++) {
-        edge = newvertex->edges[i];
+    for (i = 0; i < newvertex->outgoing_len; i++) {
+        edge = newvertex->outgoing[i];
         edge_end = edge.end->unique_id;
         if (edge_end == vertices[6] || edge_end == vertices[7] ||
                 edge_end == vertices[8])

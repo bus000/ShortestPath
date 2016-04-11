@@ -30,36 +30,36 @@ int main(int argc, char const *argv[])
     vertex_t *vertex4 = find_vertex(&cpy, 4);
     vertex_t *vertex5 = find_vertex(&cpy, 5);
 
-    printf("vertex1 edges %u\n", vertex1->edges_len);
-    printf("vertex2 edges %u\n", vertex2->edges_len);
-    printf("vertex3 edges %u\n", vertex3->edges_len);
-    printf("vertex4 edges %u\n", vertex4->edges_len);
-    printf("vertex5 edges %u\n", vertex5->edges_len);
+    printf("vertex1 edges %u\n", vertex1->outgoing_len);
+    printf("vertex2 edges %u\n", vertex2->outgoing_len);
+    printf("vertex3 edges %u\n", vertex3->outgoing_len);
+    printf("vertex4 edges %u\n", vertex4->outgoing_len);
+    printf("vertex5 edges %u\n", vertex5->outgoing_len);
 
     printf("\nvertex1:\n");
-    for (i = 0; i < vertex1->edges_len; i++)
-        printf("%u -> %u\n", vertex1->edges[i].start->unique_id,
-                vertex1->edges[i].end->unique_id);
+    for (i = 0; i < vertex1->outgoing_len; i++)
+        printf("%u -> %u\n", vertex1->outgoing[i].start->unique_id,
+                vertex1->outgoing[i].end->unique_id);
 
     printf("\nvertex2:\n");
-    for (i = 0; i < vertex2->edges_len; i++)
-        printf("%u -> %u\n", vertex2->edges[i].start->unique_id,
-                vertex2->edges[i].end->unique_id);
+    for (i = 0; i < vertex2->outgoing_len; i++)
+        printf("%u -> %u\n", vertex2->outgoing[i].start->unique_id,
+                vertex2->outgoing[i].end->unique_id);
 
     printf("\nvertex3:\n");
-    for (i = 0; i < vertex3->edges_len; i++)
-        printf("%u -> %u\n", vertex3->edges[i].start->unique_id,
-                vertex3->edges[i].end->unique_id);
+    for (i = 0; i < vertex3->outgoing_len; i++)
+        printf("%u -> %u\n", vertex3->outgoing[i].start->unique_id,
+                vertex3->outgoing[i].end->unique_id);
 
     printf("\nvertex4:\n");
-    for (i = 0; i < vertex4->edges_len; i++)
-        printf("%u -> %u\n", vertex4->edges[i].start->unique_id,
-                vertex4->edges[i].end->unique_id);
+    for (i = 0; i < vertex4->outgoing_len; i++)
+        printf("%u -> %u\n", vertex4->outgoing[i].start->unique_id,
+                vertex4->outgoing[i].end->unique_id);
 
     printf("\nvertex5:\n");
-    for (i = 0; i < vertex5->edges_len; i++)
-        printf("%u -> %u\n", vertex5->edges[i].start->unique_id,
-                vertex5->edges[i].end->unique_id);
+    for (i = 0; i < vertex5->outgoing_len; i++)
+        printf("%u -> %u\n", vertex5->outgoing[i].start->unique_id,
+                vertex5->outgoing[i].end->unique_id);
 
     graph_free(&cpy);
     vertices_free();

@@ -72,22 +72,23 @@ int main(int argc, char const *argv[])
 
     /* Verify that 6, 8, 9, 11, and 12 points to the new vertex. */
     vertex_t *vertex9 = find_vertex(&graph, vertices[9]);
-    printf("vertex 9 edge list length = %u\n", vertex9->edges_len);
-    vertex_t *new = vertex9->edges[0].end;
+    printf("vertex 9 edge list length = %u\n", vertex9->outgoing_len);
+    /* TODO: TEST INCOMMING LEN. */
+    vertex_t *new = vertex9->outgoing[0].end;
 
-    if (find_vertex(&graph, vertices[11])->edges[0].end == new)
+    if (find_vertex(&graph, vertices[11])->outgoing[0].end == new)
         printf("11 points to new\n");
 
-    if (find_vertex(&graph, vertices[12])->edges[0].end == new ||
-            find_vertex(&graph, vertices[12])->edges[1].end == new)
+    if (find_vertex(&graph, vertices[12])->outgoing[0].end == new ||
+            find_vertex(&graph, vertices[12])->outgoing[1].end == new)
         printf("12 points to new\n");
 
-    if (find_vertex(&graph, vertices[6])->edges[0].end == new ||
-            find_vertex(&graph, vertices[6])->edges[1].end == new)
+    if (find_vertex(&graph, vertices[6])->outgoing[0].end == new ||
+            find_vertex(&graph, vertices[6])->outgoing[1].end == new)
         printf("6 points to new\n");
 
     /* Verify that the new vertex points to nothing. */
-    printf("new length %u\n", new->edges_len);
+    printf("new length %u\n", new->outgoing_len);
 
     graph_free(&graph);
     vertex_list_free(&vertex_list);
