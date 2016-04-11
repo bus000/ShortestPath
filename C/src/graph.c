@@ -74,15 +74,10 @@ vertex_id_t graph_add_vertex(graph_t *graph)
     return vertex->unique_id;
 }
 
-int graph_add_edge(graph_t *graph, vertex_id_t v1, vertex_id_t v2,
-        uint32_t weight)
+void graph_add_edge_pointer(graph_t *graph, vertex_t *vertex1,
+        vertex_t *vertex2, uint32_t weight)
 {
-    vertex_t *vertex1 = find_vertex(graph, v1);
-    vertex_t *vertex2 = find_vertex(graph, v2);
     edge_t edge = { .weight = weight, .start = vertex1, .end = vertex2 };
-
-    if (vertex1 == NULL || vertex2 == NULL)
-        return -1;
 
     if (vertex1->edges_len >= vertex1->edges_size) {
         vertex1->edges_size = vertex1->edges_size == 0 ? 2 :
@@ -96,6 +91,18 @@ int graph_add_edge(graph_t *graph, vertex_id_t v1, vertex_id_t v2,
 
     vertex1->edges[vertex1->edges_len] = edge;
     vertex1->edges_len += 1;
+}
+
+int graph_add_edge(graph_t *graph, vertex_id_t v1, vertex_id_t v2,
+        uint32_t weight)
+{
+    vertex_t *vertex1 = find_vertex(graph, v1);
+    vertex_t *vertex2 = find_vertex(graph, v2);
+
+    if (vertex1 == NULL || vertex2 == NULL)
+        return -1;
+
+    graph_add_edge_pointer(graph, vertex1, vertex2, weight);
 
     return 0;
 }

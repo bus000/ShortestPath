@@ -45,6 +45,8 @@ void graph_add_vertex_pointer(graph_t *graph, vertex_t *vertex);
  * success, -1 if one of the edges is not found. */
 int graph_add_edge(graph_t *graph, vertex_id_t v1, vertex_id_t v2,
         uint32_t weight);
+void graph_add_edge_pointer(graph_t *graph, vertex_t *vertex1,
+        vertex_t *vertex2, uint32_t weight);
 
 /* Find a vertex with the given identifier in the graph, returns NULL if not
  * found. */
@@ -85,5 +87,7 @@ vertex_t * graph_first_vertex(graph_t const *graph);
 graph_t graph_copy(graph_t const *graph);
 
 void graph_remove_vertices(graph_t *graph, vertex_list_t const *vertices);
+
+graph_t read_graph(char const *graph_file);
 
 #endif
