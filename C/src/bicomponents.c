@@ -30,6 +30,9 @@ int biconnect(digraph_t *graph)
         vertex->visited = 0;
     }
 
+    /* Free resources used by function. */
+    stack_free(&stack);
+
     return 0;
 }
 
