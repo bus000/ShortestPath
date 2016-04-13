@@ -1,7 +1,7 @@
 #include "palm_tree.h"
 #include "graph_labeling.h"
 
-palm_tree_label_t default_label = { .number = 0 };
+static palm_tree_label_t default_label = { .number = 0 };
 
 static uint32_t min(uint32_t a, uint32_t b);
 
