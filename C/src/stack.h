@@ -14,7 +14,7 @@ typedef struct {
 stack_t stack_init(size_t size);
 
 /* Put an item to the top of the stack. */
-void stack_put(stack_t *stack, void *element);
+void stack_push(stack_t *stack, void *element);
 
 /* Returns the element on the top of the stack or NULL if it does not exist. */
 void * stack_pop(stack_t *stack);

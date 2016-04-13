@@ -16,7 +16,7 @@ stack_t stack_init(size_t size)
     return stack;
 }
 
-void stack_put(stack_t *stack, void *element)
+void stack_push(stack_t *stack, void *element)
 {
     if (stack->top >= stack->size) {
         stack->size *= 2;
