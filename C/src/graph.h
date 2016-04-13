@@ -10,6 +10,7 @@
 #define INIT_GRAPH_SIZE (128)
 #define INIT_LIST_SIZE  (32)
 
+/* Represents a directed graph. */
 typedef struct {
     /* A list of vertices in the graph. */
     uint32_t vertices_len;
