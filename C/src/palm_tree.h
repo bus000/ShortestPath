@@ -19,16 +19,6 @@ typedef struct {
 #define ARC   (1)
 #define FROND (2)
 
-//typedef struct {
-    //uint32_t type; [> Either ARC or FROND. <]
-//} palm_edge_t;
-
-//typedef struct {
-    //vertex_id_t original_id; [> The ID of the vertex in the previous graph. <]
-    //palm_tree_label_t label;
-
-//} palm_tree_t;
-
 /* Change the graph labels to create a palm tree. */
 void palm_tree(digraph_t *graph);
 
