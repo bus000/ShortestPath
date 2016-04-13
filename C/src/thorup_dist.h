@@ -4,7 +4,7 @@
 #include "graph.h"
 
 typedef struct {
-    graph_t *graphs;
+    digraph_t *graphs;
     uint32_t graphs_len;
 } reachability_oracle_t;
 
@@ -12,7 +12,7 @@ typedef struct {
  * graphs where each dipath between two vertices can only be in two of these
  * subgraphs. Since the subgraphs are all smaller than the original graph, this
  * has made the problem smaller. */
-int thorup_reach_oracle(reachability_oracle_t *oracle, graph_t *graph);
+int thorup_reach_oracle(reachability_oracle_t *oracle, digraph_t *graph);
 
 int reachability(reachability_oracle_t const *oracle, vertex_t const *v1,
         vertex_t const *v2);

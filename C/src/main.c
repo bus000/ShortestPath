@@ -13,7 +13,7 @@ static function_t parse_args(int argc, char const *argv[]);
 
 int main(int argc, char const *argv[])
 {
-    graph_t graph;
+    digraph_t graph;
     function_t function = parse_args(argc, argv);
 
     vertices_init();

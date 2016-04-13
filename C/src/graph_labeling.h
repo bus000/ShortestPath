@@ -6,9 +6,9 @@
 /* Initialize all labels in the graph to be the label pointed to by label that
  * has the size, label_size. The data label is pointing to are copied and will
  * never be changed in the original version. */
-void graph_init_labels(graph_t *graph, void const *label, size_t label_size);
+void graph_init_labels(digraph_t *graph, void const *label, size_t label_size);
 
-void graph_init_labels_size(graph_t *graph, size_t labels_size,
+void graph_init_labels_size(digraph_t *graph, size_t labels_size,
         size_t label_size);
 
 /* Set the label of the vertex vertex to the label label. The label is assumed
@@ -19,6 +19,6 @@ void graph_init_labels_size(graph_t *graph, size_t labels_size,
  * available, for the label. In that case, graph_init_labels should be called.
  *
  * The function returns 0 if nothing goes wrong. */
-int graph_set_label(graph_t *graph, vertex_t *vertex, void const *label);
+int graph_set_label(digraph_t *graph, vertex_t *vertex, void const *label);
 
 #endif

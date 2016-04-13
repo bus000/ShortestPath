@@ -4,7 +4,7 @@
 #include "graph_labeling.h"
 
 /* TODO: use graph_init_labels_size for the parts that are the same. */
-void graph_init_labels(graph_t *graph, void const *label, size_t label_size)
+void graph_init_labels(digraph_t *graph, void const *label, size_t label_size)
 {
     uint32_t i;
     vertex_t *vertex;
@@ -32,7 +32,7 @@ void graph_init_labels(graph_t *graph, void const *label, size_t label_size)
     }
 }
 
-void graph_init_labels_size(graph_t *graph, size_t labels_size,
+void graph_init_labels_size(digraph_t *graph, size_t labels_size,
         size_t label_size)
 {
     if (graph->labels_size != 0)
@@ -46,7 +46,7 @@ void graph_init_labels_size(graph_t *graph, size_t labels_size,
         mem_err();
 }
 
-int graph_set_label(graph_t *graph, vertex_t *vertex, void const *label)
+int graph_set_label(digraph_t *graph, vertex_t *vertex, void const *label)
 {
     if (vertex->label == NULL) {
         return -1;

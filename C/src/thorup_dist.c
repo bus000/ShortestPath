@@ -5,7 +5,7 @@
 
 /* Takes a graph and partitions it in to layers. Returns the number of layers
  * partitioned into. */
-static int layering(graph_t *graph, vertex_t *start);
+static int layering(digraph_t *graph, vertex_t *start);
 
 /* Set the layer of all vertices in the list to the layer given. */
 static uint32_t set_layer(vertex_list_t *list, uint32_t layer);
@@ -14,9 +14,9 @@ static int even(uint32_t i);
 
 static void reachable_for_each(vertex_list_t *dest, vertex_list_t *src);
 static void reaching_for_each(vertex_list_t *dest, vertex_list_t *src,
-        graph_t *graph);
+        digraph_t *graph);
 
-static int partition(graph_t const *graph, graph_t *graphs,  uint32_t layers);
+static int partition(digraph_t const *graph, digraph_t *graphs,  uint32_t layers);
 
 static void remove_inside(vertex_list_t *list, uint32_t layer);
 static void remove_outside(vertex_list_t *list, uint32_t layer);
@@ -27,10 +27,10 @@ typedef struct {
 
 static thorup_label_t default_label = { .layer = -1 };
 
-int thorup_reach_oracle(reachability_oracle_t *oracle, graph_t *graph)
+int thorup_reach_oracle(reachability_oracle_t *oracle, digraph_t *graph)
 {
     vertex_t *start = graph_first_vertex(graph);
-    graph_t *graphs;
+    digraph_t *graphs;
     uint32_t layers;
 
     if (start == NULL)
@@ -39,7 +39,7 @@ int thorup_reach_oracle(reachability_oracle_t *oracle, graph_t *graph)
     graph_init_labels(graph, &default_label, sizeof(thorup_label_t));
 
     layers = layering(graph, start) - 1;
-    if ((graphs = malloc(sizeof(graph_t) * layers)) == NULL)
+    if ((graphs = malloc(sizeof(digraph_t) * layers)) == NULL)
         mem_err();
 
     partition(graph, graphs, layers);
@@ -50,7 +50,7 @@ int thorup_reach_oracle(reachability_oracle_t *oracle, graph_t *graph)
     return 0;
 }
 
-static int partition(graph_t const *graph, graph_t *graphs, uint32_t layers)
+static int partition(digraph_t const *graph, digraph_t *graphs, uint32_t layers)
 {
     uint32_t i;
     vertex_list_t inside;
@@ -111,7 +111,7 @@ static void remove_inside(vertex_list_t *list, uint32_t layer)
     vertex_list_filter(list, lesser_remove);
 }
 
-static int layering(graph_t *graph, vertex_t *start)
+static int layering(digraph_t *graph, vertex_t *start)
 {
     uint32_t layer;
     vertex_list_t inside, outside, tmp;
@@ -178,7 +178,7 @@ static void reachable_for_each(vertex_list_t *dest, vertex_list_t *src)
 }
 
 static void reaching_for_each(vertex_list_t *dest, vertex_list_t *src,
-        graph_t *graph)
+        digraph_t *graph)
 {
     uint32_t i;
     vertex_t *vertex;

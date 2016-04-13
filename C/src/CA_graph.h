@@ -3,6 +3,6 @@
 
 #include "graph.h"
 
-int ca_constructor(graph_t *graph);
+int ca_constructor(digraph_t *graph);
 
 #endif

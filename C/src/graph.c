@@ -6,7 +6,7 @@
 /* Return true if a path from current to vertex exist, and false otherwise. */
 static int does_reach(vertex_t const *current, vertex_t const *vertex);
 
-int graph_init(graph_t *graph)
+int graph_init(digraph_t *graph)
 {
     graph->vertices_len = 0;
     graph->vertices_size = INIT_GRAPH_SIZE;
@@ -22,7 +22,7 @@ int graph_init(graph_t *graph)
     return 0;
 }
 
-int graph_init_vertices(graph_t *graph, vertex_t **vertices, uint32_t len)
+int graph_init_vertices(digraph_t *graph, vertex_t **vertices, uint32_t len)
 {
     graph->vertices = vertices;
     graph->vertices_len = len;
@@ -31,7 +31,7 @@ int graph_init_vertices(graph_t *graph, vertex_t **vertices, uint32_t len)
     return 0;
 }
 
-int graph_adjesent(graph_t const *graph, vertex_id_t v1, vertex_id_t v2)
+int graph_adjesent(digraph_t const *graph, vertex_id_t v1, vertex_id_t v2)
 {
     int i;
     vertex_t *vertex1 = find_vertex(graph, v1);
@@ -51,7 +51,7 @@ int graph_adjesent(graph_t const *graph, vertex_id_t v1, vertex_id_t v2)
     return 0;
 }
 
-void graph_add_vertex_pointer(graph_t *graph, vertex_t *vertex)
+void graph_add_vertex_pointer(digraph_t *graph, vertex_t *vertex)
 {
     size_t newsize;
 
@@ -68,7 +68,7 @@ void graph_add_vertex_pointer(graph_t *graph, vertex_t *vertex)
     graph->vertices_len += 1;
 }
 
-vertex_id_t graph_add_vertex(graph_t *graph)
+vertex_id_t graph_add_vertex(digraph_t *graph)
 {
     vertex_t *vertex = new_vertex();
 
@@ -77,7 +77,7 @@ vertex_id_t graph_add_vertex(graph_t *graph)
     return vertex->unique_id;
 }
 
-void graph_add_edge_pointer(graph_t *graph, vertex_t *vertex1,
+void graph_add_edge_pointer(digraph_t *graph, vertex_t *vertex1,
         vertex_t *vertex2, uint32_t weight)
 {
     edge_t out = { .weight = weight, .start = vertex1, .end = vertex2 };
@@ -111,7 +111,7 @@ void graph_add_edge_pointer(graph_t *graph, vertex_t *vertex1,
     vertex2->incoming_len += 1;
 }
 
-int graph_add_edge(graph_t *graph, vertex_id_t v1, vertex_id_t v2,
+int graph_add_edge(digraph_t *graph, vertex_id_t v1, vertex_id_t v2,
         uint32_t weight)
 {
     vertex_t *vertex1 = find_vertex(graph, v1);
@@ -125,7 +125,7 @@ int graph_add_edge(graph_t *graph, vertex_id_t v1, vertex_id_t v2,
     return 0;
 }
 
-void graph_free(graph_t *graph)
+void graph_free(digraph_t *graph)
 {
     /* Free vertices. */
     free(graph->vertices);
@@ -134,7 +134,7 @@ void graph_free(graph_t *graph)
         free(graph->labels);
 }
 
-vertex_t * find_vertex(graph_t const *graph, vertex_id_t v)
+vertex_t * find_vertex(digraph_t const *graph, vertex_id_t v)
 {
     int i;
     vertex_t *vertex;
@@ -181,7 +181,7 @@ void reachable(vertex_list_t *list, vertex_t *vertex)
     }
 }
 
-linked_list_t graph_vertices(graph_t const *graph)
+linked_list_t graph_vertices(digraph_t const *graph)
 {
     linked_list_t list;
 
@@ -191,7 +191,7 @@ linked_list_t graph_vertices(graph_t const *graph)
     return list;
 }
 
-vertex_list_t graph_vertices_list(graph_t const *graph)
+vertex_list_t graph_vertices_list(digraph_t const *graph)
 {
     vertex_list_t list;
 
@@ -200,7 +200,7 @@ vertex_list_t graph_vertices_list(graph_t const *graph)
     return list;
 }
 
-vertex_id_t graph_contract(graph_t *graph, vertex_list_t *vertices)
+vertex_id_t graph_contract(digraph_t *graph, vertex_list_t *vertices)
 {
     uint32_t i, j, edges_len;
     vertex_t *vertex;
@@ -228,7 +228,7 @@ vertex_id_t graph_contract(graph_t *graph, vertex_list_t *vertices)
 }
 
 /* TODO: Find more descriptive name. */
-vertex_id_t graph_contract2(graph_t *graph, vertex_list_t *vertices)
+vertex_id_t graph_contract2(digraph_t *graph, vertex_list_t *vertices)
 {
     uint32_t i, j, edges_len;
     edge_t *edges, *edge;
@@ -259,7 +259,7 @@ vertex_id_t graph_contract2(graph_t *graph, vertex_list_t *vertices)
 /* TODO: When calling does_reach all vertices on the path up until finding the
  * vertex should also be added to the list as they can obviously also reach the
  * vertex. */
-void reaching(vertex_list_t *list, vertex_t *vertex, graph_t const *graph)
+void reaching(vertex_list_t *list, vertex_t *vertex, digraph_t const *graph)
 {
     uint32_t i;
     vertex_t *current;
@@ -293,7 +293,7 @@ static int does_reach(vertex_t const *current, vertex_t const *vertex)
     return 0;
 }
 
-void graph_remove_vertices(graph_t *graph, vertex_list_t const *vertices)
+void graph_remove_vertices(digraph_t *graph, vertex_list_t const *vertices)
 {
     uint32_t i;
     uint32_t move = 0;
@@ -320,7 +320,7 @@ void graph_remove_vertices(graph_t *graph, vertex_list_t const *vertices)
     graph->vertices_len -= move;
 }
 
-vertex_t * graph_first_vertex(graph_t const *graph)
+vertex_t * graph_first_vertex(digraph_t const *graph)
 {
     return graph->vertices_len == 0 ? NULL : graph->vertices[0];
 }

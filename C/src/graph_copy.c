@@ -7,10 +7,10 @@
 static int hash(void const *v);
 static int cmp_keys(void const *v1, void const *v2);
 
-graph_t graph_copy(graph_t const *graph)
+digraph_t graph_copy(digraph_t const *graph)
 {
     uint32_t i, j;
-    graph_t new_graph;
+    digraph_t new_graph;
     map_t map;
     vertex_t *vertex, *vertex_new, *edge_end;
     edge_t edge;

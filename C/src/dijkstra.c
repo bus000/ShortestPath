@@ -47,11 +47,11 @@ static inline int dijkstra_finish(vertex_t *current, vertex_id_t end);
  * min heap should be a heap of all vertices sorted by their current distances
  * in their Dijkstra labels, the end vertex should be the vertex ID of where the
  * algorithm should search for a path to. */
-static int dijkstra_algo(path_t *path, graph_t *graph, vertex_id_t end_vertex,
+static int dijkstra_algo(path_t *path, digraph_t *graph, vertex_id_t end_vertex,
         min_heap_t *vertices);
 
 /* TODO: Make prettier. */
-int dijkstra(path_t *path, graph_t *graph, vertex_id_t start, vertex_id_t end)
+int dijkstra(path_t *path, digraph_t *graph, vertex_id_t start, vertex_id_t end)
 {
     vertex_t *start_vertex = find_vertex(graph, start);
     vertex_t *end_vertex = find_vertex(graph, end);
@@ -89,7 +89,7 @@ int dijkstra(path_t *path, graph_t *graph, vertex_id_t start, vertex_id_t end)
     return ret_code;
 }
 
-static int dijkstra_algo(path_t *path, graph_t *graph, vertex_id_t end_vertex,
+static int dijkstra_algo(path_t *path, digraph_t *graph, vertex_id_t end_vertex,
         min_heap_t *vertices)
 {
     int i;

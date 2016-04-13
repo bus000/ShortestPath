@@ -9,10 +9,10 @@ typedef struct {
 
 static header_t read_header(FILE *graph_file);
 
-graph_t read_graph(char const *graph_file)
+digraph_t read_graph(char const *graph_file)
 {
     uint32_t i;
-    graph_t graph;
+    digraph_t graph;
     FILE *file;
     char *line = NULL;
     size_t len = 0, read;
