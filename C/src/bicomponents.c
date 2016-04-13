@@ -76,13 +76,10 @@ static void dfs_visit_help(vertex_t *vertex, vertex_t *adjasent, stack_t *stack,
         if (B_LOW(adjasent) >= B_D(vertex))
             output_comp(vertex, adjasent, stack);
 
-        B_LOW(vertex) = min(B_LOW(vertex),
-                B_LOW(adjasent));
-    } else if (B_PARENT(vertex) != adjasent &&
-            B_D(adjasent) < B_D(vertex)) {
+        B_LOW(vertex) = min(B_LOW(vertex), B_LOW(adjasent));
+    } else if (B_PARENT(vertex) != adjasent && B_D(adjasent) < B_D(vertex)) {
         stack_push(stack, edge);
-        B_LOW(vertex) = min(B_LOW(vertex),
-                B_D(adjasent));
+        B_LOW(vertex) = min(B_LOW(vertex), B_D(adjasent));
     }
 }
 
@@ -98,7 +95,7 @@ static void output_comp(vertex_t *vertex1, vertex_t *vertex2, stack_t *stack)
         if (edge == NULL)
             break;
 
-        printf("%u -> %u\n", edge->start->unique_id, edge->end->unique_id); fflush(stdout);
+        printf("%u -> %u\n", edge->start->unique_id, edge->end->unique_id);
     } while (edge->start == vertex1 && edge->end == vertex2);
 }
 
