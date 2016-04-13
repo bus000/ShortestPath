@@ -44,8 +44,8 @@ static void dfs_visit(vertex_t *vertex, uint32_t *count, stack_t *stack)
 
     vertex->visited = 1;
     *count = *count + 1;
-    BICONNECT_D(vertex) = *count;
-    BICONNECT_LOW(vertex) = *count;
+    B_D(vertex) = *count;
+    B_LOW(vertex) = *count;
 
     for (i = 0; i < vertex->outgoing_len; i++) {
         edge = &vertex->outgoing[i];
@@ -67,19 +67,19 @@ static void dfs_visit_help(vertex_t *vertex, vertex_t *adjasent, stack_t *stack,
 {
     if (!adjasent->visited) {
         stack_push(stack, edge);
-        BICONNECT_PARENT(adjasent) = vertex;
+        B_PARENT(adjasent) = vertex;
         dfs_visit(adjasent, count, stack);
 
-        if (BICONNECT_LOW(adjasent) >= BICONNECT_D(vertex))
+        if (B_LOW(adjasent) >= B_D(vertex))
             output_comp(vertex, adjasent, stack);
 
-        BICONNECT_LOW(vertex) = min(BICONNECT_LOW(vertex),
-                BICONNECT_LOW(adjasent));
-    } else if (BICONNECT_PARENT(vertex) != adjasent &&
-            BICONNECT_D(adjasent) < BICONNECT_D(vertex)) {
+        B_LOW(vertex) = min(B_LOW(vertex),
+                B_LOW(adjasent));
+    } else if (B_PARENT(vertex) != adjasent &&
+            B_D(adjasent) < B_D(vertex)) {
         stack_push(stack, edge);
-        BICONNECT_LOW(vertex) = min(BICONNECT_LOW(vertex),
-                BICONNECT_D(adjasent));
+        B_LOW(vertex) = min(B_LOW(vertex),
+                B_D(adjasent));
     }
 }
 
