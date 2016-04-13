@@ -4,7 +4,7 @@
 int main(int argc, char const *argv[])
 {
     uint32_t i;
-    graph_t graph, cpy;
+    digraph_t graph, cpy;
     vertex_id_t vertices[6] = { 0 };
 
     vertices_init();

@@ -7,7 +7,7 @@ static int vertex_compare(void const *el1, void const *el2);
 int main(int argc, char const *argv[])
 {
     int i;
-    graph_t graph;
+    digraph_t graph;
     vertex_id_t vertices[10] = { 0 };
     vertex_list_t vertex_list;
     vertex_t *vertex;

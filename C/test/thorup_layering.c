@@ -7,7 +7,7 @@
 int main(int argc, char const *argv[])
 {
     uint32_t i;
-    graph_t graph;
+    digraph_t graph;
     vertex_id_t vertices[VERTEX_NUMBER + 1] = { 0 };
     reachability_oracle_t oracle;
 
@@ -67,7 +67,7 @@ int main(int argc, char const *argv[])
     printf("number of graphs %u\n", oracle.graphs_len);
 
     for (i = 0; i < 5; i++) {
-        graph_t *current_graph = &(oracle.graphs[i]);
+        digraph_t *current_graph = &(oracle.graphs[i]);
         printf("graph %u has %u vertices\n", i, current_graph->vertices_len);
     }
 

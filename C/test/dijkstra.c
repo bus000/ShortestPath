@@ -5,7 +5,7 @@
 
 int main(int argc, char const *argv[])
 {
-    graph_t graph;
+    digraph_t graph;
     vertex_id_t v0, v1, v2, v3, v4, v5;
     path_t path;
 
