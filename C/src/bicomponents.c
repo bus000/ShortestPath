@@ -62,22 +62,6 @@ static void dfs_visit(vertex_t *vertex, uint32_t *count, stack_t *stack)
     }
 }
 
-static void output_comp(vertex_t *vertex1, vertex_t *vertex2, stack_t *stack)
-{
-    edge_t *edge;
-
-    printf("new biconnected component found.\n"); fflush(stdout);
-
-    do {
-        edge = stack_pop(stack);
-
-        if (edge == NULL)
-            break;
-
-        printf("%u -> %u\n", edge->start->unique_id, edge->end->unique_id); fflush(stdout);
-    } while (edge->start == vertex1 && edge->end == vertex2);
-}
-
 static void dfs_visit_help(vertex_t *vertex, vertex_t *adjasent, stack_t *stack,
         edge_t *edge, uint32_t *count)
 {
@@ -97,6 +81,22 @@ static void dfs_visit_help(vertex_t *vertex, vertex_t *adjasent, stack_t *stack,
         BICONNECT_LOW(vertex) = min(BICONNECT_LOW(vertex),
                 BICONNECT_D(adjasent));
     }
+}
+
+static void output_comp(vertex_t *vertex1, vertex_t *vertex2, stack_t *stack)
+{
+    edge_t *edge;
+
+    printf("new biconnected component found.\n"); fflush(stdout);
+
+    do {
+        edge = stack_pop(stack);
+
+        if (edge == NULL)
+            break;
+
+        printf("%u -> %u\n", edge->start->unique_id, edge->end->unique_id); fflush(stdout);
+    } while (edge->start == vertex1 && edge->end == vertex2);
 }
 
 static inline uint32_t min(uint32_t a, uint32_t b)
