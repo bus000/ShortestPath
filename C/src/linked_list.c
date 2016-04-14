@@ -81,8 +81,10 @@ int linked_list_remove(linked_list_t *list, void *item)
 
 void linked_list_free(linked_list_t *list)
 {
-    actual_list_t *element;
+    actual_list_t *element, *next_element;
 
-    for (element = list->start; element != NULL; element = element->next)
+    for (element = list->start; element != NULL; element = next_element) {
+        next_element = element->next;
         free(element);
+    }
 }
