@@ -3,7 +3,7 @@
 #include "graph_labeling.h"
 #include <stdlib.h>
 
-static biconnect_label_t default_label = { .parent = NULL, .d = 0 };
+static biconnect_label_t default_label = { .parent = NULL, .d = 0, .low = 0 };
 
 static void dfs_visit(vertex_t *vertex, uint32_t *count, stack_t *stack);
 static void output_comp(vertex_t *vertex1, vertex_t *vertex2, stack_t *stack);
@@ -96,7 +96,7 @@ static void output_comp(vertex_t *vertex1, vertex_t *vertex2, stack_t *stack)
             break;
 
         printf("%u -> %u\n", edge->start->unique_id, edge->end->unique_id);
-    } while (edge->start == vertex1 && edge->end == vertex2);
+    } while (edge->start != vertex1 || edge->end != vertex2);
 }
 
 static inline uint32_t min(uint32_t a, uint32_t b)
