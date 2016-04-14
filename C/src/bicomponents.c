@@ -126,8 +126,6 @@ static digraph_t output_comp(vertex_t *vertex1, vertex_t *vertex2,
             break;
 
         output_cmp_add_edge(&graph, edge, &vertices);
-
-        printf("%u -> %u\n", edge->start->unique_id, edge->end->unique_id);
     } while (edge->start != vertex1 || edge->end != vertex2);
 
     map_free(&vertices);
