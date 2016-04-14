@@ -14,6 +14,8 @@ typedef struct {
 #define B_LOW(vertex)    (((biconnect_label_t *) vertex->label)->low)
 #define B_D(vertex)      (((biconnect_label_t *) vertex->label)->d)
 
-int biconnect(digraph_t *graph);
+/* Takes a connected graph and splits it in its biconnected components. The
+ * biconnected components are returned as a linked list of graphs. */
+linked_list_t biconnect(digraph_t *graph);
 
 #endif
