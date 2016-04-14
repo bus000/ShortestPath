@@ -83,6 +83,9 @@ void vertex_free(vertex_t *vertex)
 {
     if (vertex->outgoing_size != 0)
         free(vertex->outgoing);
+
+    if (vertex->incoming_size != 0)
+        free(vertex->incoming);
 }
 
 void vertices_free(void)
