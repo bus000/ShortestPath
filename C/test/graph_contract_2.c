@@ -45,7 +45,7 @@ int main(int argc, char const *argv[])
     printf("%u]\n", reaching_list.vertices[i]->unique_id);
 
     /* Remove all vertices in list from graph. */
-    new = graph_contract2(&graph, &reaching_list);
+    new = graph_contract(&graph, &reaching_list);
     vertex_t *newvertex = find_vertex(&graph, new);
     edge_t edge;
     vertex_id_t edge_end;
