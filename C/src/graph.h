@@ -87,7 +87,7 @@ vertex_t * graph_first_vertex(digraph_t const *graph);
 
 digraph_t graph_copy(digraph_t const *graph);
 
-void graph_remove_vertices(digraph_t *graph, vertex_list_t const *vertices);
+void graph_remove_vertices(digraph_t *graph, vertex_list_t *vertices);
 
 digraph_t read_graph(char const *graph_file);
 
