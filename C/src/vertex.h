@@ -56,6 +56,10 @@ vertex_t * new_vertex_id(vertex_id_t id);
 
 void vertex_free(vertex_t *vertex);
 
+void vertex_remove_outgoing(vertex_t *start, vertex_t const *end);
+
+void vertex_remove_incoming(vertex_t *end, vertex_t const *start);
+
 void vertices_free(void);
 
 #endif

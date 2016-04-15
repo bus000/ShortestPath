@@ -105,3 +105,45 @@ void vertices_free(void)
 
     free(vertex_pages);
 }
+
+void vertex_remove_outgoing(vertex_t *start, vertex_t const *end)
+{
+    uint32_t i;
+    vertex_t *current_end;
+
+    if (start->outgoing_len == 0)
+        return;
+
+    for (i = 0; i < start->outgoing_len; i++) {
+        current_end = start->outgoing[i].end;
+
+        if (end == current_end)
+            break;
+    }
+
+    for (; i < start->outgoing_len - 1; i++)
+        start->outgoing[i] = start->outgoing[i + 1];
+
+    start->outgoing_len -= 1;
+}
+
+void vertex_remove_incoming(vertex_t *end, vertex_t const *start)
+{
+    uint32_t i;
+    vertex_t *current_end;
+
+    if (end->incoming_len == 0)
+        return;
+
+    for (i = 0; i < end->incoming_len; i++) {
+        current_end = end->incoming[i].end;
+
+        if (start == current_end)
+            break;
+    }
+
+    for (; i < end->incoming_len - 1; i++)
+        end->incoming[i] = end->incoming[i + 1];
+
+    end->incoming_len -= 1;
+}
