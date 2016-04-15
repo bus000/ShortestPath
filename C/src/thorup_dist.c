@@ -65,10 +65,7 @@ static int partition(digraph_t const *graph, digraph_t *graphs, uint32_t layers)
         remove_outside(&inside, i);
 
         graph_remove_vertices(&graphs[i], &outside);
-        if (!even(i))
-            graph_contract(&graphs[i], &inside);
-        else
-            graph_contract2(&graphs[i], &inside);
+        graph_contract(&graphs[i], &inside);
 
         vertex_list_free(&outside);
         vertex_list_free(&inside);
