@@ -79,10 +79,6 @@ vertex_list_t graph_vertices_list(digraph_t const *graph);
  * vertex, all ingoing edges is replaced by a reference to this new vertex. */
 vertex_id_t graph_contract(digraph_t *graph, vertex_list_t *vertices);
 
-/* TODO: find better name and comment on what function does. */
-/* TODO: remove? */
-vertex_id_t graph_contract2(digraph_t *graph, vertex_list_t *vertices);
-
 vertex_t * graph_first_vertex(digraph_t const *graph);
 
 digraph_t graph_copy(digraph_t const *graph);
