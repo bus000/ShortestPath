@@ -202,58 +202,39 @@ vertex_list_t graph_vertices_list(digraph_t const *graph)
 
 vertex_id_t graph_contract(digraph_t *graph, vertex_list_t *vertices)
 {
-    uint32_t i, j, edges_len;
-    vertex_t *vertex;
-    edge_t *edges, *edge;
+    uint32_t i, j, weight;
+    vertex_t *vertex, *vertex_new;
+    edge_t *edge;
 
     if (vertices->len == 0)
         return 0;
 
-    graph_remove_vertices(graph, vertices);
-
-    /* Create new vertex representing removed vertices. */
-    vertex = find_vertex(graph, graph_add_vertex(graph));
-    for (i = 0; i < graph->vertices_len; i++) {
-        edges = graph->vertices[i]->outgoing;
-        edges_len = graph->vertices[i]->outgoing_len;
-        for (j = 0; j < edges_len; j++) {
-            edge = &(edges[j]);
-
-            if (vertex_list_contains(vertices, edge->end->unique_id))
-                edge->end = vertex;
-        }
-    }
-
-    return vertex->unique_id;
-}
-
-/* TODO: Find more descriptive name. */
-vertex_id_t graph_contract2(digraph_t *graph, vertex_list_t *vertices)
-{
-    uint32_t i, j, edges_len;
-    edge_t *edges, *edge;
-    vertex_id_t vertex;
-
-    if (vertices->len == 0)
-        return 0;
-
-    graph_remove_vertices(graph, vertices);
-
-    /* Create new vertex representing removed vertices. */
-    vertex = graph_add_vertex(graph);
+    /* Create new vertex representing removed vertices to be removed. */
+    vertex_new = new_vertex();
+    graph_add_vertex_pointer(graph, vertex_new);
     for (i = 0; i < vertices->len; i++) {
-        edges = vertices->vertices[i]->outgoing;
-        edges_len = vertices->vertices[i]->outgoing_len;
-        for (j = 0; j < edges_len; j++) {
-            edge = &(edges[j]);
+        vertex = vertices->vertices[i];
+
+        for (j = 0; j < vertex->outgoing_len; j++) {
+            edge = &(vertex->outgoing[j]);
+            weight = edge->weight;
 
             if (!vertex_list_contains(vertices, edge->end->unique_id))
-                graph_add_edge(graph, vertex, edge->end->unique_id,
-                        edge->weight);
+                graph_add_edge_pointer(graph, vertex_new, edge->end, weight);
+        }
+
+        for (j = 0; j < vertex->incoming_len; j++) {
+            edge = &(vertex->incoming[j]);
+            weight = edge->weight;
+
+            if (!vertex_list_contains(vertices, edge->end->unique_id))
+                graph_add_edge_pointer(graph, edge->end, vertex_new, weight);
         }
     }
 
-    return vertex;
+    graph_remove_vertices(graph, vertices);
+
+    return vertex_new->unique_id;
 }
 
 /* TODO: When calling does_reach all vertices on the path up until finding the
@@ -293,14 +274,28 @@ static int does_reach(vertex_t const *current, vertex_t const *vertex)
     return 0;
 }
 
-void graph_remove_vertices(digraph_t *graph, vertex_list_t const *vertices)
+void graph_remove_vertices(digraph_t *graph, vertex_list_t *vertices)
 {
-    uint32_t i;
+    uint32_t i, j;
     uint32_t move = 0;
     vertex_t *vertex;
+    edge_t edge;
 
     if (vertices->len == 0)
         return;
+
+    /* Remove all edges involving the vertices to remove. */
+    for (i = 0; i < vertices->len; i++) {
+        vertex = vertices->vertices[i];
+        for (j = 0; j < vertex->incoming_len; j++) {
+            edge = vertex->incoming[j];
+            graph_remove_edge(graph, edge.end, edge.start);
+        }
+        for (j = 0; j < vertex->outgoing_len; j++) {
+            edge = vertex->outgoing[j];
+            graph_remove_edge(graph, edge.start, edge.end);
+        }
+    }
 
     /* Remove vertices from graph. */
     for (i = 0; i < vertices->len; i++) {
