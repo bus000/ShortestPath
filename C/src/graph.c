@@ -324,3 +324,83 @@ vertex_t * graph_first_vertex(digraph_t const *graph)
 {
     return graph->vertices_len == 0 ? NULL : graph->vertices[0];
 }
+
+static void directed_dfs(vertex_t *vertex)
+{
+    uint32_t i;
+    vertex_t *newvertex;
+
+    vertex->visited = 1;
+
+    for (i = 0; i < vertex->outgoing_len; i++) {
+        newvertex = vertex->outgoing[i].end;
+        if (!newvertex->visited)
+            directed_dfs(newvertex);
+    }
+}
+
+static void undirected_dfs(vertex_t *vertex)
+{
+    uint32_t i;
+    vertex_t *newvertex;
+
+    vertex->visited = 1;
+
+    for (i = 0; i < vertex->outgoing_len; i++) {
+        newvertex = vertex->outgoing[i].end;
+        if (!newvertex->visited)
+            undirected_dfs(newvertex);
+    }
+
+    for (i = 0; i < vertex->incoming_len; i++) {
+        newvertex = vertex->incoming[i].end;
+        if (!newvertex->visited)
+            undirected_dfs(newvertex);
+    }
+}
+
+int connected_directed(digraph_t *graph)
+{
+    uint32_t i;
+    int res = 1;
+    vertex_t *vertex;
+
+    if (graph->vertices_len == 0)
+        return 1;
+
+    directed_dfs(graph->vertices[0]);
+
+    for (i = 0; i < graph->vertices_len; i++) {
+        vertex = graph->vertices[i];
+
+        if (!vertex->visited)
+            res = 0;
+
+        vertex->visited = 0;
+    }
+
+    return res;
+}
+
+int connected_undirected(digraph_t *graph)
+{
+    uint32_t i;
+    int res = 1;
+    vertex_t *vertex;
+
+    if (graph->vertices_len == 0)
+        return 1;
+
+    undirected_dfs(graph->vertices[0]);
+
+    for (i = 0; i < graph->vertices_len; i++) {
+        vertex = graph->vertices[i];
+
+        if (!vertex->visited)
+            res = 0;
+
+        vertex->visited = 0;
+    }
+
+    return res;
+}

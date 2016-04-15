@@ -91,4 +91,10 @@ void graph_remove_vertices(digraph_t *graph, vertex_list_t const *vertices);
 
 digraph_t read_graph(char const *graph_file);
 
+/* Uses depth first search too visit all possible vertices from the first vertex
+ * in the graph. If all vertices are reached, true is returned false
+ * otherwise. */
+int connected_directed(digraph_t *graph);
+int connected_undirected(digraph_t *graph);
+
 #endif
