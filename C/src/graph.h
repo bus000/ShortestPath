@@ -97,4 +97,6 @@ digraph_t read_graph(char const *graph_file);
 int connected_directed(digraph_t *graph);
 int connected_undirected(digraph_t *graph);
 
+void graph_remove_edge(digraph_t *graph, vertex_t *start, vertex_t *end);
+
 #endif

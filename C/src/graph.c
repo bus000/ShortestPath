@@ -404,3 +404,9 @@ int connected_undirected(digraph_t *graph)
 
     return res;
 }
+
+void graph_remove_edge(digraph_t *graph, vertex_t *start, vertex_t *end)
+{
+    vertex_remove_outgoing(start, end);
+    vertex_remove_incoming(end, start);
+}
