@@ -14,6 +14,8 @@ int vertex_list_init(vertex_list_t *list);
 int vertex_list_init_array(vertex_list_t *list, vertex_t **vertices,
         size_t len);
 
+int vertex_list_init_singular(vertex_list_t *list, vertex_t *vertex);
+
 /* Returns true if the list contains a vertex with the given ID, false
  * otherwise. */
 int vertex_list_contains(vertex_list_t const *list, vertex_id_t v);

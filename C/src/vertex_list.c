@@ -31,6 +31,13 @@ int vertex_list_init_array(vertex_list_t *list, vertex_t **vertices,
     return 0;
 }
 
+int vertex_list_init_singular(vertex_list_t *list, vertex_t *vertex)
+{
+    vertex_t *vertices[1] = { vertex };
+
+    return vertex_list_init_array(list, vertices, 1);
+}
+
 int vertex_list_contains(vertex_list_t const *list, vertex_id_t v)
 {
     uint32_t i;
