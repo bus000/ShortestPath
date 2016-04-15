@@ -1,0 +1,25 @@
+graph is connected
+4
+2
+3
+5
+still graph is connected
+
+graph is connected
+9
+10
+still graph is connected
+
+graph is connected
+9
+6
+8
+still graph is connected
+
+graph is connected
+7
+1
+6
+2
+still graph is connected
+
