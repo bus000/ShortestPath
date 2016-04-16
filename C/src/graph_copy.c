@@ -46,8 +46,8 @@ digraph_t graph_copy(digraph_t const *graph)
             edge = vertex->outgoing[j];
             edge_end = (vertex_t *) map_get(&map, edge.end);
 
-            graph_add_edge(&new_graph, vertex_new->unique_id,
-                    edge_end->unique_id, edge.weight);
+            graph_add_edge_pointer(&new_graph, vertex_new, edge_end,
+                    edge.weight);
         }
     }
 
