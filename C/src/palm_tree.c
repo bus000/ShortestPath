@@ -1,91 +1,81 @@
 #include "palm_tree.h"
 #include "graph_labeling.h"
+#include "util.h"
 
-static palm_tree_label_t default_label = { .number = 0 };
+static palm_tree_label_t default_label = { .number = -1 };
 
-static uint32_t min(uint32_t a, uint32_t b);
-
-uint32_t n;
-static void palm_tree_DFS(vertex_t *vertex1, vertex_t *vertex2)
+static void palm_tree_DFS(vertex_t *u, vertex_t *v, uint32_t *n)
 {
     uint32_t i;
-    palm_tree_label_t *v1_label = (palm_tree_label_t *) vertex1->label;
-    vertex_t *adjasent;
-    palm_tree_label_t *adjasent_label;
+    vertex_t *w;
 
-    n += 1;
-    v1_label->number = n;
-    v1_label->lowpt1 = n;
-    v1_label->lowpt2 = n;
+    PALM_NUMBER(v) = *n;
+    *n = *n + 1;
 
-    for (i = 0; i < vertex1->outgoing_len; i++) {
-        adjasent = vertex1->outgoing[i].end;
-        adjasent_label = (palm_tree_label_t *) adjasent->label;
+    /* Graph is considered undirected, so loop through both outgoing and
+     * incoming edges. */
+    for (i = 0; i < v->outgoing_len; i++) {
+        w = v->outgoing[i].end;
 
-        if (adjasent_label->number == 0) {
-            /* Mark vertex1, adjasent as a tree arc. */
-            palm_tree_DFS(adjasent, vertex1);
-
-            if (adjasent_label->lowpt1 < v1_label->lowpt1) {
-                v1_label->lowpt2 = min(v1_label->lowpt1, adjasent_label->lowpt2);
-                v1_label->lowpt1 = adjasent_label->lowpt1;
-            } else if (adjasent_label->lowpt1 == v1_label->lowpt1) {
-                v1_label->lowpt2 = min(v1_label->lowpt2, adjasent_label->lowpt2);
-            } else {
-                v1_label->lowpt2 = min(v1_label->lowpt2, adjasent_label->lowpt1);
-            }
-        } else if (adjasent_label->number < v1_label->number &&
-                adjasent != vertex2) {
-            /* Mark vertex1, adjasent as a frond. */
-
-            if (adjasent_label->number < v1_label->lowpt1) {
-
-            }
+        if (u != NULL && w->unique_id != u->unique_id && 0 <= PALM_NUMBER(w) &&
+                PALM_NUMBER(w) < PALM_NUMBER(v)) {
+            /* (v, w) is a frond. */
+        } else if ((u != NULL && w->unique_id == u->unique_id) ||
+                PALM_NUMBER(v) < PALM_NUMBER(w)) {
+            vertex_remove_outgoing(v, w);
+            /* Since edge is removed, don't increment i. */
+            i -= 1;
+        } else if (PALM_NUMBER(w) == -1) {
+            palm_tree_DFS(v, w, n);
         }
     }
 
-    for (i = 0; i < vertex1->incoming_len; i++) {
-        adjasent = vertex1->incoming[i].end;
-        adjasent_label = (palm_tree_label_t *) adjasent->label;
+    for (i = 0; i < v->incoming_len; i++) {
+        w = v->incoming[i].end;
 
-        if (adjasent_label->number == 0) {
-            /* Mark vertex1, adjasent as a tree arc. */
-            palm_tree_DFS(adjasent, vertex1);
-        } else if (adjasent_label->number < v1_label->number &&
-                adjasent != vertex2) {
-            /* Mark vertex1, adjasent as a frond. */
+        if (u != NULL && w->unique_id != u->unique_id && 0 <= PALM_NUMBER(w) &&
+                PALM_NUMBER(w) < PALM_NUMBER(v)) {
+            /* (v, w) is a frond. */
+        } else if ((u != NULL && w->unique_id == u->unique_id) ||
+                PALM_NUMBER(v) < PALM_NUMBER(w)) {
+            vertex_remove_incoming(v, w);
+            /* Since edge is removed, don't increment i. */
+            i -= 1;
+        } else if (PALM_NUMBER(w) == -1) {
+            palm_tree_DFS(v, w, n);
         }
     }
 }
 
-void palm_tree(digraph_t *graph)
+int palm_tree(digraph_t *graph)
 {
-    if (graph->vertices_len == 0)
-        return;
+    uint32_t n = 1;
+    vertex_t *first_vertex;
 
-    n = 0;
+    if (graph->vertices_len == 0)
+        return -1;
+
     graph_init_labels(graph, &default_label, sizeof(palm_tree_label_t));
 
-    palm_tree_DFS(graph->vertices[0], NULL);
+    first_vertex = graph->vertices[0];
+    PALM_NUMBER(first_vertex) = 0;
+
+    palm_tree_DFS(NULL, first_vertex, &n);
+
+    return 0;
 }
 
 int inline palm_tree_arc(digraph_t const *graph, edge_t const *edge)
 {
-    palm_tree_label_t *v1_label = (palm_tree_label_t *) edge->start->label;
-    palm_tree_label_t *v2_label = (palm_tree_label_t *) edge->end->label;
-
-    return v1_label->number < v2_label->number;
+    return PALM_NUMBER(edge->start) < PALM_NUMBER(edge->end);
 }
 
 int inline palm_tree_frond(digraph_t const *graph, edge_t const *edge)
 {
-    palm_tree_label_t *v1_label = (palm_tree_label_t *) edge->start->label;
-    palm_tree_label_t *v2_label = (palm_tree_label_t *) edge->end->label;
-
-    return v2_label->number < v1_label->number;
+    return PALM_NUMBER(edge->end) < PALM_NUMBER(edge->start);
 }
 
-static inline uint32_t min(uint32_t a, uint32_t b)
+int64_t inline palm_number(vertex_t const *vertex)
 {
-    return a < b ? a : b;
+    return PALM_NUMBER(vertex);
 }
