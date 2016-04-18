@@ -25,6 +25,8 @@ int palm_tree_arc(digraph_t const *graph, edge_t const *edge);
  * palm_tree(graph) should therefore be called first. */
 int palm_tree_frond(digraph_t const *graph, edge_t const *edge);
 
+/* Returns the palm number of a given vertex. The function has the same effect
+ * as the macro of the same name but is a bit more type safe. */
 int64_t palm_number(vertex_t const *vertex);
 
 #endif
