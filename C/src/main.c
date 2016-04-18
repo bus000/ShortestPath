@@ -33,14 +33,14 @@ static void usage(char const *program_name)
 {
     printf("usage: %s [-v version] [-h help] graph_file\n"
 
-            "   -v: get the version information\n"
+            "   -v: display version information\n"
 
             "   -h: display usage information\n"
 
             "   graph_file: name of file containing graph data\n",
             program_name);
 
-    exit(EXIT_FAILURE);
+    exit(EXIT_SUCCESS);
 }
 
 static void version()
