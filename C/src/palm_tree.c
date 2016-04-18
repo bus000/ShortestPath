@@ -4,7 +4,23 @@
 
 static palm_tree_label_t default_label = { .number = -1 };
 
-static void palm_tree_DFS(vertex_t *u, vertex_t *v, uint32_t *n)
+static inline int is_frond(vertex_t const *u, vertex_t const *v,
+        vertex_t const *w)
+{
+    return u != NULL &&
+        w->unique_id != u->unique_id &&
+        0 <= PALM_NUMBER(w) &&
+        PALM_NUMBER(w) < PALM_NUMBER(v);
+}
+
+static inline int already_directed(vertex_t const *u, vertex_t const *v,
+        vertex_t const *w)
+{
+    return (u != NULL && w->unique_id == u->unique_id) ||
+        PALM_NUMBER(v) < PALM_NUMBER(w);
+}
+
+static void palm_tree_DFS(vertex_t const *u, vertex_t *v, uint32_t *n)
 {
     uint32_t i;
     vertex_t *w;
@@ -17,11 +33,9 @@ static void palm_tree_DFS(vertex_t *u, vertex_t *v, uint32_t *n)
     for (i = 0; i < v->outgoing_len; i++) {
         w = v->outgoing[i].end;
 
-        if (u != NULL && w->unique_id != u->unique_id && 0 <= PALM_NUMBER(w) &&
-                PALM_NUMBER(w) < PALM_NUMBER(v)) {
+        if (is_frond(u, v, w)) {
             /* (v, w) is a frond. */
-        } else if ((u != NULL && w->unique_id == u->unique_id) ||
-                PALM_NUMBER(v) < PALM_NUMBER(w)) {
+        } else if (already_directed(u, v, w)) {
             vertex_remove_outgoing(v, w);
             /* Since edge is removed, don't increment i. */
             i -= 1;
@@ -33,11 +47,9 @@ static void palm_tree_DFS(vertex_t *u, vertex_t *v, uint32_t *n)
     for (i = 0; i < v->incoming_len; i++) {
         w = v->incoming[i].end;
 
-        if (u != NULL && w->unique_id != u->unique_id && 0 <= PALM_NUMBER(w) &&
-                PALM_NUMBER(w) < PALM_NUMBER(v)) {
+        if (is_frond(u, v, w)) {
             /* (v, w) is a frond. */
-        } else if ((u != NULL && w->unique_id == u->unique_id) ||
-                PALM_NUMBER(v) < PALM_NUMBER(w)) {
+        } else if (already_directed(u, v, w)) {
             vertex_remove_incoming(v, w);
             /* Since edge is removed, don't increment i. */
             i -= 1;
