@@ -31,6 +31,19 @@ int linked_list_from_array(linked_list_t *list, void **items, uint32_t size)
     return 0;
 }
 
+int linked_list_singular(linked_list_t *list, void const *item)
+{
+    int retcode;
+
+    if ((retcode = linked_list_init(list)) != 0)
+        return retcode;
+
+    if ((retcode = linked_list_add_end(list, item)) != 0)
+        return retcode;
+
+    return 0;
+}
+
 int linked_list_add_end(linked_list_t *list, void const *item)
 {
     actual_list_t *new_end;
