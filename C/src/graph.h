@@ -23,6 +23,9 @@ typedef struct {
     uint32_t labels_size;
     /* Size of each individual label in bytes. */
     size_t label_size;
+
+    /* Contains the number of edges in the graph. */
+    uint64_t edges_len;
 } digraph_t;
 
 /* FUNCTIONS. */

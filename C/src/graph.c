@@ -11,6 +11,7 @@ int graph_init(digraph_t *graph)
     graph->vertices_len = 0;
     graph->vertices_size = INIT_GRAPH_SIZE;
     graph->vertices = malloc(sizeof(vertex_t *) * INIT_GRAPH_SIZE);
+    graph->edges_len = 0;
 
     if (graph->vertices == NULL)
         mem_err();
@@ -100,6 +101,8 @@ void graph_add_edge_pointer(digraph_t *graph, vertex_t *vertex1,
 
     vertex2->incoming[vertex2->incoming_len] = in;
     vertex2->incoming_len += 1;
+
+    graph->edges_len += 1;
 }
 
 int graph_add_edge(digraph_t *graph, vertex_id_t v1, vertex_id_t v2,
@@ -395,4 +398,5 @@ void graph_remove_edge(digraph_t *graph, vertex_t *start, vertex_t *end)
 {
     vertex_remove_outgoing(start, end);
     vertex_remove_incoming(end, start);
+    graph->edges_len -= 1;
 }
