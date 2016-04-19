@@ -2,6 +2,7 @@
 #define MAP_H
 
 #include "error.h"
+#include "linked_list.h"
 #include <stdio.h>
 
 typedef struct bucket_list_ {
@@ -27,6 +28,9 @@ typedef struct {
 
     /* Compare two keys. */
     int (*cmp_keys)(void const *, void const *);
+
+    linked_list_t keys;
+    linked_list_t values;
 } map_t;
 
 /* Initialize a hashmap. */
@@ -43,7 +47,11 @@ int map_put(map_t *map, void const *key, void const *value);
 /* Query if the map contains a value for the key given. */
 int map_contains(map_t const *map, void const *key);
 
+/* Returns a list of all the keys in the map, the list should not be altered as
+ * it is internal to the map. */
+linked_list_t map_get_keys(map_t const *map);
 
+linked_list_t map_get_values(map_t const *map);
 
 /* Free resources used by a map. */
 void map_free(map_t *map);

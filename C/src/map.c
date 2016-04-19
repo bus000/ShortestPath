@@ -26,6 +26,9 @@ int map_init(map_t *map, int buckets, int (*hash)(void const *),
         map->buckets[i].first = NULL;
     }
 
+    linked_list_init(&map->keys);
+    linked_list_init(&map->values);
+
     return 0;
 }
 
@@ -39,7 +42,7 @@ void const * map_get(map_t const *map, void const *key)
 
 int map_put(map_t *map, void const *key, void const *value)
 {
-    bucket_t *bucket = map->buckets + hash(map, key);
+    bucket_t *bucket = &map->buckets[hash(map, key)];
     bucket_list_t *el;
 
     if (bucket->first == NULL) {
@@ -51,6 +54,9 @@ int map_put(map_t *map, void const *key, void const *value)
         bucket->first->key = key;
         bucket->first->value = value;
         bucket->first->next = NULL;
+
+        linked_list_add_end(&map->keys, key);
+        linked_list_add_end(&map->values, value);
 
         return 0;
     } else {
@@ -64,6 +70,9 @@ int map_put(map_t *map, void const *key, void const *value)
             bucket->last->key = key;
             bucket->last->value = value;
             bucket->last->next = NULL;
+
+            linked_list_add_end(&map->keys, key);
+            linked_list_add_end(&map->values, value);
 
             return 0;
         } else {
@@ -79,10 +88,14 @@ int map_contains(map_t const *map, void const *key)
     return find_key(bucket.first, key, map->cmp_keys) == NULL ? 0 : 1;
 }
 
+linked_list_t map_get_keys(map_t const *map)
 {
+    return map->keys;
 }
 
+linked_list_t map_get_values(map_t const *map)
 {
+    return map->values;
 }
 
 void map_free(map_t *map)
@@ -100,6 +113,9 @@ void map_free(map_t *map)
             free(tmp);
         }
     }
+
+    linked_list_free(&map->keys);
+    linked_list_free(&map->values);
 
     free(map->buckets);
 }
