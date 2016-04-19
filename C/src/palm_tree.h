@@ -35,8 +35,10 @@ int palm_tree_frond(edge_t const *edge);
  * as the macro of the same name but is a bit more type safe. */
 int64_t palm_number(vertex_t const *vertex);
 
+/* Returns the lowest palm number reachable from the vertex given. */
 int64_t palm_lowest(vertex_t const *vertex);
 
+/* Returns the second lowest palm number reachable from the vertex given. */
 int64_t palm_second_lowest(vertex_t const *vertex);
 
 #endif
