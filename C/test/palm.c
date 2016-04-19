@@ -51,10 +51,10 @@ void print_palm(digraph_t *graph)
             edge = vertex->outgoing[j];
             adjasent = edge.end;
 
-            if (palm_tree_arc(graph, &edge)) {
+            if (palm_tree_arc(&edge)) {
                 printf("%u -> %u is arc\n", vertex->unique_id,
                         adjasent->unique_id);
-            } else if (palm_tree_frond(graph, &edge)) {
+            } else if (palm_tree_frond(&edge)) {
                 printf("%u -> %u is frond\n", vertex->unique_id,
                         adjasent->unique_id);
             } else {
@@ -63,20 +63,20 @@ void print_palm(digraph_t *graph)
             }
         }
 
-        for (j = 0; j < vertex->incoming_len; j++) {
-            edge = vertex->incoming[j];
-            adjasent = edge.end;
+        /*for (j = 0; j < vertex->incoming_len; j++) {*/
+            /*edge = vertex->incoming[j];*/
+            /*adjasent = edge.end;*/
 
-            if (palm_tree_arc(graph, &edge)) {
-                printf("%u -> %u is arc\n", vertex->unique_id,
-                        adjasent->unique_id);
-            } else if (palm_tree_frond(graph, &edge)) {
-                printf("%u -> %u is frond\n", vertex->unique_id,
-                        adjasent->unique_id);
-            } else {
-                printf("%u -> %u is neither\n", vertex->unique_id,
-                        adjasent->unique_id);
-            }
-        }
+            /*if (palm_tree_arc(&edge)) {*/
+                /*printf("%u -> %u is arc\n", vertex->unique_id,*/
+                        /*adjasent->unique_id);*/
+            /*} else if (palm_tree_frond(&edge)) {*/
+                /*printf("%u -> %u is frond\n", vertex->unique_id,*/
+                        /*adjasent->unique_id);*/
+            /*} else {*/
+                /*printf("%u -> %u is neither\n", vertex->unique_id,*/
+                        /*adjasent->unique_id);*/
+            /*}*/
+        /*}*/
     }
 }
