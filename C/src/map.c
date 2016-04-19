@@ -35,9 +35,9 @@ int map_init(map_t *map, int buckets, int (*hash)(void const *),
 void const * map_get(map_t const *map, void const *key)
 {
     bucket_t bucket = map->buckets[hash(map, key)];
-    bucket_list_t *element = find_key(bucket.first, key, map->cmp_keys);
+    bucket_list_t *entry = find_key(bucket.first, key, map->cmp_keys);
 
-    return (element == NULL) ? NULL : element->value;
+    return entry == NULL ? NULL : entry->value;
 }
 
 int map_put(map_t *map, void const *key, void const *value)
