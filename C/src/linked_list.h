@@ -4,7 +4,10 @@
 #include <inttypes.h>
 
 typedef struct ActualList {
-    void const *element;
+    union {
+        void const *element;
+        uint32_t int_element;
+    };
     struct ActualList *next;
     struct ActualList *prev;
 } actual_list_t;
@@ -26,6 +29,9 @@ int linked_list_singular(linked_list_t *list, void const *item);
 
 /* Add a new item to the end of the list. */
 int linked_list_add_end(linked_list_t *list, void const *item);
+
+/* Function to create a list of integers and not a list of pointers as usual. */
+int linked_list_add_int_end(linked_list_t *list, uint32_t i);
 
 /* Removes any pointer in the list comparing equal to the void pointer given.
  * Returns 0 if the element is found and -1 if the element is not found. */
