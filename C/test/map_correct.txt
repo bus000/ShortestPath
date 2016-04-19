@@ -1,0 +1,2 @@
+map contains 10 with the value 20
+map contains 20 with the value 10
