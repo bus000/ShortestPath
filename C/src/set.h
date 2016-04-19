@@ -16,6 +16,11 @@ set_t set_init(int (*hash)(void const *),
  * the set. */
 void set_add(set_t *set, void const *element);
 
+/* Get the content of the set as a list of void pointers. The list should not be
+ * altered, only read as the list is internal to the underlying map below the
+ * set abstraction. */
+linked_list_t set_get_contents(set_t const *set);
+
 /* Free the resources used by a set. */
 void set_free(set_t *set);
 
