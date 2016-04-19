@@ -22,15 +22,6 @@ int graph_init(digraph_t *graph)
     return 0;
 }
 
-int graph_init_vertices(digraph_t *graph, vertex_t **vertices, uint32_t len)
-{
-    graph->vertices = vertices;
-    graph->vertices_len = len;
-    graph->vertices_size = len;
-
-    return 0;
-}
-
 int graph_adjesent(digraph_t const *graph, vertex_id_t v1, vertex_id_t v2)
 {
     int i;

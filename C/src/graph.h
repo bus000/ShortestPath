@@ -31,9 +31,6 @@ typedef struct {
  * graph. */
 int graph_init(digraph_t *graph);
 
-/* Initialize a new graph with the len vertices given. */
-int graph_init_vertices(digraph_t *graph, vertex_t **vertices, uint32_t len);
-
 /* Return true if there is an edge from v1 to v2, false otherwise. */
 int graph_adjesent(digraph_t const *graph, vertex_id_t v1, vertex_id_t v2);
 
