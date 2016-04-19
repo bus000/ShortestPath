@@ -31,7 +31,7 @@ int linked_list_from_array(linked_list_t *list, void **items, uint32_t size)
     return 0;
 }
 
-int linked_list_add_end(linked_list_t *list, void *item)
+int linked_list_add_end(linked_list_t *list, void const *item)
 {
     actual_list_t *new_end;
 
