@@ -43,13 +43,7 @@ int map_put(map_t *map, void const *key, void const *value);
 /* Query if the map contains a value for the key given. */
 int map_contains(map_t const *map, void const *key);
 
-/* Remove value from map corresponding to the key given. Return pointer to
- * removed value on success and NULL if the element is not found. */
-void const * map_remove(map_t *map, void const *key);
 
-/* Print a map and all its elements. */
-void map_print(map_t const *map, void (*print_el)(void const *, FILE *),
-        FILE *f);
 
 /* Free resources used by a map. */
 void map_free(map_t *map);

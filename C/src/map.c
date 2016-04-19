@@ -6,8 +6,6 @@
 static bucket_list_t * find_key(bucket_list_t *start, void const *key,
         int (*cmp_keys)(void const *, void const *));
 static int hash(map_t const *map, void const *key);
-static void bucket_list_print(bucket_list_t *start,
-        void (*print_el)(void const *, FILE *), FILE *f);
 
 int map_init(map_t *map, int buckets, int (*hash)(void const *),
         int (*cmp_keys)(void const *, void const *))
@@ -81,39 +79,10 @@ int map_contains(map_t const *map, void const *key)
     return find_key(bucket.first, key, map->cmp_keys) == NULL ? 0 : 1;
 }
 
-void const * map_remove(map_t *map, void const *key)
 {
-    bucket_t *bucket = &(map->buckets[hash(map, key)]);
-    bucket_list_t *prev = NULL;
-    bucket_list_t *cur;
-    void const *el;
-
-    for (cur = bucket->first; cur != NULL; prev = cur, cur = cur->next) {
-        if (map->cmp_keys(key, cur->key) == 0) {
-            prev == NULL ? (bucket->first = cur->next) :
-                (prev->next = cur->next);
-            el = cur->value;
-            free(cur);
-
-            return el;
-        }
-    }
-
-    return NULL;
 }
 
-void map_print(map_t const *map, void (*print_el)(void const *, FILE *),
-        FILE *f)
 {
-    int i;
-    bucket_t bucket;
-
-    for (i = 0; i < map->length; i++) {
-        bucket = map->buckets[i];
-        fprintf(f, "{");
-        bucket_list_print(bucket.first, print_el, f);
-        fprintf(f, "}\n");
-    }
 }
 
 void map_free(map_t *map)
@@ -151,18 +120,4 @@ static bucket_list_t * find_key(bucket_list_t *start, void const *key,
     }
 
     return NULL;
-}
-
-static void bucket_list_print(bucket_list_t *start,
-        void (*print_el)(void const *, FILE *), FILE *f)
-{
-    if (start == NULL)
-        return;
-
-    print_el(start->value, f);
-    start = start->next;
-    for (; start != NULL; start = start->next) {
-        fprintf(f, ", ");
-        print_el(start->value, f);
-    }
 }
