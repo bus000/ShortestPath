@@ -15,7 +15,7 @@ typedef struct ActualList {
 typedef struct {
     actual_list_t *start;
     actual_list_t *end;
-    uint32_t len;
+    uint64_t len;
 } linked_list_t;
 
 /* Initialize a new empty linked list. */
@@ -32,6 +32,13 @@ int linked_list_add_end(linked_list_t *list, void const *item);
 
 /* Function to create a list of integers and not a list of pointers as usual. */
 int linked_list_add_int_end(linked_list_t *list, uint32_t i);
+
+/* Returns the pointers stored at the index'th position in the list. If index is
+ * greater than 0 the list is traversed until reaching the i'th position, the
+ * pointer here is returned. If index is less than 0, the list is traversed
+ * backwards until the (list.len + index)'th position is reached. If index is
+ * out the bounds of the list, the functions returns NULL. */
+void const * linked_list_get(linked_list_t const *list, int64_t index);
 
 /* Removes any pointer in the list comparing equal to the void pointer given.
  * Returns 0 if the element is found and -1 if the element is not found. */

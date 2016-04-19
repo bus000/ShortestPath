@@ -121,6 +121,28 @@ int linked_list_remove(linked_list_t *list, void *item)
     return -1;
 }
 
+void const * linked_list_get(linked_list_t const *list, int64_t index)
+{
+    actual_list_t *alist;
+    int64_t i;
+
+    index = index < 0 ? list->len + index : index;
+
+    if (index >= list->len || index < 0)
+        return NULL;
+
+    if (index > list->len / 2) {
+        for (alist = list->end, i = list->len-1; i > index;
+                alist = alist->prev, i--)
+            ;
+    } else {
+        for (alist = list->start, i = 0; i < index; alist = alist->next, i++)
+            ;
+    }
+
+    return alist->element;
+}
+
 void linked_list_free(linked_list_t *list)
 {
     actual_list_t *element, *next_element;
