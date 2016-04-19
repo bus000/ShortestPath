@@ -24,15 +24,19 @@ int palm_tree(digraph_t *graph);
 /* Return true if the edge is an arc in the tree and false otherwise. Function
  * assumes that the labels of the graph are palm_tree_label_t's,
  * palm_tree(graph) should therefore be called first. */
-int palm_tree_arc(digraph_t const *graph, edge_t const *edge);
+int palm_tree_arc(edge_t const *edge);
 
 /* Return true if the edge is a frond in the tree and false otherwise. Function
  * assumes that the labels of the graph are palm_tree_label_t's,
  * palm_tree(graph) should therefore be called first. */
-int palm_tree_frond(digraph_t const *graph, edge_t const *edge);
+int palm_tree_frond(edge_t const *edge);
 
 /* Returns the palm number of a given vertex. The function has the same effect
  * as the macro of the same name but is a bit more type safe. */
 int64_t palm_number(vertex_t const *vertex);
+
+int64_t palm_lowest(vertex_t const *vertex);
+
+int64_t palm_second_lowest(vertex_t const *vertex);
 
 #endif

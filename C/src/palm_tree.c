@@ -8,6 +8,7 @@ static palm_tree_label_t default_label = { .number = -1, .l = -1, .ll = -1};
 
 static int edge_hash(void const *e);
 static int edge_cmp(void const *e1, void const *e2);
+static uint32_t edge_score(edge_t const *edge);
 
 static inline int is_frond(vertex_t const *u, vertex_t const *v,
         vertex_t const *w)
@@ -103,15 +104,58 @@ static void palm_tree_DFS(vertex_t const *u, vertex_t *v, uint32_t *n)
 
 static void sort_adjasent(digraph_t *graph)
 {
-    uint32_t i, buckets = graph->vertices_len * 2;
+    uint32_t i, j, buckets = graph->vertices_len * 2;
     set_t *bucket = malloc(sizeof(set_t) * buckets);
+    vertex_t *vertex;
+    edge_t const *edge;
+    edge_t *edges_back, *edges_end;
+    actual_list_t *edges;
+
+    edges_back = malloc(sizeof(edge_t) * graph->edges_len);
+    edges_end = edges_back;
+    if (edges_back == NULL)
+        mem_err();
 
     for (i = 0; i < buckets; i++)
         bucket[i] = set_init(edge_hash, edge_cmp);
 
+    for (i = 0; i < graph->vertices_len; i++) {
+        vertex = graph->vertices[i];
+
+        for (j = 0; j < vertex->outgoing_len; j++) {
+            *edges_end = vertex->outgoing[j];
+
+            set_add(&bucket[edge_score(edges_end)], edges_end);
+            edges_end += 1;
+        }
+
+        for (j = 0; j < vertex->incoming_len; j++) {
+            *edges_end = vertex->incoming[j];
+
+            set_add(&bucket[edge_score(edges_end)], edges_end);
+            edges_end += 1;
+        }
+
+        vertex->outgoing_len = 0;
+        vertex->incoming_len = 0;
+    }
+
+    for (i = 0; i < buckets; i++) {
+        edges = set_get_contents(&bucket[i]).start;
+        for (edges = set_get_contents(&bucket[i]).start; edges != NULL;
+                edges = edges->next) {
+            edge = edges->element;
+
+            graph_add_edge_pointer(graph, edge->start, edge->end, edge->weight);
+        }
+    }
+
     /* Free resources used in the function. */
     for (i = 0; i < buckets; i++)
         set_free(&bucket[i]);
+
+    free(bucket);
+    free(edges_back);
 }
 
 int palm_tree(digraph_t *graph)
@@ -133,12 +177,12 @@ int palm_tree(digraph_t *graph)
     return 0;
 }
 
-int inline palm_tree_arc(digraph_t const *graph, edge_t const *edge)
+int inline palm_tree_arc(edge_t const *edge)
 {
     return PALM_NUMBER(edge->start) < PALM_NUMBER(edge->end);
 }
 
-int inline palm_tree_frond(digraph_t const *graph, edge_t const *edge)
+int inline palm_tree_frond(edge_t const *edge)
 {
     return PALM_NUMBER(edge->end) < PALM_NUMBER(edge->start);
 }
@@ -146,6 +190,16 @@ int inline palm_tree_frond(digraph_t const *graph, edge_t const *edge)
 int64_t inline palm_number(vertex_t const *vertex)
 {
     return PALM_NUMBER(vertex);
+}
+
+int64_t inline palm_lowest(vertex_t const *vertex)
+{
+    return PALM_L(vertex);
+}
+
+int64_t inline palm_second_lowest(vertex_t const *vertex)
+{
+    return PALM_LL(vertex);
 }
 
 static int edge_hash(void const *e)
@@ -163,4 +217,20 @@ static int edge_cmp(void const *e1, void const *e2)
     return edge1->start->unique_id == edge2->start->unique_id &&
         edge1->end->unique_id == edge2->end->unique_id &&
         edge1->weight == edge2->weight;
+}
+
+static uint32_t edge_score(edge_t const *edge)
+{
+    if (palm_tree_frond(edge))
+        return 2 * palm_number(edge->end);
+    else if (palm_tree_arc(edge) &&
+            palm_second_lowest(edge->end) == palm_number(edge->end))
+        return 2 * palm_lowest(edge->end);
+    else if (palm_tree_arc(edge) &&
+            palm_second_lowest(edge->end) < palm_number(edge->end))
+        return 2 * palm_lowest(edge->end) + 1;
+
+
+    fprintf(stderr, "Error should never not hit any of the cases above\n");
+    return -1;
 }
