@@ -52,6 +52,10 @@ int linked_list_set(linked_list_t *list, int64_t index, void const *element);
  * Returns 0 if the element is found and -1 if the element is not found. */
 int linked_list_remove(linked_list_t *list, void *item);
 
+/* Remove the last element in the list, the function returns -1 if the list is
+ * empty and the last element therefore cannot be removed and 0 on success. */
+int linked_list_remove_last(linked_list_t *list);
+
 /* Add the whole list src to the end of the list dest. The pointers from the
  * list src are copied but the values they point to are not. */
 int linked_list_concat(linked_list_t *dest, linked_list_t const *src);

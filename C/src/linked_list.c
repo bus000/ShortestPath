@@ -134,6 +134,22 @@ int linked_list_remove(linked_list_t *list, void *item)
     return -1;
 }
 
+int linked_list_remove_last(linked_list_t *list)
+{
+    actual_list_t *end;
+
+    if (list->len == 0)
+        return -1;
+
+    end = list->end;
+    list->end->prev->next = NULL;
+    list->end = list->end->prev;
+
+    free(end);
+
+    return 0;
+}
+
 void const * linked_list_get(linked_list_t const *list, int64_t index)
 {
     actual_list_t *alist;
