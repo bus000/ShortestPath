@@ -40,6 +40,11 @@ int linked_list_add_int_end(linked_list_t *list, uint32_t i);
  * out the bounds of the list, the functions returns NULL. */
 void const * linked_list_get(linked_list_t const *list, int64_t index);
 
+/* Loop the list looking for the index given. If the index is negative the end
+ * of the list is assumed, to be -1 and so on. When the correct index is found,
+ * the element on that position is set to the element given. */
+int linked_list_set(linked_list_t *list, int64_t index, void const *element);
+
 /* Removes any pointer in the list comparing equal to the void pointer given.
  * Returns 0 if the element is found and -1 if the element is not found. */
 int linked_list_remove(linked_list_t *list, void *item);

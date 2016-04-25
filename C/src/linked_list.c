@@ -143,6 +143,30 @@ void const * linked_list_get(linked_list_t const *list, int64_t index)
     return alist->element;
 }
 
+int linked_list_set(linked_list_t *list, int64_t index, void const *element)
+{
+    actual_list_t *alist;
+    int64_t i;
+
+    index = index < 0 ? list->len + index : index;
+
+    if (index >= list->len || index < 0)
+        return -1;
+
+    if (index > list->len / 2) {
+        for (alist = list->end, i = list->len-1; i > index;
+                alist = alist->prev, i--)
+            ;
+    } else {
+        for (alist = list->start, i = 0; i < index; alist = alist->next, i++)
+            ;
+    }
+
+    alist->element = element;
+
+    return 0;
+}
+
 void linked_list_free(linked_list_t *list)
 {
     actual_list_t *element, *next_element;
