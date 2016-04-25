@@ -52,6 +52,10 @@ int linked_list_set(linked_list_t *list, int64_t index, void const *element);
  * Returns 0 if the element is found and -1 if the element is not found. */
 int linked_list_remove(linked_list_t *list, void *item);
 
+/* Add the whole list src to the end of the list dest. The pointers from the
+ * list src are copied but the values they point to are not. */
+int linked_list_concat(linked_list_t *dest, linked_list_t const *src);
+
 /* Free the resources used by the list, does not call free on the pointers
  * contained in the list, that is the callers responsibility. */
 void linked_list_free(linked_list_t *list);

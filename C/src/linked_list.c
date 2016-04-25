@@ -180,6 +180,21 @@ int linked_list_set(linked_list_t *list, int64_t index, void const *element)
     return 0;
 }
 
+int linked_list_concat(linked_list_t *dest, linked_list_t const *src)
+{
+    int retcode;
+    actual_list_t const *next;
+
+    for (next = src->start; next != NULL; next = next->next) {
+        retcode = linked_list_add_end(dest, next->element);
+
+        if (retcode != 0)
+            return retcode;
+    }
+
+    return 0;
+}
+
 void linked_list_free(linked_list_t *list)
 {
     actual_list_t *element, *next_element;
