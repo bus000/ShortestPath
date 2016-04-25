@@ -44,6 +44,19 @@ int linked_list_singular(linked_list_t *list, void const *item)
     return 0;
 }
 
+int linked_list_singular_int(linked_list_t *list, uint32_t item)
+{
+    int retcode;
+
+    if ((retcode = linked_list_init(list)) != 0)
+        return retcode;
+
+    if ((retcode = linked_list_add_int_end(list, item)) != 0)
+        return retcode;
+
+    return 0;
+}
+
 int linked_list_add_end(linked_list_t *list, void const *item)
 {
     actual_list_t *new_end;

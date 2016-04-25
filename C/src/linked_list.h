@@ -27,6 +27,9 @@ int linked_list_from_array(linked_list_t *list, void **items, uint32_t size);
 /* Initialize a new linked list of length 1 with the single item given. */
 int linked_list_singular(linked_list_t *list, void const *item);
 
+/* Initialize a new list of integers of length 1 with the single item given. */
+int linked_list_singular_int(linked_list_t *list, uint32_t item);
+
 /* Add a new item to the end of the list. */
 int linked_list_add_end(linked_list_t *list, void const *item);
 
