@@ -145,6 +145,8 @@ int linked_list_remove_last(linked_list_t *list)
     list->end->prev->next = NULL;
     list->end = list->end->prev;
 
+    list->len -= 1;
+
     free(end);
 
     return 0;
