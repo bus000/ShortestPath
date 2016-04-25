@@ -38,12 +38,13 @@ static void usage(char const *program_name)
             "   -h: display usage information\n"
 
             "   graph_file: name of file containing graph data\n",
+
             program_name);
 
     exit(EXIT_SUCCESS);
 }
 
-static void version()
+static void version(void)
 {
     printf("1.0\n");
 
