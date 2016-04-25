@@ -24,10 +24,13 @@ int main(int argc, char const *argv[])
     printf("%p\n", linked_list_get(&list, 200));
     printf("%p\n", linked_list_get(&list, -101));
 
+    printf("list_len %" PRId64 "\n", list.len);
     printf("last %u\n", *((uint32_t *) list.end->element));
     linked_list_remove_last(&list);
+    printf("list_len %" PRId64 "\n", list.len);
     printf("last %u\n", *((uint32_t *) list.end->element));
     linked_list_remove_last(&list);
+    printf("list_len %" PRId64 "\n", list.len);
     printf("last %u\n", *((uint32_t *) list.end->element));
 
     linked_list_free(&list);
