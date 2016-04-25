@@ -128,8 +128,13 @@ static void merge(linked_list_t *b)
 {
     blocks_t *blocks1 = (blocks_t *) linked_list_get(b, -1);
     blocks_t *blocks2 = (blocks_t *) linked_list_get(b, -2);
-    linked_list_t *blocks1a = &(blocks1->i.a);
-    linked_list_t *blocks2a = &(blocks2->i.a);
+    block_t *blocks1i = &blocks1->i;
+    block_t *blocks2i = &blocks2->i;
+    block_t *blocks1o = &blocks1->o;
+    block_t *blocks2o = &blocks2->o;
 
-    linked_list_concat(blocks2a, blocks1a);
+    linked_list_concat(&blocks2i->a, &blocks1i->a);
+    linked_list_concat(&blocks2o->a, &blocks1o->a);
+    linked_list_concat(&blocks2i->s, &blocks1i->s);
+    linked_list_concat(&blocks2o->s, &blocks1o->s);
 }
