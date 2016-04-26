@@ -47,6 +47,17 @@ linked_list_t linked_list_singular_int(uint32_t item)
     return list;
 }
 
+linked_list_t linked_list_copy(linked_list_t const *src)
+{
+    linked_list_t list = linked_list_init();
+    actual_list_t *it;
+
+    for (it = src->start; it != NULL; it = it->next)
+        linked_list_add_end(&list, it->element);
+
+    return list;
+}
+
 int linked_list_add_end(linked_list_t *list, void const *item)
 {
     actual_list_t *new_end;

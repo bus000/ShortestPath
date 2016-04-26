@@ -30,6 +30,12 @@ linked_list_t linked_list_singular(void const *item);
 /* Initialize a new list of integers of length 1 with the single item given. */
 linked_list_t linked_list_singular_int(uint32_t item);
 
+/* Does a shallow copy of a linked list. All the pointers are copied and changes
+ * to the old list does not affect the new list. The actual elements in the list
+ * are not copied however and changes to the elements will change the list
+ * elements. */
+linked_list_t linked_list_copy(linked_list_t const *src);
+
 /* Add a new item to the end of the list. */
 int linked_list_add_end(linked_list_t *list, void const *item);
 
