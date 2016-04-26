@@ -243,6 +243,22 @@ int linked_list_concat(linked_list_t *dest, linked_list_t const *src)
     return 0;
 }
 
+int linked_list_prepend(linked_list_t *dest, linked_list_t const *src)
+{
+    int retcode;
+    actual_list_t const *it;
+
+    /* Traverse src backwards adding to start of dest. */
+    for (it = src->end; it != NULL; it = it->prev) {
+        retcode = linked_list_add_start(dest, it->element);
+
+        if (retcode != 0)
+            return retcode;
+    }
+
+    return 0;
+}
+
 void linked_list_free(linked_list_t *list)
 {
     actual_list_t *element, *next_element;
