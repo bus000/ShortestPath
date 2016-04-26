@@ -23,11 +23,11 @@ static void fixside(linked_list_t *vertices, int inside);
 
 static void delete_from(linked_list_t *vertices, vertex_t *y);
 
-/*int *side = mal*/
+static uint32_t make_o_empty(linked_list_t *q);
 
 uint32_t planar(digraph_t *graph)
 {
-    linked_list_t bicomponents = biconnect(graph), b;
+    linked_list_t bicomponents = biconnect(graph), b; /* b is list of blocks_t. */
     digraph_t *biconnected;
     actual_list_t *list;
     uint32_t x;
@@ -118,6 +118,20 @@ static void planarity(vertex_t *cstart, vertex_t *u, vertex_t *v, uint32_t *x,
 
     /* Check theorem 2.4 part b and add attachments to b. */
     purge(&q, u);
+    linked_list_t t = linked_list_init(); /* List of vertices. */
+
+    while (*x && q.len != 0) {
+        blocks_t *last = (blocks_t *) linked_list_get(&q, -1);
+        *x = make_o_empty(&q);
+        fixside(&last->i.s, 1);
+        fixside(&last->o.s, 0);
+
+        linked_list_prepend(&t, &last->i.a);
+        linked_list_remove_last(&q);
+    }
+
+    blocks_t *last = (blocks_t *) linked_list_get(b, -1);
+    linked_list_concat(&last->i.a, &t);
 }
 
 static linked_list_t spine(vertex_t const *vertex, vertex_t const *u)
@@ -206,4 +220,23 @@ static void delete_from(linked_list_t *vertices, vertex_t *y)
         linked_list_remove_last(vertices);
         last = (vertex_t *) linked_list_get(vertices, -1);
     }
+}
+
+/* q is list of blocks_t. */
+static uint32_t make_o_empty(linked_list_t *q)
+{
+    blocks_t *last = (blocks_t *) linked_list_get(q, -1);
+    block_t tmp;
+
+    if (last->i.a.len != 0 && last->o.a.len != 0) {
+        return 0;
+    } else if (last->i.a.len > 0 && last->o.a.len == 0) {
+        tmp = last->i;
+        last->i = last->o;
+        last->o = tmp;
+
+        return 1;
+    }
+
+    return 1;
 }
