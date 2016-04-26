@@ -87,6 +87,35 @@ int linked_list_add_end(linked_list_t *list, void const *item)
     return 0;
 }
 
+int linked_list_add_start(linked_list_t *list, void const *item)
+{
+    actual_list_t *new_start;
+
+    if (list->start == NULL) { /* First use of list. */
+        list->start = list->end = malloc(sizeof(actual_list_t));
+        if (list->start == NULL)
+            mem_err();
+
+        list->start->element = item;
+        list->start->prev = NULL;
+        list->start->next = NULL;
+    } else { /* List has been used before. */
+        new_start = malloc(sizeof(actual_list_t));
+        if (new_start == NULL)
+            mem_err();
+
+        new_start->next = list->start;
+        new_start->prev = NULL;
+        new_start->element = item;
+        list->start->prev = new_start;
+        list->start = new_start;
+    }
+
+    list->len += 1;
+
+    return 0;
+}
+
 int linked_list_add_int_end(linked_list_t *list, uint32_t i)
 {
     actual_list_t *new_end;

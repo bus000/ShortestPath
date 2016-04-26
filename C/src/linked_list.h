@@ -39,6 +39,9 @@ linked_list_t linked_list_copy(linked_list_t const *src);
 /* Add a new item to the end of the list. */
 int linked_list_add_end(linked_list_t *list, void const *item);
 
+/* Add a new item to the start of the list. */
+int linked_list_add_start(linked_list_t *list, void const *item);
+
 /* Function to create a list of integers and not a list of pointers as usual. */
 int linked_list_add_int_end(linked_list_t *list, uint32_t i);
 
