@@ -4,10 +4,8 @@
 
 int main(int argc, char const *argv[])
 {
-    linked_list_t list;
+    linked_list_t list = linked_list_init();
     uint32_t ints[100] = { 0 }, i;
-
-    linked_list_init(&list);
 
     for (i = 0; i < 100; i++) {
         ints[i] = i;

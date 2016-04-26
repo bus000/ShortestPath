@@ -26,8 +26,8 @@ int map_init(map_t *map, int buckets, int (*hash)(void const *),
         map->buckets[i].first = NULL;
     }
 
-    linked_list_init(&map->keys);
-    linked_list_init(&map->values);
+    map->keys = linked_list_init();
+    map->values = linked_list_init();
 
     return 0;
 }

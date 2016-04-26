@@ -23,10 +23,9 @@ linked_list_t biconnect(digraph_t *graph)
     uint32_t count = 0, i;
     vertex_t *vertex;
     stack_t stack = stack_init(graph->vertices_len);
-    linked_list_t graphs;
+    linked_list_t graphs = linked_list_init();
 
     graph_init_labels(graph, &default_label, sizeof(biconnect_label_t));
-    linked_list_init(&graphs);
 
     for (i = 0; i < graph->vertices_len; i++) {
         vertex = graph->vertices[i];
@@ -43,6 +42,11 @@ linked_list_t biconnect(digraph_t *graph)
 
     /* Free resources used by function. */
     stack_free(&stack);
+
+    if (graphs.len == 0) {
+        linked_list_free(&graphs);
+        graphs = linked_list_singular(graph);
+    }
 
     return graphs;
 }

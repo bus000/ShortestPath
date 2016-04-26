@@ -4,11 +4,9 @@
 
 int main(int argc, char const *argv[])
 {
-    linked_list_t list;
+    linked_list_t list = linked_list_init();
     uint32_t n;
     actual_list_t *alist;
-
-    linked_list_init(&list);
 
     for (n = 0; n < 100; n += 10)
         linked_list_add_int_end(&list, n);

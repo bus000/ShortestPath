@@ -2,59 +2,49 @@
 #include "linked_list.h"
 #include "error.h"
 
-int linked_list_init(linked_list_t *list)
+linked_list_t linked_list_init(void)
 {
-    list->start = NULL;
-    list->end = NULL;
-    list->len = 0;
+    linked_list_t list;
 
-    return 0;
+    list.start = NULL;
+    list.end = NULL;
+    list.len = 0;
+
+    return list;
 }
 
-int linked_list_from_array(linked_list_t *list, void **items, uint32_t size)
+linked_list_t linked_list_from_array(void **items, uint32_t size)
 {
-    int i;
-    int retcode;
-
-    linked_list_init(list);
+    int i, retcode;
+    linked_list_t list = linked_list_init();
 
     /* Add all elements given to the list. */
     for (i = 0; i < size; i++) {
-        retcode = linked_list_add_end(list, items[i]);
+        retcode = linked_list_add_end(&list, items[i]);
 
-        if (retcode != 0) {
-            linked_list_free(list);
-            return retcode;
-        }
+        if (retcode != 0)
+            linked_list_free(&list);
     }
 
-    return 0;
+    return list;
 }
 
-int linked_list_singular(linked_list_t *list, void const *item)
+linked_list_t linked_list_singular(void const *item)
 {
-    int retcode;
+    linked_list_t list = linked_list_init();
 
-    if ((retcode = linked_list_init(list)) != 0)
-        return retcode;
+    linked_list_add_end(&list, item);
 
-    if ((retcode = linked_list_add_end(list, item)) != 0)
-        return retcode;
-
-    return 0;
+    return list;
 }
 
-int linked_list_singular_int(linked_list_t *list, uint32_t item)
+linked_list_t linked_list_singular_int(uint32_t item)
 {
-    int retcode;
+    linked_list_t list = linked_list_init();
 
-    if ((retcode = linked_list_init(list)) != 0)
-        return retcode;
+    linked_list_add_int_end(&list, item);
 
-    if ((retcode = linked_list_add_int_end(list, item)) != 0)
-        return retcode;
-
-    return 0;
+    return list;
 }
 
 int linked_list_add_end(linked_list_t *list, void const *item)

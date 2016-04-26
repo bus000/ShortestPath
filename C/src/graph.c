@@ -177,12 +177,8 @@ void reachable(vertex_list_t *list, vertex_t *vertex)
 
 linked_list_t graph_vertices(digraph_t const *graph)
 {
-    linked_list_t list;
-
-    linked_list_from_array(&list, (void **) graph->vertices,
+    return linked_list_from_array((void **) graph->vertices,
             graph->vertices_len);
-
-    return list;
 }
 
 vertex_list_t graph_vertices_list(digraph_t const *graph)

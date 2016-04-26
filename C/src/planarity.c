@@ -39,7 +39,7 @@ uint32_t planar(digraph_t *graph)
 
         n_side = 0;
         x = 1;
-        linked_list_init(&b);
+        b = linked_list_init();
         planarity(biconnected->vertices[0], biconnected->vertices[0],
                 biconnected->vertices[0]->outgoing[0].end, &x, &b, &n_side);
 
@@ -65,10 +65,10 @@ static void planarity(vertex_t *cstart, vertex_t *u, vertex_t *v, uint32_t *x,
     int lace1, lace2;
 
     /* Add s to SP. */
-    linked_list_init(&inside.a);
-    linked_list_init(&outside.a);
-    linked_list_singular_int(&inside.s, *n_side);
-    linked_list_init(&outside.s);
+    inside.a = linked_list_init();
+    outside.a = linked_list_init();
+    inside.s = linked_list_singular_int(*n_side);
+    outside.s = linked_list_init();
 
     new_block->i.a = inside.a;
     new_block->i.s = inside.s;
@@ -104,22 +104,25 @@ static void planarity(vertex_t *cstart, vertex_t *u, vertex_t *v, uint32_t *x,
     }
 
     /* Build bipartite partition QP for the segments. */
-    linked_list_t q; /* List of blocks_t. */
-    linked_list_init(&q);
+    linked_list_t q = linked_list_init(); /* List of blocks_t. */
+    uint32_t k;
 
     while (*x && spi.len != 0) {
         vertex_t *y = (vertex_t *) linked_list_get(&spi, -1);
         linked_list_remove_last(&spi);
         purge(&q, y);
+
+        for (k = 0; *x && k < y->outgoing_len; k++)
+            planarity(w, y, y->outgoing[k].end, x, &q, n_side);
     }
 
+    /* Check theorem 2.4 part b and add attachments to b. */
+    purge(&q, u);
 }
 
 static linked_list_t spine(vertex_t const *vertex, vertex_t const *u)
 {
-    linked_list_t list;
-
-    linked_list_init(&list);
+    linked_list_t list = linked_list_init();
 
     while (palm_number(vertex) > palm_number(u)) {
         linked_list_add_end(&list, vertex);
