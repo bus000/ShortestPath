@@ -2,13 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void usage(char const *program_name)
-{
-    fprintf(stderr, "usage\n");
-
-    exit(EXIT_FAILURE);
-}
-
 void mem_err(void)
 {
     fprintf(stderr, "out of memory\n");
