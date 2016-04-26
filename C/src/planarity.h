@@ -6,7 +6,7 @@
 
 typedef struct {
     linked_list_t a; /* List of vertices. */
-    linked_list_t s; /* List of vertices. */
+    linked_list_t s; /* List of integers. */
 } block_t;
 
 typedef struct {
