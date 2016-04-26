@@ -5,8 +5,8 @@
 #include "graph.h"
 
 typedef struct {
-    linked_list_t a;
-    linked_list_t s;
+    linked_list_t a; /* List of vertices. */
+    linked_list_t s; /* List of vertices. */
 } block_t;
 
 typedef struct {
@@ -14,6 +14,6 @@ typedef struct {
     block_t o; /* Outside. */
 } blocks_t;
 
-int planar(digraph_t *graph);
+uint32_t planar(digraph_t *graph);
 
 #endif

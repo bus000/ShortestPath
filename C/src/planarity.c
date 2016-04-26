@@ -10,33 +10,41 @@ static linked_list_t spine(vertex_t const *vertex, vertex_t const *u);
 
 /* Runs the planarity algorithm of a graph, assumes the graph is in palm tree
  * form and is biconnected. */
-static int planarity(vertex_t *cstart, vertex_t *u, vertex_t *v, int *x,
+static void planarity(vertex_t *cstart, vertex_t *u, vertex_t *v, uint32_t *x,
         linked_list_t *b, uint32_t *n_side);
 
 static int lace(linked_list_t const *t, vertex_t const *w);
 
 static void merge(linked_list_t *b);
 
-int planar(digraph_t *graph)
+static void purge(linked_list_t *q, vertex_t *y);
+
+static void fixside(linked_list_t *vertices, int inside);
+
+static void delete_from(linked_list_t *vertices, vertex_t *y);
+
+/*int *side = mal*/
+
+uint32_t planar(digraph_t *graph)
 {
     linked_list_t bicomponents = biconnect(graph), b;
     digraph_t *biconnected;
     actual_list_t *list;
-    int x;
+    uint32_t x;
     uint32_t n_side;
-
 
     for (list = bicomponents.start; list != NULL; list = list->next) {
         biconnected = (digraph_t *) list->element;
         palm_tree(biconnected);
 
-        /*side = malloc(sizeof(int) * (biconnected->edges_len -*/
-                /*biconnected->vertices_len));*/
         n_side = 0;
         x = 1;
         linked_list_init(&b);
         planarity(biconnected->vertices[0], biconnected->vertices[0],
                 biconnected->vertices[0]->outgoing[0].end, &x, &b, &n_side);
+
+        if (!x)
+            return x;
     }
 
     /* TODO: Collect all the planar graphs created by planarity and embed them
@@ -44,14 +52,14 @@ int planar(digraph_t *graph)
 
     /* TODO: Free resources used in the function. */
 
-    return 0;
+    return x;
 }
 
-static int planarity(vertex_t *cstart, vertex_t *u, vertex_t *v, int *x,
+static void planarity(vertex_t *cstart, vertex_t *u, vertex_t *v, uint32_t *x,
         linked_list_t *b, uint32_t *n_side)
 {
     block_t inside, outside, tmp;
-    linked_list_t spi = spine(v, u);
+    linked_list_t spi = spine(v, u); /* List of vertices. */
     vertex_t *w = (vertex_t *) spi.end->element;
     blocks_t *new_block = malloc(sizeof(blocks_t)), *blocks;
     int lace1, lace2;
@@ -95,7 +103,16 @@ static int planarity(vertex_t *cstart, vertex_t *u, vertex_t *v, int *x,
         }
     }
 
-    return 0;
+    /* Build bipartite partition QP for the segments. */
+    linked_list_t q; /* List of blocks_t. */
+    linked_list_init(&q);
+
+    while (*x && spi.len != 0) {
+        vertex_t *y = (vertex_t *) linked_list_get(&spi, -1);
+        linked_list_remove_last(&spi);
+        purge(&q, y);
+    }
+
 }
 
 static linked_list_t spine(vertex_t const *vertex, vertex_t const *u)
@@ -137,4 +154,53 @@ static void merge(linked_list_t *b)
     linked_list_concat(&blocks2o->a, &blocks1o->a);
     linked_list_concat(&blocks2i->s, &blocks1i->s);
     linked_list_concat(&blocks2o->s, &blocks1o->s);
+}
+
+/* q is list of blocks_t pointers. */
+static void purge(linked_list_t *q, vertex_t *y)
+{
+    blocks_t *last;
+    linked_list_t *inside_a, *outside_a, *inside_s, *outside_s;
+
+    while (q->len != 0) {
+        last = (blocks_t *) linked_list_get(q, -1);
+        inside_a = &(last->i.a);
+        outside_a = &(last->o.a);
+        inside_s = &(last->i.s);
+        outside_s = &(last->o.s);
+
+        delete_from(inside_a, y);
+        delete_from(outside_a, y);
+
+        if (inside_a->len == 0 && outside_a->len == 0) {
+            fixside(inside_s, 1);
+            fixside(outside_s, 0);
+            linked_list_remove_last(q);
+        } else {
+            break;
+        }
+    }
+}
+
+/* vertices is a list of vertex_t *. */
+static void fixside(linked_list_t *vertices, int inside)
+{
+    vertex_t *last;
+
+    while (vertices->len != 0) {
+        last = (vertex_t *) linked_list_get(vertices, -1);
+        PALM_SIDE(last) = inside;
+        linked_list_remove_last(vertices);
+    }
+}
+
+/* vertices is a list of vertex_t *. */
+static void delete_from(linked_list_t *vertices, vertex_t *y)
+{
+    vertex_t *last = (vertex_t *) linked_list_get(vertices, -1);
+
+    while (vertices->len != 0 && palm_number(last) >= palm_number(y)) {
+        linked_list_remove_last(vertices);
+        last = (vertex_t *) linked_list_get(vertices, -1);
+    }
 }

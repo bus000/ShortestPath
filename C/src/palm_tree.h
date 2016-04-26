@@ -7,14 +7,19 @@ typedef struct {
     /* ID given to the palm vertex. */
     int64_t number;
 
+    /* Lowest palm number reachable from this vertex. */
     int64_t l;
 
+    /* Second lowest palm number reachable from this vertex. */
     int64_t ll;
+
+    int side; /* XXX: Should not be here but in a separate label. */
 } palm_tree_label_t;
 
 #define PALM_NUMBER(vertex) (((palm_tree_label_t *) vertex->label)->number)
 #define PALM_L(vertex) (((palm_tree_label_t *) vertex->label)->l)
 #define PALM_LL(vertex) (((palm_tree_label_t *) vertex->label)->ll)
+#define PALM_SIDE(vertex) (((palm_tree_label_t *) vertex->label)->side)
 
 /* Create a palm tree from a graph, the graph given should be biconnected. The
  * function returns 0 if the palm tree is successfully constructed, and -1 if
