@@ -14,6 +14,6 @@ typedef struct {
     block_t o; /* Outside. */
 } blocks_t;
 
-uint32_t planar(digraph_t *graph);
+int planar(digraph_t *graph);
 
 #endif

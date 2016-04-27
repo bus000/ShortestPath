@@ -5,15 +5,18 @@
 #include "palm_tree.h"
 #include <stdlib.h>
 
-/* vertices is a list of vertex_t *. */
-static void fixside(linked_list_t *vertices, int inside)
-{
-    vertex_t *last;
+int *side; /* TODO: Don't use global variables, but give as argument. */
 
-    while (vertices->len != 0) {
-        last = (vertex_t *) linked_list_get(vertices, -1);
-        PALM_SIDE(last) = inside;
-        linked_list_remove_last(vertices);
+/* vertices is a list of vertex_t *. */
+/* TODO: does not get a list of vertices, but rather a list of uint32_t's. */
+static void fixside(linked_list_t *t, int inside)
+{
+    uint32_t last;
+
+    while (t->len != 0) {
+        linked_list_get_int(&last, t, -1);
+        side[last] = inside;
+        linked_list_remove_last(t);
     }
 }
 
@@ -29,20 +32,16 @@ static void delete_from(linked_list_t *vertices, vertex_t *y)
 }
 
 /* Returns the spine of the given vertex. */
-static linked_list_t spine(vertex_t const *vertex, vertex_t const *u)
+static linked_list_t spine(vertex_t **w, vertex_t const *u)
 {
-    linked_list_t list = linked_list_init();
+    linked_list_t spi = linked_list_init();
 
-    printf("spine(%p, %p), (%"PRId64", %"PRId64")\n", vertex, u,
-            palm_number(vertex), palm_number(u)); fflush(stdout);
-
-    while (palm_number(vertex) > palm_number(u)) {
-        printf("running\n");
-        linked_list_add_end(&list, vertex);
-        vertex = vertex->outgoing[0].end;
+    while (palm_number(*w) > palm_number(u)) {
+        linked_list_add_end(&spi, *w);
+        *w = (*w)->outgoing[0].end;
     }
 
-    return list;
+    return spi;
 }
 
 static int lace(linked_list_t const *t, vertex_t const *w)
@@ -182,58 +181,91 @@ static linked_list_t bipartite_partition(int *x, linked_list_t *spi,
     return q;
 }
 
+/* q is a list of blocks_t *. */
+/* b is a list of blocks_t *. */
+static void add_attachments(linked_list_t *q, linked_list_t *b, vertex_t *u,
+        int *x)
+{
+    linked_list_t t = linked_list_init(); /* List of vertex_t *. */
+    blocks_t *last;
+
+    purge(q, u);
+
+    while (*x && q->len != 0) {
+        *x = make_o_empty(q);
+
+        last = (blocks_t *) linked_list_get(q, -1);
+        fixside(&last->i.s, 1);
+        fixside(&last->o.s, 0);
+
+        linked_list_prepend(&t, &last->i.a);
+        linked_list_remove_last(q);
+    }
+
+    last = (blocks_t *) linked_list_get(b, -1);
+    linked_list_concat(&last->i.a, &t);
+
+    /* Free resources used in the function. */
+    linked_list_free(&t);
+}
+
 /* Runs the planarity algorithm of a graph, assumes the graph is in palm tree
  * form and is biconnected. */
 /* b is list of blocks_t, TODO: name blocks. */
 static void planarity(vertex_t *cstart, vertex_t *u, vertex_t *v, int *x,
         linked_list_t *b, uint32_t *n_side)
 {
-    linked_list_t spi = spine(v, u); /* List of vertices. */
-    vertex_t *w = spi.end == NULL ? NULL : (vertex_t *) spi.end->element;
+    vertex_t *w = v;
+    linked_list_t spi = spine(&w, u); /* List of vertices. */
     linked_list_t q;
 
     add_s_to_sp(b, cstart, w, n_side, x);
 
-    bipartite_partition(x, &spi, n_side, w);
+    q = bipartite_partition(x, &spi, n_side, w);
 
-    /* Check theorem 2.4 part b and add attachments to b. */
-    purge(&q, u);
-    linked_list_t t = linked_list_init(); /* List of vertices. */
-
-    while (*x && q.len != 0) {
-        blocks_t *last = (blocks_t *) linked_list_get(&q, -1);
-        *x = make_o_empty(&q);
-        fixside(&last->i.s, 1);
-        fixside(&last->o.s, 0);
-
-        linked_list_prepend(&t, &last->i.a);
-        linked_list_remove_last(&q);
-    }
-
-    blocks_t *last = (blocks_t *) linked_list_get(b, -1);
-    linked_list_concat(&last->i.a, &t);
+    add_attachments(&q, b, u, x);
 }
 
-uint32_t planar(digraph_t *graph)
+int planar(digraph_t *graph)
 {
+    uint32_t i;
     linked_list_t bicomponents = biconnect(graph), b; /* b is list of blocks_t. */
     digraph_t *biconnected;
     actual_list_t *list;
     int x;
     uint32_t n_side;
+    vertex_t *palm0;
 
     for (list = bicomponents.start; list != NULL; list = list->next) {
         biconnected = (digraph_t *) list->element;
         palm_tree(biconnected);
 
+        /*side = malloc(sizeof(int) **/
+                /*(biconnected->edges_len - biconnected->vertices_len));*/
+
+        side = malloc(sizeof(int) * biconnected->edges_len);
+
+        /* Find vertex with palm number 0. */
+        for (i = 0; i < biconnected->vertices_len; i++) {
+            palm0 = biconnected->vertices[i];
+            if (palm_number(palm0) == 0)
+                break;
+        }
+
+        if (palm_number(palm0) != 0) {
+            printf("error!\n");
+            return -1;
+        }
+
         n_side = 0;
         x = 1;
         b = linked_list_init();
-        planarity(biconnected->vertices[0], biconnected->vertices[0],
-                biconnected->vertices[0]->outgoing[0].end, &x, &b, &n_side);
+        planarity(palm0, palm0, palm0->outgoing[0].end, &x, &b, &n_side);
 
         if (!x)
             return x;
+
+        return x;
     }
 
     /* TODO: Collect all the planar graphs created by planarity and embed them
