@@ -12,8 +12,6 @@ typedef struct {
 
     /* Second lowest palm number reachable from this vertex. */
     int64_t ll;
-
-    int side; /* XXX: Should not be here but in a separate label. */
 } palm_tree_label_t;
 
 #define PALM_NUMBER(vertex) (((palm_tree_label_t *) vertex->label)->number)
