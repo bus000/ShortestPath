@@ -52,6 +52,11 @@ int linked_list_add_int_end(linked_list_t *list, uint32_t i);
  * out the bounds of the list, the functions returns NULL. */
 void const * linked_list_get(linked_list_t const *list, int64_t index);
 
+/* Returns the uint32_t integers stored at the index'th position in the list.
+ * If index is greater than 0 the list is traversed until reaching the i'th
+ * position, the pointer here is returned. If index is less than 0, the list is
+ * traversed backwards until the (list.len + index)'th position is reached. If
+ * index is out the bounds of the list, the functions returns NULL. */
 int linked_list_get_int(uint32_t *res, linked_list_t const *list,
         int64_t index);
 
