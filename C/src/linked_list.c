@@ -2,6 +2,28 @@
 #include "linked_list.h"
 #include "error.h"
 
+static actual_list_t * list_goto(linked_list_t const *list, int64_t index)
+{
+    actual_list_t *alist;
+    int64_t i;
+
+    index = index < 0 ? list->len + index : index;
+
+    if (index >= list->len || index < 0)
+        return NULL;
+
+    if (index > list->len / 2) {
+        for (alist = list->end, i = list->len-1; i > index;
+                alist = alist->prev, i--)
+            ;
+    } else {
+        for (alist = list->start, i = 0; i < index; alist = alist->next, i++)
+            ;
+    }
+
+    return alist;
+}
+
 linked_list_t linked_list_init(void)
 {
     linked_list_t list;
@@ -191,48 +213,36 @@ int linked_list_remove_last(linked_list_t *list)
 
 void const * linked_list_get(linked_list_t const *list, int64_t index)
 {
-    actual_list_t *alist;
-    int64_t i;
+    actual_list_t *alist = list_goto(list, index);
 
-    index = index < 0 ? list->len + index : index;
+    return alist == NULL ? NULL : alist->element;
+}
 
-    if (index >= list->len || index < 0)
-        return NULL;
+int linked_list_get_int(uint32_t *res, linked_list_t const *list,
+        int64_t index)
+{
+    actual_list_t *alist = list_goto(list, index);
 
-    if (index > list->len / 2) {
-        for (alist = list->end, i = list->len-1; i > index;
-                alist = alist->prev, i--)
-            ;
+    if (alist == NULL) {
+        return -1;
     } else {
-        for (alist = list->start, i = 0; i < index; alist = alist->next, i++)
-            ;
-    }
+        *res = alist->int_element;
 
-    return alist->element;
+        return 0;
+    }
 }
 
 int linked_list_set(linked_list_t *list, int64_t index, void const *element)
 {
-    actual_list_t *alist;
-    int64_t i;
+    actual_list_t *alist = list_goto(list, index);
 
-    index = index < 0 ? list->len + index : index;
-
-    if (index >= list->len || index < 0)
+    if (alist == NULL) {
         return -1;
-
-    if (index > list->len / 2) {
-        for (alist = list->end, i = list->len-1; i > index;
-                alist = alist->prev, i--)
-            ;
     } else {
-        for (alist = list->start, i = 0; i < index; alist = alist->next, i++)
-            ;
+        alist->element = element;
+
+        return 0;
     }
-
-    alist->element = element;
-
-    return 0;
 }
 
 int linked_list_concat(linked_list_t *dest, linked_list_t const *src)
