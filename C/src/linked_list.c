@@ -168,16 +168,23 @@ int linked_list_remove_last(linked_list_t *list)
 {
     actual_list_t *end;
 
-    if (list->len == 0)
+    if (list->len == 0) {
         return -1;
+    } else if (list->len == 1) {
+        free(list->end);
+        list->start = NULL;
+        list->end = NULL;
 
-    end = list->end;
-    list->end->prev->next = NULL;
-    list->end = list->end->prev;
+        list->len -= 1;
+    } else {
+        end = list->end;
+        list->end->prev->next = NULL;
+        list->end = list->end->prev;
 
-    list->len -= 1;
+        list->len -= 1;
 
-    free(end);
+        free(end);
+    }
 
     return 0;
 }
