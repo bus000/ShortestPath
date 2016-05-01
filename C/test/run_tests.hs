@@ -88,7 +88,8 @@ showTests tests =
 
 main = do
     putStrLn "TESTING"
-    binContents <- getDirectoryContents testBin
+    binContents' <- getDirectoryContents testBin
+    let binContents = filter (\x -> x /= "." && x /= "..") binContents'
 
     let execRigths = map (\x -> do
         permissions <- getPermissions (testBin ++ x)
@@ -96,8 +97,7 @@ main = do
 
     executable <- sequence execRigths
 
-    let cFiles' = filter (\x -> x /= "." && x /= "..") binContents
-        cFiles = map fst $ filter (\(cFile, exec) -> exec) $ zip cFiles'
+    let cFiles = map fst $ filter (\(cFile, exec) -> exec) $ zip binContents
             executable
         testEnv = getTestEnv cFiles
 
