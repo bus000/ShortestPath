@@ -72,8 +72,10 @@ vertex_id_t graph_add_vertex(digraph_t *graph)
 void graph_add_edge_pointer(digraph_t *graph, vertex_t *vertex1,
         vertex_t *vertex2, uint32_t weight)
 {
-    edge_t out = { .weight = weight, .start = vertex1, .end = vertex2 };
-    edge_t in = { .weight = weight, .start = vertex2, .end = vertex1 };
+    edge_t out = { .weight = weight, .start = vertex1, .end = vertex2,
+        .direction = OUTGOING };
+    edge_t in = { .weight = weight, .start = vertex2, .end = vertex1,
+        .direction = INCOMING };
 
     /* Add outgoing edge. */
     if (vertex1->outgoing_len >= vertex1->outgoing_size) {

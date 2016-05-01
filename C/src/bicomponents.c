@@ -155,18 +155,41 @@ static int cmp_keys(void const *v1, void const *v2)
 static void output_cmp_add_edge(digraph_t *graph, edge_t const *edge,
         map_t *vertices)
 {
-    vertex_t *start = (vertex_t *) map_get(vertices, edge->start);
-    vertex_t *end = (vertex_t *) map_get(vertices, edge->end);
+    vertex_t *start, *end;
 
-    if (start == NULL) {
-        start = new_vertex_id(edge->start->unique_id);
-        graph_add_vertex_pointer(graph, start);
-        map_put(vertices, edge->start, start);
-    }
-    if (end == NULL) {
-        end = new_vertex_id(edge->end->unique_id);
-        graph_add_vertex_pointer(graph, end);
-        map_put(vertices, edge->end, end);
+    if (edge->direction == OUTGOING) {
+        start = (vertex_t *) map_get(vertices, edge->start);
+        end = (vertex_t *) map_get(vertices, edge->end);
+
+        if (start == NULL) {
+            start = new_vertex_id(edge->start->unique_id);
+            graph_add_vertex_pointer(graph, start);
+            map_put(vertices, edge->start, start);
+        }
+
+        if (end == NULL) {
+            end = new_vertex_id(edge->end->unique_id);
+            graph_add_vertex_pointer(graph, end);
+            map_put(vertices, edge->end, end);
+        }
+    } else if (edge->direction == INCOMING) {
+        start = (vertex_t *) map_get(vertices, edge->end);
+        end = (vertex_t *) map_get(vertices, edge->start);
+
+        if (start == NULL) {
+            start = new_vertex_id(edge->end->unique_id);
+            graph_add_vertex_pointer(graph, start);
+            map_put(vertices, edge->end, start);
+        }
+
+        if (end == NULL) {
+            end = new_vertex_id(edge->start->unique_id);
+            graph_add_vertex_pointer(graph, end);
+            map_put(vertices, edge->start, end);
+        }
+    } else {
+        fprintf(stderr, "Edge direction is neither incoming nor outgoing");
+        return;
     }
 
     graph_add_edge_pointer(graph, start, end, edge->weight);

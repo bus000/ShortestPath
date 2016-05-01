@@ -35,6 +35,10 @@ struct Vertex {
     int visited;
 };
 
+typedef enum {
+    OUTGOING, INCOMING,
+} edge_direction_t;
+
 struct Edge {
     /* The higher the weight, the greater the cost to use the edge. */
     uint32_t weight;
@@ -42,6 +46,9 @@ struct Edge {
     /* Pointers to the two vertices this edge connects. */
     vertex_t *start;
     vertex_t *end;
+
+    /* If an edge is incoming or outgoing. */
+    edge_direction_t direction;
 };
 
 /* Should be called before any vertices are used. The function initializes the
