@@ -1,7 +1,7 @@
 graph is connected
-4
 2
 3
+4
 5
 still graph is connected
 
@@ -11,15 +11,15 @@ graph is connected
 still graph is connected
 
 graph is connected
-9
 6
 8
+9
 still graph is connected
 
 graph is connected
-7
 1
-6
 2
+6
+7
 still graph is connected
 

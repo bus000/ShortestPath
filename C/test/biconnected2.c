@@ -4,7 +4,35 @@
 #include <stdlib.h>
 #include <time.h>
 
-static void remove_random_vertex(digraph_t *graph);
+static void remove_random_vertex(digraph_t *graph)
+{
+    vertex_t *random_vertex;
+    uint32_t random_vertex_n;
+    vertex_list_t vertex_list;
+
+    srand(time(NULL));
+
+    random_vertex_n = rand() % graph->vertices_len;
+    random_vertex = graph->vertices[random_vertex_n];
+
+    vertex_list_init_singular(&vertex_list, random_vertex);
+
+    graph_remove_vertices(graph, &vertex_list);
+}
+
+static int vertex_compare(void const *el1, void const *el2)
+{
+    vertex_t const *vertex1 = *((vertex_t const **) el1);
+    vertex_t const *vertex2 = *((vertex_t const **) el2);
+
+
+    if (vertex1->unique_id < vertex2->unique_id)
+        return -1;
+    else if (vertex1->unique_id > vertex2->unique_id)
+        return 1;
+    else
+        return 0;
+}
 
 int main(int argc, char const *argv[])
 {
@@ -44,6 +72,8 @@ int main(int argc, char const *argv[])
         else
             printf("graph is unconnected\n");
 
+        qsort(element->vertices, element->vertices_len, sizeof(vertex_t *),
+                vertex_compare);
         for (i = 0; i < element->vertices_len; i++) {
             printf("%u\n", element->vertices[i]->unique_id);
         }
@@ -68,20 +98,4 @@ int main(int argc, char const *argv[])
     vertices_free();
 
     return 0;
-}
-
-static void remove_random_vertex(digraph_t *graph)
-{
-    vertex_t *random_vertex;
-    uint32_t random_vertex_n;
-    vertex_list_t vertex_list;
-
-    srand(time(NULL));
-
-    random_vertex_n = rand() % graph->vertices_len;
-    random_vertex = graph->vertices[random_vertex_n];
-
-    vertex_list_init_singular(&vertex_list, random_vertex);
-
-    graph_remove_vertices(graph, &vertex_list);
 }
