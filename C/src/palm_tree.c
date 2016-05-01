@@ -217,9 +217,13 @@ int palm_tree(digraph_t *graph)
         palm_tree_DFS(first_vertex, first_vertex->outgoing[0].end, &n);
         first_vertex->outgoing_len = 1;
         first_vertex->incoming_len = 0;
-    } else {
+    } else if (first_vertex->incoming_len != 0) {
         palm_tree_DFS(first_vertex, first_vertex->incoming[0].end, &n);
         first_vertex->incoming_len = 1;
+    } else {
+        fprintf(stderr,
+                "Error: Cannot make palm tree of graph with only one vertex.\n");
+        return -1;
     }
 
     sort_adjasent(graph);
