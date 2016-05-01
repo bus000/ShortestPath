@@ -59,14 +59,22 @@ void vertices_init(void);
  * not be created. */
 vertex_t * new_vertex(void);
 
+/* Construct a new vertex with the vertex ID given. Returns NULL if the vertex
+ * could not be created. */
 vertex_t * new_vertex_id(vertex_id_t id);
 
+/* Free the resources used by the vertex given by the vertex pointer. */
 void vertex_free(vertex_t *vertex);
 
+/* Remove an outgoing edge starting in this vertex. */
 void vertex_remove_outgoing(vertex_t *start, vertex_t const *end);
 
+/* Remove an incoming edge ending in this vertex. */
 void vertex_remove_incoming(vertex_t *end, vertex_t const *start);
 
+/* Should be called when no vertices is needed in the program any more. This
+ * function free all vertices used. If this function is called, vertices_init
+ * will need to be called before any more vertices can be created. */
 void vertices_free(void);
 
 #endif
