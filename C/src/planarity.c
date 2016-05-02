@@ -8,7 +8,6 @@
 int *side; /* TODO: Don't use global variables, but give as argument. */
 
 /* vertices is a list of vertex_t *. */
-/* TODO: does not get a list of vertices, but rather a list of uint32_t's. */
 static void fixside(linked_list_t *t, int inside)
 {
     uint32_t last;
@@ -69,6 +68,8 @@ static void merge(linked_list_t *b)
     linked_list_concat(&blocks2o->a, &blocks1o->a);
     linked_list_concat(&blocks2i->s, &blocks1i->s);
     linked_list_concat(&blocks2o->s, &blocks1o->s);
+
+    linked_list_remove_last(b);
 }
 
 /* q is list of blocks_t pointers. */
@@ -130,9 +131,11 @@ static void add_s_to_sp(linked_list_t *b, vertex_t *cstart, vertex_t *w,
     v->i.s = linked_list_singular_int(*n_side);
     v->o.s = linked_list_init();
 
-    if (palm_number(w) > palm_number(cstart)) {
+    if (palm_number(w) > palm_number(cstart))
         linked_list_add_end(&v->i.a, w);
-    }
+    /*else if (palm_number(w) == palm_number(cstart))*/
+        /*[> TODO: verify that this is correct. <]*/
+        /*return; [> translation of skip command. <]*/
 
     *n_side = *n_side + 1;
     linked_list_add_end(b, v);
@@ -153,7 +156,7 @@ static void add_s_to_sp(linked_list_t *b, vertex_t *cstart, vertex_t *w,
 
             merge(b);
         } else {
-            break;
+            return;
         }
     }
 }
@@ -211,7 +214,7 @@ static void add_attachments(linked_list_t *q, linked_list_t *b, vertex_t *u,
 
 /* Runs the planarity algorithm of a graph, assumes the graph is in palm tree
  * form and is biconnected. */
-/* b is list of blocks_t, TODO: name blocks. */
+/* b is list of blocks_t *, TODO: name blocks. */
 static void planarity(vertex_t *cstart, vertex_t *u, vertex_t *v, int *x,
         linked_list_t *b, uint32_t *n_side)
 {
@@ -228,7 +231,6 @@ static void planarity(vertex_t *cstart, vertex_t *u, vertex_t *v, int *x,
 
 int planar(digraph_t *graph)
 {
-    uint32_t i;
     linked_list_t bicomponents = biconnect(graph), b; /* b is list of blocks_t. */
     digraph_t *biconnected;
     actual_list_t *list;
@@ -238,34 +240,24 @@ int planar(digraph_t *graph)
 
     for (list = bicomponents.start; list != NULL; list = list->next) {
         biconnected = (digraph_t *) list->element;
-        palm_tree(biconnected);
 
-        /*side = malloc(sizeof(int) **/
-                /*(biconnected->edges_len - biconnected->vertices_len));*/
+        if (palm_tree(biconnected) != 0)
+            return -2;
 
-        side = malloc(sizeof(int) * biconnected->edges_len);
+        side = malloc(sizeof(int) *
+                (biconnected->edges_len - biconnected->vertices_len));
 
         /* Find vertex with palm number 0. */
-        for (i = 0; i < biconnected->vertices_len; i++) {
-            palm0 = biconnected->vertices[i];
-            if (palm_number(palm0) == 0)
-                break;
-        }
-
-        if (palm_number(palm0) != 0) {
-            printf("error!\n");
+        palm0 = palm_find(biconnected, 0);
+        if (palm0 == NULL)
             return -1;
-        }
 
         n_side = 0;
         x = 1;
         b = linked_list_init();
         planarity(palm0, palm0, palm0->outgoing[0].end, &x, &b, &n_side);
 
-        if (!x)
-            return x;
-
-        return x;
+        return x ? 0 : -3;
     }
 
     /* TODO: Collect all the planar graphs created by planarity and embed them
@@ -273,5 +265,6 @@ int planar(digraph_t *graph)
 
     /* TODO: Free resources used in the function. */
 
-    return x;
+    fprintf(stderr, "problem\n");
+    return 0;
 }
