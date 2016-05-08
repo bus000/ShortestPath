@@ -9,4 +9,7 @@ uint32_t min(uint32_t a, uint32_t b);
 /* Returns the maximum of the two numbers given. */
 uint32_t max(uint32_t a, uint32_t b);
 
+/* Count the number of occurrences of the character c in the string str. */
+uint32_t count_char(char const *str, char c);
+
 #endif
