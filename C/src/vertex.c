@@ -18,12 +18,8 @@ void vertices_init(void)
     pages_size = 1;
     next_vertex = 0;
 
-    if ((vertex_pages = malloc(sizeof(vertex_t *))) == NULL)
-        mem_err();
-    vertex_pages[0] = malloc(sizeof(vertex_t) * vertices_on_page);
-
-    if (vertex_pages[0] == NULL)
-        mem_err();
+    MALLOC(vertex_pages, sizeof(vertex_t *));
+    MALLOC(vertex_pages[0], sizeof(vertex_t) * vertices_on_page);
 }
 
 vertex_t * new_vertex(void)
@@ -36,16 +32,8 @@ vertex_t * new_vertex_id(vertex_id_t id)
     vertex_t *vertex;
 
     if (next_vertex >= vertices_on_page) {
-        vertex_pages = realloc(vertex_pages,
-                sizeof(vertex_t *) * (pages_size + 1));
-
-        if (vertex_pages == NULL)
-            mem_err();
-
-        vertex_pages[pages_size] = malloc(sizeof(vertex_t) * vertices_on_page);
-
-        if (vertex_pages[pages_size] == NULL)
-            mem_err();
+        REALLOC(vertex_pages, sizeof(vertex_t *) * (pages_size + 1));
+        MALLOC(vertex_pages[pages_size], sizeof(vertex_t) * vertices_on_page);
 
         pages_size += 1;
         next_vertex = 0;
@@ -57,15 +45,12 @@ vertex_t * new_vertex_id(vertex_id_t id)
     vertex->unique_id = id;
     vertex->outgoing_len = 0;
     vertex->outgoing_size = INIT_EDGES_NUM;
-    vertex->outgoing = malloc(sizeof(edge_t) * INIT_EDGES_NUM);
+    MALLOC(vertex->outgoing, sizeof(edge_t) * INIT_EDGES_NUM);
     vertex->incoming_len = 0;
     vertex->incoming_size = INIT_EDGES_NUM;
-    vertex->incoming = malloc(sizeof(edge_t) * INIT_EDGES_NUM);
+    MALLOC(vertex->incoming, sizeof(edge_t) * INIT_EDGES_NUM);
     vertex->label = NULL;
     vertex->visited = 0;
-
-    if (vertex->outgoing == NULL || vertex->incoming == NULL)
-        mem_err();
 
     return vertex;
 }

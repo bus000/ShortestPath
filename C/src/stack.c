@@ -6,12 +6,9 @@ stack_t stack_init(size_t size)
 {
     stack_t stack;
 
-    stack.stack = malloc(sizeof(void *) * size);
+    MALLOC(stack.stack, sizeof(void *) * size);
     stack.top = 0;
     stack.size = size;
-
-    if (stack.stack == NULL)
-        mem_err();
 
     return stack;
 }
@@ -20,10 +17,7 @@ void stack_push(stack_t *stack, void *element)
 {
     if (stack->top >= stack->size) {
         stack->size *= 2;
-        stack->stack = realloc(stack->stack, sizeof(void *) * stack->size);
-
-        if (stack->stack == NULL)
-            mem_err();
+        REALLOC(stack->stack, sizeof(void *) * stack->size);
     }
 
     stack->stack[stack->top] = element;

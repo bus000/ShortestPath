@@ -146,16 +146,14 @@ static void palm_tree_DFS(vertex_t const *u, vertex_t *v, uint32_t *n)
 static void sort_adjasent(digraph_t *graph)
 {
     uint32_t i, j, buckets = graph->vertices_len * 2;
-    set_t *bucket = malloc(sizeof(set_t) * buckets);
+    set_t *bucket;
     vertex_t *vertex;
     edge_t const *edge;
     edge_t *edges_back, *edges_end;
     actual_list_t *edges;
 
-    edges_back = malloc(sizeof(edge_t) * graph->edges_len);
-    edges_end = edges_back;
-    if (edges_back == NULL || bucket == NULL)
-        mem_err();
+    MALLOC(edges_back, sizeof(edge_t) * graph->edges_len);
+    MALLOC(bucket, sizeof(set_t) * buckets);
 
     for (i = 0; i < buckets; i++)
         bucket[i] = set_init(edge_hash, edge_cmp);

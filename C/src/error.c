@@ -5,13 +5,6 @@
 #include <inttypes.h>
 #include <stdarg.h>
 
-void mem_err(void)
-{
-    fprintf(stderr, "out of memory\n");
-
-    exit(EXIT_FAILURE);
-}
-
 void error_code(error_t error, char const *fmt_msg, ...)
 {
     va_list ap;

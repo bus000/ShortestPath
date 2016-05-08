@@ -92,9 +92,7 @@ static void dfs_visit_help(vertex_t *vertex, vertex_t *adjasent, stack_t *stack,
         dfs_visit(adjasent, count, stack, graphs);
 
         if (B_LOW(adjasent) >= B_D(vertex)) {
-            graph = malloc(sizeof(digraph_t));
-            if (graph == NULL)
-                mem_err();
+            MALLOC(graph, sizeof(digraph_t));
             *graph = output_comp(vertex, adjasent, stack);
             linked_list_add_end(graphs, graph);
         }

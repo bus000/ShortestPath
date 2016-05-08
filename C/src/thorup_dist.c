@@ -39,8 +39,7 @@ int thorup_reach_oracle(reachability_oracle_t *oracle, digraph_t *graph)
     graph_init_labels(graph, &default_label, sizeof(thorup_label_t));
 
     layers = layering(graph, start) - 1;
-    if ((graphs = malloc(sizeof(digraph_t) * layers)) == NULL)
-        mem_err();
+    MALLOC(graphs, sizeof(digraph_t) * layers);
 
     partition(graph, graphs, layers);
 

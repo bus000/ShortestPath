@@ -10,11 +10,8 @@ int graph_init(digraph_t *graph)
 {
     graph->vertices_len = 0;
     graph->vertices_size = INIT_GRAPH_SIZE;
-    graph->vertices = malloc(sizeof(vertex_t *) * INIT_GRAPH_SIZE);
+    MALLOC(graph->vertices, sizeof(vertex_t *) * INIT_GRAPH_SIZE);
     graph->edges_len = 0;
-
-    if (graph->vertices == NULL)
-        mem_err();
 
     graph->labels = NULL;
     graph->labels_size = 0;
@@ -50,10 +47,7 @@ void graph_add_vertex_pointer(digraph_t *graph, vertex_t *vertex)
     if (graph->vertices_len >= graph->vertices_size) {
         graph->vertices_size *= 2;
         newsize = sizeof(vertex_t *) * graph->vertices_size;
-        graph->vertices = realloc(graph->vertices, newsize);
-
-        if (graph->vertices == NULL)
-            mem_err();
+        REALLOC(graph->vertices, newsize);
     }
 
     graph->vertices[graph->vertices_len] = vertex;
@@ -81,11 +75,8 @@ void graph_add_edge_pointer(digraph_t *graph, vertex_t *vertex1,
     if (vertex1->outgoing_len >= vertex1->outgoing_size) {
         vertex1->outgoing_size = vertex1->outgoing_size == 0 ? 2 :
             vertex1->outgoing_size * 2;
-        vertex1->outgoing = realloc(vertex1->outgoing,
-                sizeof(edge_t) * vertex1->outgoing_size);
 
-        if (vertex1->outgoing == NULL)
-            mem_err();
+        REALLOC(vertex1->outgoing, sizeof(edge_t) * vertex1->outgoing_size);
     }
 
     vertex1->outgoing[vertex1->outgoing_len] = out;
@@ -94,11 +85,7 @@ void graph_add_edge_pointer(digraph_t *graph, vertex_t *vertex1,
     /* Add incoming edge. */
     if (vertex2->incoming_len >= vertex2->incoming_size) {
         vertex2->incoming_size *= 2;
-        vertex2->incoming = realloc(vertex2->incoming,
-                sizeof(edge_t) * vertex2->incoming_size);
-
-        if (vertex2->incoming == NULL)
-            mem_err();
+        REALLOC(vertex2->incoming, sizeof(edge_t) * vertex2->incoming_size);
     }
 
     vertex2->incoming[vertex2->incoming_len] = in;

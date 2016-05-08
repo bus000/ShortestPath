@@ -16,10 +16,7 @@ int map_init(map_t *map, int buckets, int (*hash)(void const *),
     map->hash = hash;
     map->cmp_keys = cmp_keys;
 
-    map->buckets = malloc(sizeof(bucket_t) * buckets);
-
-    if (map->buckets == NULL)
-        mem_err();
+    MALLOC(map->buckets, sizeof(bucket_t) * buckets);
 
     for (i = 0; i < buckets; i++) {
         map->buckets[i].last = NULL;
@@ -46,9 +43,7 @@ int map_put(map_t *map, void const *key, void const *value)
     bucket_list_t *el;
 
     if (bucket->first == NULL) {
-        bucket->first = malloc(sizeof(bucket_list_t));
-        if (bucket->first == NULL)
-            mem_err();
+        MALLOC(bucket->first, sizeof(bucket_list_t));
 
         bucket->last = bucket->first;
         bucket->first->key = key;
@@ -62,9 +57,7 @@ int map_put(map_t *map, void const *key, void const *value)
     } else {
         el = find_key(bucket->first, key, map->cmp_keys);
         if (el == NULL) {
-            bucket->last->next = malloc(sizeof(bucket_list_t));
-            if (bucket->last->next == NULL)
-                mem_err();
+            MALLOC(bucket->last->next, sizeof(bucket_list_t));
 
             bucket->last = bucket->last->next;
             bucket->last->key = key;

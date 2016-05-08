@@ -16,12 +16,9 @@ void graph_init_labels(digraph_t *graph, void const *label, size_t label_size)
     if (graph->vertices_len == 0)
         return;
 
-    graph->labels = malloc(label_size * graph->vertices_len);
+    MALLOC(graph->labels, label_size * graph->vertices_len);
     graph->labels_size = graph->vertices_len;
     graph->label_size = label_size;
-
-    if (graph->labels == NULL)
-        mem_err();
 
     /* Initialize all labels with the label pointed to by label. */
     for (i = 0; i < graph->vertices_len; i++) {
@@ -38,12 +35,9 @@ void graph_init_labels_size(digraph_t *graph, size_t labels_size,
     if (graph->labels_size != 0)
         free(graph->labels);
 
-    graph->labels = malloc(labels_size);
+    MALLOC(graph->labels, labels_size);
     graph->labels_size = labels_size / label_size;
     graph->label_size = label_size;
-
-    if (graph->labels == NULL)
-        mem_err();
 }
 
 int graph_set_label(digraph_t *graph, vertex_t *vertex, void const *label)

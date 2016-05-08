@@ -13,10 +13,7 @@ int path_init(path_t *path)
     path->length = 0;
     path->path_len = 0;
     path->path_size = INIT_PATH_LEN;
-    path->path = malloc(sizeof(vertex_t *) * INIT_PATH_LEN);
-
-    if (path->path == NULL)
-        mem_err();
+    MALLOC(path->path, sizeof(vertex_t *) * INIT_PATH_LEN);
 
     return 0;
 }

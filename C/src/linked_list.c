@@ -85,17 +85,14 @@ int linked_list_add_end(linked_list_t *list, void const *item)
     actual_list_t *new_end;
 
     if (list->end == NULL) { /* First use of list. */
-        list->start = list->end = malloc(sizeof(actual_list_t));
-        if (list->start == NULL)
-            mem_err();
+        MALLOC(list->start, sizeof(actual_list_t));
+        list->end = list->start;
 
         list->start->element = item;
         list->start->prev = NULL;
         list->start->next = NULL;
     } else { /* List has been used before. */
-        new_end = malloc(sizeof(actual_list_t));
-        if (new_end == NULL)
-            mem_err();
+        MALLOC(new_end, sizeof(actual_list_t));
 
         new_end->next = NULL;
         new_end->prev = list->end;
@@ -114,17 +111,14 @@ int linked_list_add_start(linked_list_t *list, void const *item)
     actual_list_t *new_start;
 
     if (list->start == NULL) { /* First use of list. */
-        list->start = list->end = malloc(sizeof(actual_list_t));
-        if (list->start == NULL)
-            mem_err();
+        MALLOC(list->start, sizeof(actual_list_t));
+        list->end = list->start;
 
         list->start->element = item;
         list->start->prev = NULL;
         list->start->next = NULL;
     } else { /* List has been used before. */
-        new_start = malloc(sizeof(actual_list_t));
-        if (new_start == NULL)
-            mem_err();
+        MALLOC(new_start, sizeof(actual_list_t));
 
         new_start->next = list->start;
         new_start->prev = NULL;
@@ -143,17 +137,14 @@ int linked_list_add_int_end(linked_list_t *list, uint32_t i)
     actual_list_t *new_end;
 
     if (list->end == NULL) { /* First use of list. */
-        list->start = list->end = malloc(sizeof(actual_list_t));
-        if (list->start == NULL)
-            mem_err();
+        MALLOC(list->start, sizeof(actual_list_t));
+        list->end = list->start;
 
         list->start->int_element = i;
         list->start->prev = NULL;
         list->start->next = NULL;
     } else { /* List has been used before. */
-        new_end = malloc(sizeof(actual_list_t));
-        if (new_end == NULL)
-            mem_err();
+        MALLOC(new_end, sizeof(actual_list_t));
 
         new_end->next = NULL;
         new_end->prev = list->end;

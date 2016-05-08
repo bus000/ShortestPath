@@ -68,14 +68,10 @@ int dijkstra(path_t *path, digraph_t *graph, vertex_id_t start, vertex_id_t end)
     path_init(path);
     graph_init_labels(graph, &default_label, sizeof(dijkstra_l_t));
     graph_set_label(graph, start_vertex, &start_label);
-    vertex_pointers = malloc(sizeof(vertex_t *) * graph->vertices_len);
+    MALLOC(vertex_pointers, sizeof(vertex_t *) * graph->vertices_len);
 
-    if (vertex_pointers == NULL)
-        mem_err();
-
-    for (i = 0; i < graph->vertices_len; i++) {
+    for (i = 0; i < graph->vertices_len; i++)
         vertex_pointers[i] = graph->vertices[i];
-    }
 
     heap_init(&heap, (void **) vertex_pointers, graph->vertices_len,
             compare_vertices, decrease_weight);

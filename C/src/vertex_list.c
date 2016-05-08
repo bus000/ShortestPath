@@ -6,12 +6,9 @@
 
 int vertex_list_init(vertex_list_t *list)
 {
-    list->vertices = malloc(sizeof(vertex_t *) * INIT_LIST_SIZE);
+    MALLOC(list->vertices, sizeof(vertex_t *) * INIT_LIST_SIZE);
     list->len = 0;
     list->size = INIT_LIST_SIZE;
-
-    if (list->vertices == NULL)
-        mem_err();
 
     return 0;
 }
@@ -19,10 +16,7 @@ int vertex_list_init(vertex_list_t *list)
 int vertex_list_init_array(vertex_list_t *list, vertex_t **vertices,
         size_t len)
 {
-    list->vertices = malloc(sizeof(vertex_t *) * len);
-
-    if (list->vertices == NULL)
-        mem_err();
+    MALLOC(list->vertices, sizeof(vertex_t *) * len);
 
     list->len = len;
     list->size = len;
@@ -67,10 +61,8 @@ int vertex_list_add(vertex_list_t *list, vertex_t *vertex)
     if (list->len == list->size) {
         list->size *= 2;
         newsize = sizeof(vertex_t *) * list->size;
-        list->vertices = realloc(list->vertices, newsize);
 
-        if (list->vertices == NULL)
-            mem_err();
+        REALLOC(list->vertices, newsize);
     }
 
     list->vertices[list->len] = vertex;
