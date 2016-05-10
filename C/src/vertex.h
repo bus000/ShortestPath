@@ -8,13 +8,13 @@
 #define INIT_VERTICES_SIZE  (128)
 #define INIT_EDGES_NUM      (8)
 
-struct Vertex;
-struct Edge;
-typedef struct Vertex vertex_t;
-typedef struct Edge edge_t;
+struct vertex_s;
+struct edge_s;
+typedef struct vertex_s vertex_t;
+typedef struct edge_s edge_t;
 typedef uint32_t vertex_id_t;
 
-struct Vertex {
+struct vertex_s {
     /* A graph unique ID of a vertex. */
     vertex_id_t unique_id;
 
@@ -35,11 +35,11 @@ struct Vertex {
     int visited;
 };
 
-typedef enum {
+typedef enum edge_direction_e {
     OUTGOING, INCOMING,
 } edge_direction_t;
 
-struct Edge {
+struct edge_s {
     /* The higher the weight, the greater the cost to use the edge. */
     uint32_t weight;
 

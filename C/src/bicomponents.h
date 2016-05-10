@@ -4,7 +4,7 @@
 #include <inttypes.h>
 #include "graph.h"
 
-typedef struct {
+typedef struct biconnect_label_s {
     vertex_t *parent;
     uint32_t d;
     uint32_t low;

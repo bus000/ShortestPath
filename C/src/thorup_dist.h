@@ -3,7 +3,7 @@
 
 #include "graph.h"
 
-typedef struct {
+typedef struct reachability_oracle_s {
     digraph_t *graphs;
     uint32_t graphs_len;
 } reachability_oracle_t;

@@ -4,7 +4,7 @@
 #include <inttypes.h>
 #include <stdlib.h>
 
-typedef struct {
+typedef struct stack_s {
     void **stack;
     uint32_t top;
     uint32_t size;

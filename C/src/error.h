@@ -1,7 +1,7 @@
 #ifndef ERROR_H
 #define ERROR_H
 
-typedef enum {
+typedef enum error_e {
     ERR_FILE_OPEN = 1,
     ERR_NO_MEM = 2,
     ERR_SLEEP = 3,

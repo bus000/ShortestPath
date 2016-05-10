@@ -5,8 +5,8 @@
 #include "linked_list.h"
 #include <stdio.h>
 
-typedef struct bucket_list_ {
-    struct bucket_list_ *next;
+typedef struct bucket_list_s {
+    struct bucket_list_s *next;
     void const *key;
     void const *value;
 } bucket_list_t;

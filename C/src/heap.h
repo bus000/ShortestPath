@@ -8,7 +8,7 @@
 #define LEFT(i)   ((i << 1) + 1)
 #define RIGHT(i)  ((2 << i) + 2)
 
-typedef struct {
+typedef struct min_heap_s {
     /* The array holding the pointers. */
     uint32_t array_size;
     void **array;

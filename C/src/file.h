@@ -5,7 +5,7 @@
 
 #define CHUNCK_SIZE (1024)
 
-typedef struct {
+typedef struct file_s {
     FILE *file;
     int fileno;
 

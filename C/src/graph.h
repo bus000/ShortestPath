@@ -11,7 +11,7 @@
 #define INIT_LIST_SIZE  (32)
 
 /* Represents a directed graph. */
-typedef struct {
+typedef struct digraph_s {
     /* A list of vertices in the graph. */
     uint32_t vertices_len;
     uint32_t vertices_size;

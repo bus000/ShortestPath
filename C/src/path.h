@@ -6,7 +6,7 @@
 #define INIT_PATH_LEN (128)
 
 /* Functions finding paths through graphs. */
-typedef struct {
+typedef struct path_s {
     /* The total weight of the edges between all vertices in path. */
     uint32_t length;
 

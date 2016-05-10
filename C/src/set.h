@@ -3,7 +3,7 @@
 
 #include "map.h"
 
-typedef struct {
+typedef struct set_s {
     map_t map;
 } set_t;
 

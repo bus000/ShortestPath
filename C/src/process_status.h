@@ -22,7 +22,7 @@
  * is,
  *
  * 216304 13453 8145 23085 0 38685 0 */
-typedef struct {
+typedef struct memory_usage_s {
     file_t memstat_file;
 
     uint32_t program_size; /* Number of pages allocated to program. */

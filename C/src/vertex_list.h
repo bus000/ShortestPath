@@ -1,7 +1,7 @@
 #ifndef VERTEX_LIST_H
 #define VERTEX_LIST_H
 
-typedef struct {
+typedef struct vertex_list_s {
     vertex_t **vertices;
     uint32_t len;
     uint32_t size;

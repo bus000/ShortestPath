@@ -4,12 +4,12 @@
 #include "linked_list.h"
 #include "graph.h"
 
-typedef struct {
+typedef struct block_s {
     linked_list_t a; /* List of vertices. */
     linked_list_t s; /* List of integers. */
 } block_t;
 
-typedef struct {
+typedef struct blocks_s {
     block_t i; /* Inside. */
     block_t o; /* Outside. */
 } blocks_t;

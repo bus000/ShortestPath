@@ -3,7 +3,7 @@
 
 #include "graph.h"
 
-typedef struct {
+typedef struct palm_tree_label_s {
     /* ID given to the palm vertex. */
     int64_t number;
 

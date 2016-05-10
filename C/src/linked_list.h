@@ -3,13 +3,13 @@
 
 #include <inttypes.h>
 
-typedef struct ActualList {
+typedef struct actual_list_s {
     union {
         void const *element;
         uint32_t int_element;
     };
-    struct ActualList *next;
-    struct ActualList *prev;
+    struct actual_list_s *next;
+    struct actual_list_s *prev;
 } actual_list_t;
 
 typedef struct {
