@@ -113,10 +113,7 @@ static int dijkstra_algo(path_t *path, digraph_t *graph, vertex_id_t end_vertex,
         current_dist = current_label->weight;
     }
 
-    if (current->unique_id == end_vertex)
-        return 0;
-    else
-        return -1;
+    return current->unique_id == end_vertex ? 0 : -1;
 }
 
 static int compare_labels(dijkstra_l_t const *l1, dijkstra_l_t const *l2)
