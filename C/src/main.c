@@ -1,33 +1,16 @@
+#include "file.h"
+#include "error.h"
 #include "graph.h"
+#include "process_status.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/wait.h>
 
 typedef struct {
     char const *graph_file;
 } function_t;
-
-static void usage(char const *program_name);
-static void version(void);
-static function_t parse_args(int argc, char const *argv[]);
-
-int main(int argc, char const *argv[])
-{
-    digraph_t graph;
-    function_t function = parse_args(argc, argv);
-
-    vertices_init();
-
-    graph = read_graph(function.graph_file);
-
-    printf("%d\n", graph.vertices_len);
-
-    /* Free resources used. */
-    vertices_free();
-    graph_free(&graph);
-
-    return EXIT_SUCCESS;
-}
 
 static void usage(char const *program_name)
 {
@@ -72,4 +55,64 @@ static function_t parse_args(int argc, char const *argv[])
     }
 
     return function;
+}
+
+static int run_dijkstra(digraph_t *graph)
+{
+    path_t path;
+
+    sleep(10);
+
+    return dijkstra(&path, graph, graph->vertices[2]->unique_id,
+            graph->vertices[3]->unique_id);
+}
+
+static int monitor(pid_t process, char const *outfilepath)
+{
+    memory_usage_t memstat;
+
+    memstat_init(&memstat, process);
+
+    while (waitpid(process, NULL, WNOHANG) == 0) {
+        if (usleep(100000) == -1)
+            error_code(ERR_SLEEP, "Could not sleep");
+
+        if (memstat_update(&memstat) != 0)
+            continue;
+
+        printf("pages used %" PRIu32 "\n", memstat.program_size);
+    }
+
+    memstat_free(&memstat);
+
+    return EXIT_SUCCESS;
+}
+
+int main(int argc, char const *argv[])
+{
+    pid_t pid;
+    digraph_t graph;
+    function_t function = parse_args(argc, argv);
+    int exitcode;
+
+    vertices_init();
+
+    graph = read_graph(function.graph_file);
+
+    printf("read graph\n");
+
+    /* Fork process, child runs Dijkstra algorithm and parent monitors child's
+     * memory usage and execution time. */
+    if ((pid = fork()) != 0) { /* Parent. */
+        exitcode = monitor(pid, "dijkstra_monitor.out");
+    } else { /* Child. */
+        sleep(1);
+        exitcode = run_dijkstra(&graph);
+        printf("child run dijkstra over.\n");
+    }
+
+    graph_free(&graph);
+    vertices_free();
+
+    return exitcode;
 }
