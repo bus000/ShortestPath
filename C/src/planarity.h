@@ -14,6 +14,9 @@ typedef struct {
     block_t o; /* Outside. */
 } blocks_t;
 
+extern int *side;
+extern blocks_t *blocks[10000];
+
 int planar(digraph_t *graph);
 
 #endif
