@@ -18,6 +18,8 @@ struct vertex_s {
     /* A graph unique ID of a vertex. */
     vertex_id_t unique_id;
 
+    uint32_t graph_index;
+
     /* List of edges going out from this vertex. */
     uint32_t outgoing_len;
     uint32_t outgoing_size;

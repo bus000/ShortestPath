@@ -20,6 +20,12 @@ typedef enum error_e {
         error_code(ERR_NO_MEM, "Out of memory\n"); \
 } while (0);
 
+#define CALLOC(var, nmemb, size) do {              \
+    var = calloc(nmemb, size);                     \
+    if (var == NULL)                               \
+        error_code(ERR_NO_MEM, "Out of memory\n"); \
+} while (0);
+
 /* Print error from error code and exit program. */
 void error_code(error_t error, char const *fmt_msg, ...);
 

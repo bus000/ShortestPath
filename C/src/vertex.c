@@ -51,6 +51,7 @@ vertex_t * new_vertex_id(vertex_id_t id)
     MALLOC(vertex->incoming, sizeof(edge_t) * INIT_EDGES_NUM);
     vertex->label = NULL;
     vertex->visited = 0;
+    vertex->graph_index = 0;
 
     return vertex;
 }

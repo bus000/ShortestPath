@@ -51,6 +51,7 @@ void graph_add_vertex_pointer(digraph_t *graph, vertex_t *vertex)
     }
 
     graph->vertices[graph->vertices_len] = vertex;
+    vertex->graph_index = graph->vertices_len;
     graph->vertices_len += 1;
 }
 
@@ -179,6 +180,7 @@ vertex_list_t graph_vertices_list(digraph_t const *graph)
     return list;
 }
 
+/* TODO: change graph_index of all vertices. */
 vertex_id_t graph_contract(digraph_t *graph, vertex_list_t *vertices)
 {
     uint32_t i, j, weight;
@@ -253,6 +255,7 @@ static int does_reach(vertex_t const *current, vertex_t const *vertex)
     return 0;
 }
 
+/* TODO: Change graph_index of all vertices. */
 void graph_remove_vertices(digraph_t *graph, vertex_list_t *vertices)
 {
     uint32_t i, j;
