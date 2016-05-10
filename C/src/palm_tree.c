@@ -253,3 +253,47 @@ int64_t inline palm_second_lowest(vertex_t const *vertex)
 {
     return PALM_LL(vertex);
 }
+
+vertex_t * palm_find(digraph_t const *graph, int64_t pnumber)
+{
+    uint32_t i;
+    vertex_t *vertex;
+
+    for (i = 0; i < graph->vertices_len; i++) {
+        vertex = graph->vertices[i];
+        if (palm_number(vertex) == pnumber)
+            return vertex;
+    }
+
+    return NULL;
+}
+
+void print_palm(digraph_t *graph)
+{
+    uint32_t i, j;
+    vertex_t *vertex, *adjasent;
+    edge_t edge;
+
+    for (i = 0; i < graph->vertices_len; i++) {
+        vertex = graph->vertices[i];
+
+        printf("vertex %u has palm number %" PRIu64 "\n", vertex->unique_id,
+                palm_number(vertex));
+
+        for (j = 0; j < vertex->outgoing_len; j++) {
+            edge = vertex->outgoing[j];
+            adjasent = edge.end;
+
+            if (palm_tree_arc(&edge)) {
+                printf("%u -> %u is arc\n", vertex->unique_id,
+                        adjasent->unique_id);
+            } else if (palm_tree_frond(&edge)) {
+                printf("%u -> %u is frond\n", vertex->unique_id,
+                        adjasent->unique_id);
+            } else {
+                printf("%u -> %u is neither\n", vertex->unique_id,
+                        adjasent->unique_id);
+            }
+        }
+    }
+}

@@ -44,4 +44,11 @@ int64_t palm_lowest(vertex_t const *vertex);
 /* Returns the second lowest palm number reachable from the vertex given. */
 int64_t palm_second_lowest(vertex_t const *vertex);
 
+/* Takes a graph that has been made to a palm tree and return the vertex with
+ * the palm number given. */
+vertex_t * palm_find(digraph_t const *graph, int64_t pnumber);
+
+/* Print a palm tree. */
+void print_palm(digraph_t *graph);
+
 #endif
