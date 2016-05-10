@@ -16,7 +16,7 @@ digraph_t read_graph(char const *graph_file)
     FILE *file;
     char *line = NULL;
     size_t len = 0, read;
-    header_t header;
+    /*header_t header;*/
     vertex_id_t start, end;
     vertex_t **vertices;
 
@@ -28,24 +28,32 @@ digraph_t read_graph(char const *graph_file)
         exit(EXIT_FAILURE);
     }
 
-    header = read_header(file);
+    /*header = read_header(file);*/
+    read_header(file);
 
-    vertices = malloc(sizeof(vertex_t *) * header.vertex_number);
-    for (i = 0; i < header.vertex_number; i++) {
+    printf("adding vertices\n");
+    /*vertices = malloc(sizeof(vertex_t *) * header.vertex_number);*/
+    vertices = malloc(sizeof(vertex_t *) * 2000000);
+    /*for (i = 0; i < header.vertex_number; i++) {*/
+    for (i = 0; i < 2000000; i++) {
         vertices[i] = new_vertex();
         graph_add_vertex_pointer(&graph, vertices[i]);
     }
 
+    printf("adding edges\n");
     while ((read = getline(&line, &len, file)) != -1) {
         sscanf(line, "%u\t%u\n", &start, &end);
+        /*printf("Adding edge %u -> %u\n", start, end);*/
         graph_add_edge_pointer(&graph, vertices[start], vertices[end], 2);
-        graph_add_edge(&graph, start, end, 2);
+        /*graph_add_edge(&graph, start, end, 2);*/
     }
 
     fclose(file);
 
     if (line != NULL)
         free(line);
+
+    free(vertices);
 
     return graph;
 }
