@@ -14,6 +14,7 @@
 #define ALGO_TABLE    (1)
 #define ALGO_THORUP   (2)
 
+/* TODO: Find vertices before running algorithm. */
 typedef struct order_s {
     /* Start of path finding. */
     vertex_id_t start;
@@ -152,11 +153,13 @@ static int run_dijkstra(digraph_t *graph, linked_list_t const orders)
 
 static int run_tabular(digraph_t *graph, linked_list_t const orders)
 {
-    table_reachability_t table = table_init(graph);
+    table_reachability_t table;
     order_t const *order;
     actual_list_t *element;
 
     init_mem_record("tabular_mem.txt");
+
+    table = table_init(graph);
 
     for (element = orders.start; element != NULL; element = element->next) {
         order = element->element;
@@ -164,7 +167,8 @@ static int run_tabular(digraph_t *graph, linked_list_t const orders)
         printf("running order %u - %u with result %d\n", order->start,
                 order->end, order->reaches);
 
-        table_reaches(&table, graph->vertices[10], graph->vertices[100]);
+        table_reaches(&table, find_vertex(graph, order->start),
+                find_vertex(graph, order->end));
     }
 
     table_free(&table);
@@ -236,18 +240,17 @@ int main(int argc, char const *argv[])
     actual_list_t *element;
     linked_list_t algorithms = function.algorithms;
 
-    vertices_init();
-
     for (element = algorithms.start; element != NULL; element = element->next) {
+        vertices_init();
         graph = read_graph(function.graph_file);
 
         run_algorithm(&graph, element->int_element, function.orders);
 
         graph_free(&graph);
+        vertices_free();
     }
 
     /* Free resources used in the function. */
-    vertices_free();
     free_functions(&function);
 
     return EXIT_SUCCESS;
