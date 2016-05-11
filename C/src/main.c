@@ -1,7 +1,6 @@
 #include "file.h"
 #include "error.h"
 #include "graph.h"
-#include "process_status.h"
 #include "tabular_reachability.h"
 #include "mem_man.h"
 #include <stdio.h>
