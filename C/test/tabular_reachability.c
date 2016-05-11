@@ -76,6 +76,8 @@ int main(int argc, char const *argv[])
         printf("%d\n", table_reaches(&table, v1, v2));
     }
 
+    table_free(&table);
+
     graph_free(&graph);
     vertices_free();
 
