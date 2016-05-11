@@ -1,22 +1,30 @@
 #include "tabular_reachability.h"
 #include "mem_man.h"
 #include "error.h"
+#include "stack.h"
 #include <stdlib.h>
 
 static void add_reaching_help(vertex_t const *vertex, int8_t *vertex_reaching)
 {
+    stack_t stack = stack_init(128); /* Stack of vertex_t *. */
+    vertex_t *current, *neighbour;
     uint32_t i;
-    vertex_t const *outgoing;
 
-    if (vertex_reaching[vertex->graph_index])
-        return;
+    stack_push(&stack, vertex);
 
-    vertex_reaching[vertex->graph_index] = 1;
+    while ((current = (vertex_t *) stack_pop(&stack)) != NULL) {
+        if (vertex_reaching[current->graph_index])
+            continue;
 
-    for (i = 0; i < vertex->outgoing_len; i++) {
-        outgoing = vertex->outgoing[i].end;
-        add_reaching_help(outgoing, vertex_reaching);
+        vertex_reaching[current->graph_index] = 1;
+
+        for (i = 0; i < current->outgoing_len; i++) {
+            neighbour = current->outgoing[i].end;
+            stack_push(&stack, neighbour);
+        }
     }
+
+    stack_free(&stack);
 }
 
 /* Performs a depth first search of the graph recording all reachable vertices
@@ -28,8 +36,6 @@ static int8_t * add_reaching(digraph_t const *graph, vertex_t const *vertex)
     CALLOC(vertex_reaching, graph->vertices_len, sizeof(int8_t));
 
     add_reaching_help(vertex, vertex_reaching);
-
-    vertex_reaching[vertex->graph_index] = 1; /* A vertex reaches itself. */
 
     return vertex_reaching;
 }
