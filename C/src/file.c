@@ -59,14 +59,14 @@ void file_update(file_t *file)
 int file_write(file_t *file, char const *content)
 {
     fclose(file->file);
-    fopen(file->path, "a");
+    file->file = fopen(file->path, "a");
 
     fputs(content, file->file);
 
     file->content = NULL;
 
     fclose(file->file);
-    fopen(file->path, "r");
+    file->file = fopen(file->path, "r");
 
     return 0;
 }
