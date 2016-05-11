@@ -1,11 +1,53 @@
 #include "graph.h"
 #include "error.h"
+#include "stack.h"
 #include "vertex.h"
 #include "mem_man.h"
 #include <stdlib.h>
 
-/* Return true if a path from current to vertex exist, and false otherwise. */
-static int does_reach(vertex_t const *current, vertex_t const *vertex);
+static void graph_reset_visited(digraph_t *graph)
+{
+    vertex_t *vertex;
+    uint32_t i;
+
+    for (i = 0; i < graph->vertices_len; i++) {
+        vertex = graph->vertices[i];
+        vertex->visited = 0;
+    }
+}
+
+static int reach_DFS(digraph_t *graph, vertex_t const *start,
+        vertex_t const *end)
+{
+    stack_t stack = stack_init(128); /* Stack of vertex_t *. */
+    vertex_t *current, *neighbour;
+    uint32_t i;
+    int found = 0;
+
+    stack_push(&stack, start);
+
+    while ((current = (vertex_t *) stack_pop(&stack)) != NULL) {
+        if (current->visited)
+            continue;
+
+        current->visited = 1;
+
+        if (current == end) {
+            found = 1;
+            break;
+        }
+
+        for (i = 0; i < current->outgoing_len; i++) {
+            neighbour = current->outgoing[i].end;
+            stack_push(&stack, neighbour);
+        }
+    }
+
+    stack_free(&stack);
+    graph_reset_visited(graph);
+
+    return found;
+}
 
 int graph_init(digraph_t *graph)
 {
@@ -222,7 +264,7 @@ vertex_id_t graph_contract(digraph_t *graph, vertex_list_t *vertices)
 /* TODO: When calling does_reach all vertices on the path up until finding the
  * vertex should also be added to the list as they can obviously also reach the
  * vertex. */
-void reaching(vertex_list_t *list, vertex_t *vertex, digraph_t const *graph)
+void reaching(vertex_list_t *list, vertex_t *vertex, digraph_t *graph)
 {
     uint32_t i;
     vertex_t *current;
@@ -233,27 +275,10 @@ void reaching(vertex_list_t *list, vertex_t *vertex, digraph_t const *graph)
     for (i = 0; i < graph->vertices_len; i++) {
         current = graph->vertices[i];
         cur_id = current->unique_id;
-        if (!vertex_list_contains(list, cur_id) && does_reach(current, vertex))
+        if (!vertex_list_contains(list, cur_id) &&
+                reach_DFS(graph, current, vertex))
             vertex_list_add(list, current);
     }
-}
-
-static int does_reach(vertex_t const *current, vertex_t const *vertex)
-{
-    uint32_t i;
-    edge_t edge;
-
-    if (current->unique_id == vertex->unique_id)
-        return 1;
-
-    for (i = 0; i < current->outgoing_len; i++) {
-        edge = current->outgoing[i];
-
-        if (does_reach(edge.end, vertex))
-            return 1;
-    }
-
-    return 0;
 }
 
 /* TODO: Change graph_index of all vertices. */

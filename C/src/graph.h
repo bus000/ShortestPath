@@ -66,7 +66,7 @@ int dijkstra(path_t *path, digraph_t *graph, vertex_id_t start, vertex_id_t end)
 void reachable(vertex_list_t *list, vertex_t *vertex);
 
 /* Construct the list of vertices that can reach the vertex given. */
-void reaching(vertex_list_t *list, vertex_t *vertex, digraph_t const *graph);
+void reaching(vertex_list_t *list, vertex_t *vertex, digraph_t *graph);
 
 /* Modifies the empty initialized list pointer to contain all the vertices in
  * the graph. The vertices are not copied so should not be changed, but the
