@@ -123,7 +123,7 @@ static digraph_t output_comp(vertex_t *vertex1, vertex_t *vertex2,
     map_init(&vertices, 64, hash, cmp_keys);
 
     do {
-        edge = stack_pop(stack);
+        edge = (edge_t *) stack_pop(stack);
 
         if (edge == NULL)
             break;

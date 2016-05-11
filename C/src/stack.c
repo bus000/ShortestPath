@@ -14,7 +14,7 @@ stack_t stack_init(size_t size)
     return stack;
 }
 
-void stack_push(stack_t *stack, void *element)
+void stack_push(stack_t *stack, void const *element)
 {
     if (stack->top >= stack->size) {
         stack->size *= 2;
@@ -25,7 +25,7 @@ void stack_push(stack_t *stack, void *element)
     stack->top += 1;
 }
 
-void * stack_pop(stack_t *stack)
+void const * stack_pop(stack_t *stack)
 {
     if (stack->top == 0) {
         return NULL;
@@ -35,9 +35,14 @@ void * stack_pop(stack_t *stack)
     }
 }
 
-void * stack_peek(stack_t const *stack)
+void const * stack_peek(stack_t const *stack)
 {
     return stack->top == 0 ? NULL : stack->stack[stack->top - 1];
+}
+
+int inline stack_empty(stack_t const *stack)
+{
+    return stack->top == 0;
 }
 
 void stack_free(stack_t *stack)
