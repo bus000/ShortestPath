@@ -1,4 +1,5 @@
 #include "tabular_reachability.h"
+#include "mem_man.h"
 #include "error.h"
 #include <stdlib.h>
 

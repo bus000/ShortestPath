@@ -1,6 +1,7 @@
 #include "error.h"
 #include "thorup_dist.h"
 #include "graph_labeling.h"
+#include "mem_man.h"
 #include <stdlib.h>
 
 /* Takes a graph and partitions it in to layers. Returns the number of layers

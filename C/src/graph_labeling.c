@@ -1,7 +1,8 @@
-#include <stdlib.h>
-#include <string.h>
+#include "mem_man.h"
 #include "error.h"
 #include "graph_labeling.h"
+#include <stdlib.h>
+#include <string.h>
 
 /* TODO: use graph_init_labels_size for the parts that are the same. */
 void graph_init_labels(digraph_t *graph, void const *label, size_t label_size)

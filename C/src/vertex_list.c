@@ -2,6 +2,7 @@
 #include "graph.h"
 #include "error.h"
 #include "vertex_list.h"
+#include "mem_man.h"
 #include <string.h>
 
 int vertex_list_init(vertex_list_t *list)

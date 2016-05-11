@@ -2,6 +2,7 @@
 #include "heap.h"
 #include "error.h"
 #include "graph_labeling.h"
+#include "mem_man.h"
 #include <stdlib.h>
 #include <stdio.h>
 

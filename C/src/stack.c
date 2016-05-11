@@ -1,5 +1,6 @@
 #include "stack.h"
 #include "error.h"
+#include "mem_man.h"
 #include <stdlib.h>
 
 stack_t stack_init(size_t size)

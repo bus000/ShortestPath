@@ -1,4 +1,5 @@
 #include "vertex.h"
+#include "mem_man.h"
 #include "error.h"
 #include "vertex_list.h"
 #include <stdlib.h>

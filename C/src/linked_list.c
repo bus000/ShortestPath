@@ -1,6 +1,7 @@
-#include <stdlib.h>
 #include "linked_list.h"
+#include "mem_man.h"
 #include "error.h"
+#include <stdlib.h>
 
 static actual_list_t * list_goto(linked_list_t const *list, int64_t index)
 {

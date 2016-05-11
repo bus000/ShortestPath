@@ -1,5 +1,6 @@
 #include "map.h"
 #include "error.h"
+#include "mem_man.h"
 #include <stdlib.h> /* malloc. */
 #include <math.h> /* HUGE_VAL. */
 

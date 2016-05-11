@@ -1,5 +1,6 @@
 #include "graph.h"
 #include "error.h"
+#include "mem_man.h"
 #include <stdlib.h>
 
 void path_free(path_t *path)

@@ -1,5 +1,6 @@
 #include "palm_tree.h"
 #include "graph_labeling.h"
+#include "mem_man.h"
 #include "util.h"
 #include "set.h"
 #include <stdlib.h>

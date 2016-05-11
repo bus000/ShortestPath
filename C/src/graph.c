@@ -1,6 +1,7 @@
 #include "graph.h"
 #include "error.h"
 #include "vertex.h"
+#include "mem_man.h"
 #include <stdlib.h>
 
 /* Return true if a path from current to vertex exist, and false otherwise. */

@@ -30,6 +30,8 @@ char * file_read(file_t *file);
 /* Reread the file pointed to by file. */
 void file_update(file_t *file);
 
+int file_write(file_t *file, char const *content);
+
 /* Free the resources used by the file and close file handles. */
 void file_free(file_t *file);
 

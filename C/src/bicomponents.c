@@ -1,4 +1,5 @@
 #include "bicomponents.h"
+#include "mem_man.h"
 #include "stack.h"
 #include "graph_labeling.h"
 #include "util.h"
