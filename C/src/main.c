@@ -62,6 +62,10 @@ static void usage(char const *program_name)
 
             "   --dijkstra: run the dijkstra algorithm to complete the orders\n"
 
+            "   --thorup: run the thorup algorithm to complete the orders\n"
+
+            "   --tabular: run the table algorithm to complete the orders\n"
+
             "   graph_file: name of file containing graph data\n",
 
             program_name);
