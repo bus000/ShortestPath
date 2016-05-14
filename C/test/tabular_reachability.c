@@ -65,12 +65,6 @@ int main(int argc, char const *argv[])
             v2 = graph.vertices[j];
 
             printf("%d ", table_reaches(&table, v1, v2));
-
-            /*if (table_reaches(&table, v1, v2))*/
-                /*printf("%u reaches %u\n", v1->unique_id+1, v2->unique_id+1);*/
-            /*else*/
-                /*printf("%u does not reach %u\n", v1->unique_id+1,*/
-                        /*v2->unique_id+1);*/
         }
         v2 = graph.vertices[j];
         printf("%d\n", table_reaches(&table, v1, v2));
