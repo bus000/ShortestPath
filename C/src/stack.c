@@ -48,5 +48,5 @@ int inline stack_empty(stack_t const *stack)
 void stack_free(stack_t *stack)
 {
     if (stack->size != 0)
-        free(stack->stack);
+        FREE(stack->stack);
 }

@@ -25,6 +25,11 @@
     record_calloc(var, nmemb, size);               \
 } while (0);
 
+#define FREE(var) do {                             \
+    free(var);                                     \
+    record_free(var);                              \
+} while (0);
+
 /* TODO: record memory in another thread with a lock so that it does not slow
  * processes down. */
 
@@ -40,6 +45,9 @@ void record_realloc(void const *oldvar, void const *newvar, size_t newsize);
 
 /* Record the size of a calloc allocation. */
 void record_calloc(void const *var, size_t nmemb, size_t size);
+
+/* Record a free operation. */
+void record_free(void const *var);
 
 /* Stop recording memory usage. */
 void free_mem_record(void);

@@ -1,7 +1,8 @@
+#include "graph.h"
+#include "mem_man.h"
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "graph.h"
 
 typedef struct {
     uint32_t vertex_number;
@@ -51,9 +52,9 @@ digraph_t read_graph(char const *graph_file)
     fclose(file);
 
     if (line != NULL)
-        free(line);
+        FREE(line);
 
-    free(vertices);
+    FREE(vertices);
 
     return graph;
 }

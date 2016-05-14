@@ -69,10 +69,10 @@ static vertex_id_t get_unique_id()
 void vertex_free(vertex_t *vertex)
 {
     if (vertex->outgoing_size != 0)
-        free(vertex->outgoing);
+        FREE(vertex->outgoing);
 
     if (vertex->incoming_size != 0)
-        free(vertex->incoming);
+        FREE(vertex->incoming);
 }
 
 void vertices_free(void)
@@ -87,10 +87,10 @@ void vertices_free(void)
             vertex = &(list[j]);
             vertex_free(vertex);
         }
-        free(list);
+        FREE(list);
     }
 
-    free(vertex_pages);
+    FREE(vertex_pages);
 }
 
 void vertex_remove_outgoing(vertex_t *start, vertex_t const *end)

@@ -193,8 +193,8 @@ static void sort_adjasent(digraph_t *graph)
     for (i = 0; i < buckets; i++)
         set_free(&bucket[i]);
 
-    free(bucket);
-    free(edges_back);
+    FREE(bucket);
+    FREE(edges_back);
 }
 
 int palm_tree(digraph_t *graph)

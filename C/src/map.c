@@ -104,14 +104,14 @@ void map_free(map_t *map)
         while (next != NULL) {
             tmp = next;
             next = next->next;
-            free(tmp);
+            FREE(tmp);
         }
     }
 
     linked_list_free(&map->keys);
     linked_list_free(&map->values);
 
-    free(map->buckets);
+    FREE(map->buckets);
 }
 
 static inline int hash(map_t const *map, void const *key)

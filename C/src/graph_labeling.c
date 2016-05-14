@@ -12,7 +12,7 @@ void graph_init_labels(digraph_t *graph, void const *label, size_t label_size)
     void *cur_label;
 
     if (graph->labels_size != 0)
-        free(graph->labels);
+        FREE(graph->labels);
 
     if (graph->vertices_len == 0)
         return;
@@ -34,7 +34,7 @@ void graph_init_labels_size(digraph_t *graph, size_t labels_size,
         size_t label_size)
 {
     if (graph->labels_size != 0)
-        free(graph->labels);
+        FREE(graph->labels);
 
     MALLOC(graph->labels, labels_size);
     graph->labels_size = labels_size / label_size;

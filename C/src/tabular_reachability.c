@@ -67,7 +67,7 @@ void table_free(table_reachability_t *table)
     uint32_t i;
 
     for (i = 0; i < table->side_len; i++)
-        free(table->reaches[i]);
+        FREE(table->reaches[i]);
 
-    free(table->reaches);
+    FREE(table->reaches);
 }

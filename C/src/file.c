@@ -37,7 +37,7 @@ void file_update(file_t *file)
     int size = sizeof(char) * CHUNCK_SIZE, next = 0, cread;
     char *content;
 
-    free(file->content);
+    FREE(file->content);
 
     MALLOC(content, size);
 
@@ -74,7 +74,7 @@ int file_write(file_t *file, char const *content)
 void file_free(file_t *file)
 {
     if (file->content != NULL)
-        free(file->content);
+        FREE(file->content);
 
     fclose(file->file);
 }

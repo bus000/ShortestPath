@@ -1,6 +1,7 @@
 #include "mem_man.h"
 #include "file.h"
 #include "error.h"
+#include "bin_tree.h"
 
 /* Contains all pointers allocated and all sizes of the corresponding
  * allocations. */
@@ -23,11 +24,11 @@
 static file_t memmanfile;
 static int initialized;
 
+/*static bin_tree_t pointers;*/
+
 void init_mem_record(char const *outfile)
 {
-    int ret;
-
-    ret = file_init(&memmanfile, outfile);
+    int ret = file_init(&memmanfile, outfile);
 
     if (ret != 0)
         error_code(ERR_FILE_OPEN, "Could not open file %s\n", outfile);
@@ -69,6 +70,11 @@ void record_calloc(void const *var, size_t nmemb, size_t size)
     sprintf(string, "calloc %zu to %p\n", nmemb * size, var);
 
     file_write(&memmanfile, string);
+}
+
+void record_free(void const *var)
+{
+    fprintf(stderr, "Unsupported operating exception\n");
 }
 
 void free_mem_record(void)

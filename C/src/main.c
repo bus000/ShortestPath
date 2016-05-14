@@ -42,7 +42,7 @@ static void free_functions(function_t *function)
     actual_list_t *list;
 
     for (list = function->orders.start; list != NULL; list = list->next)
-        free((order_t *) list->element);
+        FREE((order_t *) list->element);
 
     linked_list_free(&function->orders);
     linked_list_free(&function->algorithms);

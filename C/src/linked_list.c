@@ -167,7 +167,7 @@ int linked_list_remove(linked_list_t *list, void *item)
         if (element->element == item) {
             element->prev->next = element->next;
             element->next->prev = element->prev;
-            free(element);
+            FREE(element);
 
             list->len -= 1;
 
@@ -185,7 +185,7 @@ int linked_list_remove_last(linked_list_t *list)
     if (list->len == 0) {
         return -1;
     } else if (list->len == 1) {
-        free(list->end);
+        FREE(list->end);
         list->start = NULL;
         list->end = NULL;
 
@@ -197,7 +197,7 @@ int linked_list_remove_last(linked_list_t *list)
 
         list->len -= 1;
 
-        free(end);
+        FREE(end);
     }
 
     return 0;
@@ -274,6 +274,6 @@ void linked_list_free(linked_list_t *list)
 
     for (element = list->start; element != NULL; element = next_element) {
         next_element = element->next;
-        free(element);
+        FREE(element);
     }
 }

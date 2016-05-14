@@ -6,7 +6,7 @@
 void path_free(path_t *path)
 {
     if (path->path_size > 0)
-        free(path->path);
+        FREE(path->path);
 }
 
 int path_init(path_t *path)

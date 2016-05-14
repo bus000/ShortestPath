@@ -81,7 +81,7 @@ int dijkstra(path_t *path, digraph_t *graph, vertex_id_t start, vertex_id_t end)
     end_vertex_label = (dijkstra_l_t *) end_vertex->label;
     path->length = end_vertex_label->weight;
 
-    free(vertex_pointers);
+    FREE(vertex_pointers);
 
     return ret_code;
 }

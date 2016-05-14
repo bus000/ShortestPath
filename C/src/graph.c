@@ -155,10 +155,10 @@ int graph_add_edge(digraph_t *graph, vertex_id_t v1, vertex_id_t v2,
 void graph_free(digraph_t *graph)
 {
     /* Free vertices. */
-    free(graph->vertices);
+    FREE(graph->vertices);
 
     if (graph->labels_size != 0)
-        free(graph->labels);
+        FREE(graph->labels);
 }
 
 vertex_t * find_vertex(digraph_t const *graph, vertex_id_t v)
