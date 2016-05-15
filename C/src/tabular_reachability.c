@@ -47,9 +47,8 @@ table_reachability_t table_init(digraph_t const *graph)
 
     MALLOC(table.reaches, sizeof(int8_t *) * graph->vertices_len);
 
-    for (i = 0; i < graph->vertices_len; i++) {
+    for (i = 0; i < graph->vertices_len; i++)
         table.reaches[i] = add_reaching(graph, graph->vertices[i]);
-    }
 
     table.side_len = graph->vertices_len;
 
