@@ -42,6 +42,12 @@ char * error_string(error_t error)
         return "ERR_SLEEP";
     case ERR_FORMAT:
         return "ERR_FORMAT";
+    case ERR_CONFLICT:
+        return "ERR_CONFLICT";
+    case ERR_NOT_FOUND:
+        return "ERR_NOT_FOUND";
+    case ERR_CONCURRENT:
+        return "ERR_CONCURRENT";
     default:
         return "UNKNOWN";
     }
