@@ -3,13 +3,22 @@
 
 #include <stdlib.h>
 
+#ifdef RECORD_MEM
 #define MALLOC(var, size) do {                     \
     var = malloc(size);                            \
     if (var == NULL)                               \
         error_code(ERR_NO_MEM, "Out of memory\n"); \
     record_malloc(var, size);                      \
 } while (0);
+#else
+#define MALLOC(var, size) do {                     \
+    var = malloc(size);                            \
+    if (var == NULL)                               \
+        error_code(ERR_NO_MEM, "Out of memory\n"); \
+} while (0);
+#endif
 
+#ifdef RECORD_MEM
 #define REALLOC(var, newsize) do {                 \
     void *newvar = realloc(var, newsize);          \
     if (var == NULL)                               \
@@ -17,18 +26,40 @@
     record_realloc(var, newvar, newsize);          \
     var = newvar;                                  \
 } while (0);
+#else
+#define REALLOC(var, newsize) do {                 \
+    void *newvar = realloc(var, newsize);          \
+    if (var == NULL)                               \
+        error_code(ERR_NO_MEM, "Out of memory\n"); \
+    var = newvar;                                  \
+} while (0);
+#endif
 
+#ifdef RECORD_MEM
 #define CALLOC(var, nmemb, size) do {              \
     var = calloc(nmemb, size);                     \
     if (var == NULL)                               \
         error_code(ERR_NO_MEM, "Out of memory\n"); \
     record_calloc(var, nmemb, size);               \
 } while (0);
+#else
+#define CALLOC(var, nmemb, size) do {              \
+    var = calloc(nmemb, size);                     \
+    if (var == NULL)                               \
+        error_code(ERR_NO_MEM, "Out of memory\n"); \
+} while (0);
+#endif
 
+#ifdef RECORD_MEM
 #define FREE(var) do {                             \
     free(var);                                     \
     record_free(var);                              \
 } while (0);
+#else
+#define FREE(var) do {                             \
+    free(var);                                     \
+} while (0);
+#endif
 
 /* TODO: record memory in another thread with a lock so that it does not slow
  * processes down. */
