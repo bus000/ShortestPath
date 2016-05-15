@@ -1,9 +1,9 @@
 CC      =gcc
-CFLAGS  =-Wall -g -Werror -Wno-parentheses -std=gnu99
+CFLAGS  =-Wall -g -Werror -Wno-parentheses -std=gnu99 -DRECORD_MEM=1
 SOURCES =$(wildcard *.c)$
 OBJECTS =$(SOURCES:.c=.o)$
 TARGET  =../bin/diff
-LFLAGS  =-L/usr/local/lib -lm
+LFLAGS  =-L/usr/local/lib -lm -lpthread
 
 .PHONY: clean
 

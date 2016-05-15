@@ -6,7 +6,7 @@ OBJECTS   =$(SOURCES:.c=.o)$
 EXOBJECTS =$(shell find '../src/' -name '*.o' | grep -v main.o)$
 TARGETS   =$(SOURCES:.c=)$
 BIN_DIR   =./test_bin
-LFLAGS    =-lm
+LFLAGS    =-lm -lpthread
 
 .PHONY: clean $(TARGETS)
 
