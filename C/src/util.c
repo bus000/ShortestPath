@@ -20,3 +20,8 @@ uint32_t count_char(char const *str, char c)
 
     return count;
 }
+
+inline int even(uint32_t i)
+{
+    return !(i % 2);
+}

@@ -2,52 +2,64 @@
 #include "thorup_dist.h"
 #include "graph_labeling.h"
 #include "mem_man.h"
+#include "util.h"
 #include <stdlib.h>
-
-/* Takes a graph and partitions it in to layers. Returns the number of layers
- * partitioned into. */
-static int layering(digraph_t *graph, vertex_t *start);
-
-/* Set the layer of all vertices in the list to the layer given. */
-static uint32_t set_layer(vertex_list_t *list, uint32_t layer);
-
-static int even(uint32_t i);
-
-static void reachable_for_each(vertex_list_t *dest, vertex_list_t *src);
-static void reaching_for_each(vertex_list_t *dest, vertex_list_t *src,
-        digraph_t *graph);
-
-static int partition(digraph_t const *graph, digraph_t *graphs,  uint32_t layers);
-
-static void remove_inside(vertex_list_t *list, uint32_t layer);
-static void remove_outside(vertex_list_t *list, uint32_t layer);
 
 typedef struct {
     uint32_t layer;
 } thorup_label_t;
 
-static thorup_label_t default_label = { .layer = -1 };
+static uint32_t remove_layer_n = -1; /* 0 */
 
-int thorup_reach_oracle(reachability_oracle_t *oracle, digraph_t *graph)
+static int lesser_remove(vertex_t const *vertex)
 {
-    vertex_t *start = graph_first_vertex(graph);
-    digraph_t *graphs;
-    uint32_t layers;
+    thorup_label_t const *label = (thorup_label_t const *) vertex->label;
 
-    if (start == NULL)
-        return -1;
+    return label->layer > remove_layer_n + 1;
+}
 
-    graph_init_labels(graph, &default_label, sizeof(thorup_label_t));
+static void remove_inside(vertex_list_t *list, uint32_t layer)
+{
+    remove_layer_n = layer;
 
-    layers = layering(graph, start) - 1;
-    MALLOC(graphs, sizeof(digraph_t) * layers);
+    vertex_list_filter(list, lesser_remove);
+}
 
-    partition(graph, graphs, layers);
+static int greater_remove(vertex_t const *vertex)
+{
+    thorup_label_t const *label = (thorup_label_t const *) vertex->label;
 
-    oracle->graphs = graphs;
-    oracle->graphs_len = layers;
+    return label->layer < remove_layer_n;
+}
 
-    return 0;
+static void remove_outside(vertex_list_t *list, uint32_t layer)
+{
+    remove_layer_n = layer;
+
+    vertex_list_filter(list, greater_remove);
+}
+
+static void reachable_for_each(vertex_list_t *dest, vertex_list_t *src)
+{
+    uint32_t i;
+    vertex_t *vertex;
+
+    for (i = 0; i < src->len; i++) {
+        vertex = src->vertices[i];
+        reachable(dest, vertex);
+    }
+}
+
+static void reaching_for_each(vertex_list_t *dest, vertex_list_t *src,
+        digraph_t *graph)
+{
+    uint32_t i;
+    vertex_t *vertex;
+
+    for (i = 0; i < src->len; i++) {
+        vertex = src->vertices[i];
+        reaching(dest, vertex, graph);
+    }
 }
 
 static int partition(digraph_t const *graph, digraph_t *graphs, uint32_t layers)
@@ -78,34 +90,23 @@ static int partition(digraph_t const *graph, digraph_t *graphs, uint32_t layers)
     return 0;
 }
 
-static uint32_t remove_layer_n = -1; /* 0 */
-
-static int lesser_remove(vertex_t const *vertex)
+static uint32_t set_layer(vertex_list_t *list, uint32_t layer)
 {
-    thorup_label_t const *label = (thorup_label_t const *) vertex->label;
+    uint32_t i;
+    vertex_t *vertex;
+    thorup_label_t *thorup_label;
+    uint32_t changed = 0;
 
-    return label->layer > remove_layer_n + 1;
-}
+    for (i = 0; i < list->len; i++) {
+        vertex = list->vertices[i];
+        thorup_label = (thorup_label_t *) vertex->label;
+        if (thorup_label->layer == -1) {
+            thorup_label->layer = layer;
+            changed += 1;
+        }
+    }
 
-static int greater_remove(vertex_t const *vertex)
-{
-    thorup_label_t const *label = (thorup_label_t const *) vertex->label;
-
-    return label->layer < remove_layer_n;
-}
-
-static void remove_outside(vertex_list_t *list, uint32_t layer)
-{
-    remove_layer_n = layer;
-
-    vertex_list_filter(list, greater_remove);
-}
-
-static void remove_inside(vertex_list_t *list, uint32_t layer)
-{
-    remove_layer_n = layer;
-
-    vertex_list_filter(list, lesser_remove);
+    return changed;
 }
 
 static int layering(digraph_t *graph, vertex_t *start)
@@ -139,51 +140,28 @@ static int layering(digraph_t *graph, vertex_t *start)
     return layer - 1;
 }
 
-static uint32_t set_layer(vertex_list_t *list, uint32_t layer)
+static thorup_label_t default_label = { .layer = -1 };
+
+int thorup_reach_oracle(reachability_oracle_t *oracle, digraph_t *graph)
 {
-    uint32_t i;
-    vertex_t *vertex;
-    thorup_label_t *thorup_label;
-    uint32_t changed = 0;
+    vertex_t *start = graph_first_vertex(graph);
+    digraph_t *graphs;
+    uint32_t layers;
 
-    for (i = 0; i < list->len; i++) {
-        vertex = list->vertices[i];
-        thorup_label = (thorup_label_t *) vertex->label;
-        if (thorup_label->layer == -1) {
-            thorup_label->layer = layer;
-            changed += 1;
-        }
-    }
+    if (start == NULL)
+        return -1;
 
-    return changed;
-}
+    graph_init_labels(graph, &default_label, sizeof(thorup_label_t));
 
-static inline int even(uint32_t i)
-{
-    return !(i % 2);
-}
+    layers = layering(graph, start) - 1;
+    MALLOC(graphs, sizeof(digraph_t) * layers);
 
-static void reachable_for_each(vertex_list_t *dest, vertex_list_t *src)
-{
-    uint32_t i;
-    vertex_t *vertex;
+    partition(graph, graphs, layers);
 
-    for (i = 0; i < src->len; i++) {
-        vertex = src->vertices[i];
-        reachable(dest, vertex);
-    }
-}
+    oracle->graphs = graphs;
+    oracle->graphs_len = layers;
 
-static void reaching_for_each(vertex_list_t *dest, vertex_list_t *src,
-        digraph_t *graph)
-{
-    uint32_t i;
-    vertex_t *vertex;
-
-    for (i = 0; i < src->len; i++) {
-        vertex = src->vertices[i];
-        reaching(dest, vertex, graph);
-    }
+    return 0;
 }
 
 void reach_oracle_free(reachability_oracle_t *oracle)
