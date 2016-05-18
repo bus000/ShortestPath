@@ -65,7 +65,7 @@ void graph_free(digraph_t *graph);
 
 /* Returns 0 if a path has been found, -1 if either start or end vertex is not
  * found in the graph. */
-int dijkstra(path_t *path, digraph_t *graph, vertex_id_t start, vertex_id_t end);
+int dijkstra(path_t *path, digraph_t *graph, vertex_t *start, vertex_t *end);
 
 /* Constructs the list of vertices reachable from the vertex with the ID
  * given. The result is saved in the list pointer which is assumed to be an

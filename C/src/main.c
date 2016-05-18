@@ -119,10 +119,12 @@ static int run_dijkstra(digraph_t *graph, uint32_t tests)
     time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
     printf("dijkstra construction time %f\n", time_spent);
 
+    begin = clock();
     for (test = 0; test < tests; test++) {
         v1 = random_vertex(graph);
         v2 = random_vertex(graph);
-        dijkstra(&path, graph, v1->unique_id, v2->unique_id);
+        dijkstra(&path, graph, v1, v2);
+        path_free(&path);
     }
     end = clock();
     time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
