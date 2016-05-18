@@ -44,11 +44,15 @@ table_reachability_t table_init(digraph_t const *graph)
 {
     uint32_t i;
     table_reachability_t table;
+    vertex_t *vertex;
 
     MALLOC(table.reaches, sizeof(int8_t *) * graph->vertices_len);
 
-    for (i = 0; i < graph->vertices_len; i++)
-        table.reaches[i] = add_reaching(graph, graph->vertices[i]);
+    for (i = 0; i < graph->vertices_len; i++) {
+        vertex = graph->vertices[i];
+        printf("Finding reaching for %u\n", vertex->unique_id);
+        table.reaches[i] = add_reaching(graph, vertex);
+    }
 
     table.side_len = graph->vertices_len;
 

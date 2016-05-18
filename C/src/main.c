@@ -174,16 +174,16 @@ int main(int argc, char const *argv[])
 
     switch (function.algorithms) {
     case ALGO_DIJKSTRA:
-        run_dijkstra(&graph, 100);
+        run_dijkstra(&graph, 1000);
         break;
     case ALGO_TABLE:
-        run_tabular(&graph, 100);
+        run_tabular(&graph, 1000);
         break;
     case ALGO_THORUP:
-        run_thorup(&graph, 100);
+        run_thorup(&graph, 1000);
         break;
     case ALGO_DFS:
-        run_dfs(&graph, 100);
+        run_dfs(&graph, 1000);
         break;
     case ALGO_NO:
     default:
