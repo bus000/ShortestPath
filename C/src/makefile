@@ -1,5 +1,5 @@
 CC      =gcc
-CFLAGS  =-Wall -g -Werror -Wno-parentheses -std=gnu99 -DRECORD_MEM=1
+CFLAGS  =-Wall -g -Werror -Wno-parentheses -std=gnu99
 SOURCES =$(wildcard *.c)$
 OBJECTS =$(SOURCES:.c=.o)$
 TARGET  =../bin/diff
