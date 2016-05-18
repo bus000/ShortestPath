@@ -79,13 +79,10 @@ static inline void exchange(void **array, uint32_t i1, uint32_t i2)
 
 static void build_min_heap(min_heap_t *heap)
 {
-    uint32_t i = heap->array_size >> 1;
+    int64_t i;
 
-    do {
+    for (i = heap->array_size / 2; i >= 0; i--)
         heap_min_heapify(heap, i);
-        i--;
-    } while (i != 0);
-    heap_min_heapify(heap, i);
 }
 
 static int heap_min_heapify(min_heap_t *heap, uint32_t index)
