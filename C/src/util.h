@@ -15,4 +15,8 @@ uint32_t count_char(char const *str, char c);
 /* Returns true if an integer i is even, false otherwise. */
 int even(uint32_t i);
 
+/* Generate a random number in the given range, assumes that srand has been
+ * called. */
+int rand_range(int start, int end);
+
 #endif

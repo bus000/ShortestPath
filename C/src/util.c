@@ -1,4 +1,5 @@
 #include "util.h"
+#include <stdlib.h>
 
 inline uint32_t min(uint32_t a, uint32_t b)
 {
@@ -24,4 +25,9 @@ uint32_t count_char(char const *str, char c)
 inline int even(uint32_t i)
 {
     return !(i % 2);
+}
+
+int inline rand_range(int start, int end)
+{
+    return start + (rand() % (end - start));
 }
