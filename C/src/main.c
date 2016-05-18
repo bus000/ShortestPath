@@ -99,32 +99,52 @@ static vertex_t * random_vertex(digraph_t const *graph)
 
 static int run_dijkstra(digraph_t *graph, uint32_t tests)
 {
+    clock_t begin, end;
+    double time_spent;
     path_t path;
     uint32_t test;
     vertex_t *v1, *v2;
+
+    begin = clock();
+    end = clock();
+    time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    printf("dijkstra construction time %f\n", time_spent);
 
     for (test = 0; test < tests; test++) {
         v1 = random_vertex(graph);
         v2 = random_vertex(graph);
         dijkstra(&path, graph, v1->unique_id, v2->unique_id);
     }
+    end = clock();
+    time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    printf("dijkstra querying time %f\n", time_spent);
 
     return 0;
 }
 
 static int run_tabular(digraph_t *graph, uint32_t tests)
 {
+    clock_t begin, end;
+    double time_spent;
     uint32_t test;
     table_reachability_t table;
     vertex_t *v1, *v2;
 
+    begin = clock();
     table = table_init(graph);
+    end = clock();
+    time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    printf("table construction time %f\n", time_spent);
 
+    begin = clock();
     for (test = 0; test < tests; test++) {
         v1 = random_vertex(graph);
         v2 = random_vertex(graph);
         table_reaches(&table, v1, v2);
     }
+    end = clock();
+    time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    printf("table querying time %f\n", time_spent);
 
     table_free(&table);
 
