@@ -28,6 +28,13 @@ typedef struct digraph_s {
     uint64_t edges_len;
 } digraph_t;
 
+typedef struct spanning_tree_s {
+    vertex_t *vertex;
+
+    /* List of spanning_tree_t *. */
+    linked_list_t neighbours;
+} spanning_tree_t;
+
 /* FUNCTIONS. */
 
 /* Initialize a new graph. This function has to be called before any using the
@@ -92,6 +99,9 @@ digraph_t read_graph(char const *graph_file);
  * otherwise. */
 int connected_directed(digraph_t *graph);
 int connected_undirected(digraph_t *graph);
+
+/* Compute and return a breadth first spanning tree for the graph given. */
+spanning_tree_t graph_bf_spanning_tree(digraph_t *graph);
 
 void graph_remove_edge(digraph_t *graph, vertex_t *start, vertex_t *end);
 

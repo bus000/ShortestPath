@@ -34,7 +34,11 @@ typedef struct planar_vertex_s {
 } planar_vertex_t;
 
 typedef struct planar_digraph_s {
+    /* A list of all the edges in the graph (planar_edge_t *). */
+    linked_list_t edges;
 
+    /* A list of all the vertices in the graph (planar_vertex_t *). */
+    linked_list_t vertices;
 } planar_digraph_t;
 
 typedef struct block_s {

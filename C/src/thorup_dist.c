@@ -62,32 +62,37 @@ static void reaching_for_each(vertex_list_t *dest, vertex_list_t *src,
     }
 }
 
-static int partition(digraph_t const *graph, digraph_t *graphs, uint32_t layers)
+/* Returns a linked list of digraph_t *. */
+static linked_list_t partition(digraph_t const *graph, uint32_t layers)
 {
     uint32_t i;
     vertex_list_t inside;
     vertex_list_t outside;
+    linked_list_t graphs = linked_list_init();
+    digraph_t *newgraph;
 
     for (i = 0; i < layers; i++) {
-        graphs[i] = graph_copy(graph);
+        MALLOC(newgraph, sizeof(digraph_t));
 
-        outside = graph_vertices_list(&(graphs[i]));
-        inside = graph_vertices_list(&(graphs[i]));
+        outside = graph_vertices_list(newgraph);
+        inside = graph_vertices_list(newgraph);
         remove_inside(&outside, i);
         remove_outside(&inside, i);
 
-        graph_remove_vertices(&graphs[i], &outside);
-        graph_contract(&graphs[i], &inside);
+        graph_remove_vertices(newgraph, &outside);
+        graph_contract(newgraph, &inside);
 
         vertex_list_free(&outside);
         vertex_list_free(&inside);
+
+        linked_list_add_end(&graphs, newgraph);
     }
 
     /* Free space used on heap. */
     vertex_list_free(&inside);
     vertex_list_free(&outside);
 
-    return 0;
+    return graphs;
 }
 
 static uint32_t set_layer(vertex_list_t *list, uint32_t layer)
@@ -145,8 +150,8 @@ static thorup_label_t default_label = { .layer = -1 };
 int thorup_reach_oracle(reachability_oracle_t *oracle, digraph_t *graph)
 {
     vertex_t *start = graph_first_vertex(graph);
-    digraph_t *graphs;
     uint32_t layers;
+    actual_list_t *next;
 
     if (start == NULL)
         return -1;
@@ -154,24 +159,22 @@ int thorup_reach_oracle(reachability_oracle_t *oracle, digraph_t *graph)
     graph_init_labels(graph, &default_label, sizeof(thorup_label_t));
 
     layers = layering(graph, start) - 1;
-    MALLOC(graphs, sizeof(digraph_t) * layers);
+    oracle->graphs = partition(graph, layers);
 
-    partition(graph, graphs, layers);
-
-    oracle->graphs = graphs;
-    oracle->graphs_len = layers;
+    oracle->spanning_trees = linked_list_init();
+    for (next = oracle->graphs.start; next != NULL; next = next->next) {
+        spanning_tree_t *tree = malloc(sizeof(*tree));
+        *tree = graph_bf_spanning_tree((digraph_t *) next->element);
+        linked_list_add_end(&oracle->spanning_trees, tree);
+    }
 
     return 0;
 }
 
 void reach_oracle_free(reachability_oracle_t *oracle)
 {
-    uint32_t i;
-
-    for (i = 0; i < oracle->graphs_len; i++)
-        graph_free(&(oracle->graphs[i]));
-
-    free(oracle->graphs);
+    linked_list_free(&oracle->graphs);
+    linked_list_free(&oracle->spanning_trees);
 }
 
 int reachability(reachability_oracle_t const *oracle, vertex_t const *v1,
