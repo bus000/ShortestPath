@@ -4,9 +4,9 @@
 #include <inttypes.h>
 #include <stdio.h>
 
-#define PARENT(i) ((i-1) >> 1)
-#define LEFT(i)   ((i << 1) + 1)
-#define RIGHT(i)  ((2 << i) + 2)
+#define PARENT(i) ((((int64_t) i)-1) / 2)
+#define LEFT(i)   ((i * 2) + 1)
+#define RIGHT(i)  ((i * 2) + 2)
 
 typedef struct min_heap_s {
     /* The array holding the pointers. */
