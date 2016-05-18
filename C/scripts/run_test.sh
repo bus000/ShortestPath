@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
-../bin/diff --dijkstra --thorup --tabular ../data/roadNet-CA.txt
+valgrind --tool=massif ../bin/diff --tabular ../data/roadNet-CA.txt
+
+time ../bin/diff --tabular ../data/roadNet-CA.txt
