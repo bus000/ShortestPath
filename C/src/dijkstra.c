@@ -52,23 +52,21 @@ static int dijkstra_algo(path_t *path, digraph_t *graph, vertex_id_t end_vertex,
         min_heap_t *vertices);
 
 /* TODO: Make prettier. */
-int dijkstra(path_t *path, digraph_t *graph, vertex_id_t start, vertex_id_t end)
+int dijkstra(path_t *path, digraph_t *graph, vertex_t *start, vertex_t *end)
 {
-    vertex_t *start_vertex = find_vertex(graph, start);
-    vertex_t *end_vertex = find_vertex(graph, end);
     dijkstra_l_t *end_vertex_label;
     min_heap_t heap;
     uint32_t i;
     vertex_t **vertex_pointers;
     int ret_code;
 
-    if (start_vertex == NULL || end_vertex == NULL)
+    if (start == NULL || end == NULL)
         return -1;
 
     /* Prepare for running the algorithm. */
     path_init(path);
     graph_init_labels(graph, &default_label, sizeof(dijkstra_l_t));
-    graph_set_label(graph, start_vertex, &start_label);
+    graph_set_label(graph, start, &start_label);
     MALLOC(vertex_pointers, sizeof(vertex_t *) * graph->vertices_len);
 
     for (i = 0; i < graph->vertices_len; i++)
@@ -77,8 +75,8 @@ int dijkstra(path_t *path, digraph_t *graph, vertex_id_t start, vertex_id_t end)
     heap_init(&heap, (void **) vertex_pointers, graph->vertices_len,
             compare_vertices, decrease_weight);
 
-    ret_code = dijkstra_algo(path, graph, end, &heap);
-    end_vertex_label = (dijkstra_l_t *) end_vertex->label;
+    ret_code = dijkstra_algo(path, graph, end->unique_id, &heap);
+    end_vertex_label = (dijkstra_l_t *) end->label;
     path->length = end_vertex_label->weight;
 
     FREE(vertex_pointers);
