@@ -203,6 +203,31 @@ int linked_list_remove_last(linked_list_t *list)
     return 0;
 }
 
+int linked_list_remove_first(linked_list_t *list)
+{
+    actual_list_t *start;
+
+    if (list->len == 0) {
+        return -1;
+    } else if (list->len == 1) {
+        FREE(list->start);
+        list->start = NULL;
+        list->end = NULL;
+
+        list->len -= 1;
+    } else {
+        start = list->start;
+        list->start->next->prev = NULL;
+        list->start = list->start->next;
+
+        list->len -= 1;
+
+        FREE(start);
+    }
+
+    return 0;
+}
+
 void const * linked_list_get(linked_list_t const *list, int64_t index)
 {
     actual_list_t *alist = list_goto(list, index);
@@ -266,6 +291,11 @@ int linked_list_prepend(linked_list_t *dest, linked_list_t const *src)
     }
 
     return 0;
+}
+
+int linked_list_empty(linked_list_t const *list)
+{
+    return list->len == 0;
 }
 
 void linked_list_free(linked_list_t *list)

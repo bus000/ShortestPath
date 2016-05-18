@@ -17,11 +17,14 @@ typedef struct function_s {
 
     /* List of algorithms to run. */
     algorithms_t algorithms;
+
+    uint32_t size;
 } function_t;
 
 static void usage(char const *program_name)
 {
-    printf("usage: %s [-v version] [-h help] [--dijkstra] graph_file\n"
+    printf("usage: %s [-v version] [-h help] [--dijkstra]"
+            " [--thorup] [--tabular] [--DFS] [--size=value] graph_file\n"
 
             "   -v: display version information\n"
 
@@ -33,7 +36,10 @@ static void usage(char const *program_name)
 
             "   --tabular: run the table algorithm to complete the orders\n"
 
-            "   --DFS: run the depth first search algorithm to complete the orders\n"
+            "   --DFS: run the depth first search algorithm to complete the"
+                      "orders\n"
+
+            "   --size: the size of the graph\n"
 
             "   graph_file: name of file containing graph data\n",
 
@@ -53,7 +59,8 @@ static function_t parse_args(int argc, char const *argv[])
 {
     int i;
     char const *arg;
-    function_t function = { .graph_file = NULL, .algorithms = ALGO_NO };
+    function_t function = { .graph_file = NULL, .algorithms = ALGO_NO,
+        .size = 0 };
 
     for (i = 1; i < argc; i++) {
         arg = argv[i];
@@ -82,6 +89,8 @@ static function_t parse_args(int argc, char const *argv[])
                 usage(argv[0]);
 
             function.algorithms = ALGO_DFS;
+        } else if (sscanf(arg, "--size=%u", &function.size) == 1) {
+            /* Nop. */
         } else {
             function.graph_file = arg;
         }
@@ -164,13 +173,20 @@ static int run_dfs(digraph_t *graph, uint32_t tests)
 
 int main(int argc, char const *argv[])
 {
-    digraph_t graph;
+    digraph_t graph, limited;
     function_t function = parse_args(argc, argv);
 
     srand(time(NULL));
 
     vertices_init();
     graph = read_graph(function.graph_file);
+
+    if (function.size != 0) {
+        printf("rezising to %u\n", function.size);
+        limited = graph_subgraph(&graph, function.size);
+        graph_free(&graph);
+        graph = limited;
+    }
 
     switch (function.algorithms) {
     case ALGO_DIJKSTRA:

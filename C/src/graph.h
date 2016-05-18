@@ -105,4 +105,6 @@ spanning_tree_t graph_bf_spanning_tree(digraph_t *graph);
 
 void graph_remove_edge(digraph_t *graph, vertex_t *start, vertex_t *end);
 
+digraph_t graph_subgraph(digraph_t const *graph, uint32_t size);
+
 #endif

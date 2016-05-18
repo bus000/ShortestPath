@@ -1,0 +1,12 @@
+removing 100
+queue is empty
+removing 0
+removing 8
+removing 7
+removing 6
+removing 99
+removing 110
+removing 65
+removing 88
+removing 10
+removing 110

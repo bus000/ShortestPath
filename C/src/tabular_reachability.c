@@ -50,7 +50,6 @@ table_reachability_t table_init(digraph_t const *graph)
 
     for (i = 0; i < graph->vertices_len; i++) {
         vertex = graph->vertices[i];
-        printf("Finding reaching for %u\n", vertex->unique_id);
         table.reaches[i] = add_reaching(graph, vertex);
     }
 

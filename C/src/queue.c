@@ -24,5 +24,19 @@ void enqueue(queue_t *queue, void const *element)
 
 void const * dequeue(queue_t *queue)
 {
-    return linked_list_get(&queue->queue, 0);
+    void const * element = linked_list_get(&queue->queue, 0);
+
+    linked_list_remove_first(&queue->queue);
+
+    return element;
+}
+
+int queue_empty(queue_t const *queue)
+{
+    return linked_list_empty(&queue->queue);
+}
+
+void queue_free(queue_t *queue)
+{
+    linked_list_free(&queue->queue);
 }

@@ -73,6 +73,8 @@ int linked_list_remove(linked_list_t *list, void *item);
  * empty and the last element therefore cannot be removed and 0 on success. */
 int linked_list_remove_last(linked_list_t *list);
 
+int linked_list_remove_first(linked_list_t *list);
+
 /* Add the whole list src to the end of the list dest. The pointers from the
  * list src are copied but the values they point to are not. */
 int linked_list_concat(linked_list_t *dest, linked_list_t const *src);
@@ -80,6 +82,9 @@ int linked_list_concat(linked_list_t *dest, linked_list_t const *src);
 /* Add the whole list src to the start of the list dest. The pointers from the
  * list src are copied but the values they point to are not. */
 int linked_list_prepend(linked_list_t *dest, linked_list_t const *src);
+
+/* Returns true if the list is empty and false otherwise. */
+int linked_list_empty(linked_list_t const *list);
 
 /* Free the resources used by the list, does not call free on the pointers
  * contained in the list, that is the callers responsibility. */

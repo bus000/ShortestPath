@@ -22,4 +22,8 @@ void enqueue(queue_t *queue, void const *element);
  * returns NULL otherwise. */
 void const * dequeue(queue_t *queue);
 
+int queue_empty(queue_t const *queue);
+
+void queue_free(queue_t *queue);
+
 #endif
