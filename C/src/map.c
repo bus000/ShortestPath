@@ -4,9 +4,23 @@
 #include <stdlib.h> /* malloc. */
 #include <math.h> /* HUGE_VAL. */
 
+static inline int hash(map_t const *map, void const *key)
+{
+    return map->hash(key) % map->length;
+}
+
 static bucket_list_t * find_key(bucket_list_t *start, void const *key,
-        int (*cmp_keys)(void const *, void const *));
-static int hash(map_t const *map, void const *key);
+        int (*cmp_keys)(void const *, void const *))
+{
+    while (start != NULL) {
+        if (cmp_keys(key, start->key) == 0)
+            return start;
+
+        start = start->next;
+    }
+
+    return NULL;
+}
 
 int map_init(map_t *map, int buckets, int (*hash)(void const *),
         int (*cmp_keys)(void const *, void const *))
@@ -112,22 +126,4 @@ void map_free(map_t *map)
     linked_list_free(&map->values);
 
     FREE(map->buckets);
-}
-
-static inline int hash(map_t const *map, void const *key)
-{
-    return map->hash(key) % map->length;
-}
-
-static bucket_list_t * find_key(bucket_list_t *start, void const *key,
-        int (*cmp_keys)(void const *, void const *))
-{
-    while (start != NULL) {
-        if (cmp_keys(key, start->key) == 0)
-            return start;
-
-        start = start->next;
-    }
-
-    return NULL;
 }
