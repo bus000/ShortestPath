@@ -194,7 +194,7 @@ static int run_dfs(digraph_t *graph, uint32_t tests)
 
 int main(int argc, char const *argv[])
 {
-    digraph_t graph, limited;
+    digraph_t graph;
     function_t function = parse_args(argc, argv);
 
     srand(time(NULL));
@@ -202,12 +202,8 @@ int main(int argc, char const *argv[])
     vertices_init();
     graph = read_graph(function.graph_file);
 
-    if (function.size != 0) {
-        printf("rezising to %u\n", function.size);
-        limited = graph_subgraph(&graph, function.size);
-        graph_free(&graph);
-        graph = limited;
-    }
+    printf("Read graph %s of size %u\n", function.graph_file,
+            graph.vertices_len);
 
     switch (function.algorithms) {
     case ALGO_DIJKSTRA:
