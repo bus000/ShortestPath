@@ -1,6 +1,6 @@
 CC        =gcc
 SRCDIR    =../src/
-CFLAGS    =-Wall -g -ansi -Werror -I$(SRCDIR)
+CFLAGS    =-Wall -g -Werror -I$(SRCDIR)
 SOURCES   =$(wildcard *.c)$
 OBJECTS   =$(SOURCES:.c=.o)$
 EXOBJECTS =$(shell find '../src/' -name '*.o' | grep -v main.o)$

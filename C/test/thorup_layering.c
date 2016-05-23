@@ -64,10 +64,11 @@ int main(int argc, char const *argv[])
 
     thorup_reach_oracle(&oracle, &graph);
 
-    printf("number of graphs %u\n", oracle.graphs_len);
+    printf("number of graphs %" PRId64 "\n", oracle.graphs.len);
 
-    for (i = 0; i < 5; i++) {
-        digraph_t *current_graph = &(oracle.graphs[i]);
+    actual_list_t *next;
+    for (next = oracle.graphs.start; next != NULL; next = next->next) {
+        digraph_t *current_graph = (digraph_t *) next->element;
         printf("graph %u has %u vertices\n", i, current_graph->vertices_len);
     }
 

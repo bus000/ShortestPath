@@ -8,6 +8,7 @@ int main(int argc, char const *argv[])
     digraph_t graph;
     vertex_id_t v0, v1, v2, v3, v4, v5;
     path_t path;
+    vertex_t *vertex0, *vertex5;
 
     vertices_init();
     graph_init(&graph);
@@ -31,7 +32,9 @@ int main(int argc, char const *argv[])
     graph_add_edge(&graph, v4, v2, 3);
     graph_add_edge(&graph, v4, v5, 2);
 
-    dijkstra(&path, &graph, v0, v5);
+    vertex0 = find_vertex(&graph, v0);
+    vertex5 = find_vertex(&graph, v5);
+    dijkstra(&path, &graph, vertex0, vertex5);
 
     printf("path length %u\n", path.length);
 
