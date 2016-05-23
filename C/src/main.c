@@ -169,6 +169,25 @@ static int run_thorup(digraph_t *graph, uint32_t tests)
 
 static int run_dfs(digraph_t *graph, uint32_t tests)
 {
+    clock_t begin, end;
+    double time_spent;
+    uint32_t test;
+    vertex_t *v1, *v2;
+
+    begin = clock();
+    end = clock();
+    time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    printf("DFS construction time %f\n", time_spent);
+
+    begin = clock();
+    for (test = 0; test < tests; test++) {
+        v1 = random_vertex(graph);
+        v2 = random_vertex(graph);
+        reach_DFS(graph, v1, v2);
+    }
+    end = clock();
+    time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    printf("DFS querying time %f\n", time_spent);
 
     return 0;
 }

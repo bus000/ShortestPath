@@ -17,8 +17,7 @@ static void graph_reset_visited(digraph_t *graph)
     }
 }
 
-static int reach_DFS(digraph_t *graph, vertex_t const *start,
-        vertex_t const *end)
+int reach_DFS(digraph_t *graph, vertex_t const *start, vertex_t const *end)
 {
     stack_t stack = stack_init(128); /* Stack of vertex_t *. */
     vertex_t *current, *neighbour;
