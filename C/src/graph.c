@@ -4,6 +4,7 @@
 #include "vertex.h"
 #include "mem_man.h"
 #include "queue.h"
+#include "file.h"
 #include <stdlib.h>
 
 static void graph_reset_visited(digraph_t *graph)
@@ -154,6 +155,11 @@ int graph_add_edge(digraph_t *graph, vertex_id_t v1, vertex_id_t v2,
 
 void graph_free(digraph_t *graph)
 {
+    uint32_t i;
+
+    for (i = 0; i < graph->vertices_len; i++)
+        vertex_free(graph->vertices[i]);
+
     /* Free vertices. */
     FREE(graph->vertices);
 
@@ -455,4 +461,28 @@ void graph_remove_edge(digraph_t *graph, vertex_t *start, vertex_t *end)
     vertex_remove_outgoing(start, end);
     vertex_remove_incoming(end, start);
     graph->edges_len -= 1;
+}
+
+void graph_save(digraph_t const *graph, file_t *file)
+{
+    char line[128];
+    size_t line_size = sizeof(line);
+    uint32_t i, j;
+    vertex_t const *vertex, *end;
+    vertex_id_t v0, v1;
+
+    for (i = 0; i < graph->vertices_len; i++) {
+        vertex = graph->vertices[i];
+        v0 = vertex->unique_id;
+
+        for (j = 0; j < vertex->outgoing_len; j++) {
+            end = vertex->outgoing[j].end;
+            v1 = end->unique_id;
+            if (snprintf(line, line_size, "%u\t%u\n", v0, v1) >= line_size)
+                error_code(ERR_FORMAT, "snprintf truncate %ld chars",
+                        (long long) line_size);
+
+            file_write(file, line);
+        }
+    }
 }

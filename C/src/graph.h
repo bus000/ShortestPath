@@ -1,11 +1,12 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-#include <inttypes.h>
-#include <stdio.h>
 #include "path.h"
 #include "linked_list.h"
 #include "vertex_list.h"
+#include "file.h"
+#include <inttypes.h>
+#include <stdio.h>
 
 #define INIT_GRAPH_SIZE (128)
 #define INIT_LIST_SIZE  (32)
@@ -108,5 +109,8 @@ void graph_remove_edge(digraph_t *graph, vertex_t *start, vertex_t *end);
 digraph_t graph_subgraph(digraph_t const *graph, uint32_t size);
 
 int reach_DFS(digraph_t *graph, vertex_t const *start, vertex_t const *end);
+
+/* Save a graph to a file so that it can be loaded into the program again. */
+void graph_save(digraph_t const *graph, file_t *file);
 
 #endif
