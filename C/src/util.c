@@ -29,5 +29,8 @@ inline int even(uint32_t i)
 
 int inline rand_range(int start, int end)
 {
-    return start + (rand() % (end - start));
+    if (start == end)
+        return start;
+    else
+        return start + (rand() % (end - start));
 }
