@@ -4,6 +4,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 int file_init(file_t *file, char const *path)
@@ -34,23 +36,18 @@ char * file_read(file_t *file)
 
 void file_update(file_t *file)
 {
-    int size = sizeof(char) * CHUNCK_SIZE, next = 0, cread;
-    char *content;
+    struct stat statistics;
 
-    FREE(file->content);
+    if (file->content != NULL)
+        FREE(file->content);
 
-    MALLOC(content, size);
+    if (fstat(file->fileno, &statistics) != 0)
+        error_code(ERR_FILE_OPEN, "Could not get file status\n");
 
-    while (cread = read(file->fileno, &content[next], CHUNCK_SIZE)) {
-        next += cread;
+    MALLOC(file->content, statistics.st_size + 1); /* +1 for \0. */
 
-        if (cread == CHUNCK_SIZE) {
-            size += CHUNCK_SIZE;
-            REALLOC(content, size);
-        }
-    }
-
-    file->content = content;
+    if (fread(file->content, sizeof(char), statistics.st_size, file->file) != statistics.st_size)
+        error_code(ERR_FILE_OPEN, "Could not read file\n");
 
     /* Go back to beginning of file. */
     rewind(file->file);
@@ -60,6 +57,7 @@ int file_write(file_t *file, char const *content)
 {
     fclose(file->file);
     file->file = fopen(file->path, "a");
+    file->fileno = fileno(file->file);
 
     fputs(content, file->file);
 
@@ -67,6 +65,7 @@ int file_write(file_t *file, char const *content)
 
     fclose(file->file);
     file->file = fopen(file->path, "r");
+    file->fileno = fileno(file->file);
 
     return 0;
 }
