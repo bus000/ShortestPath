@@ -32,6 +32,11 @@ int heap_init(min_heap_t *heap, void **array, uint32_t array_size,
         int (*compare)(void const *el1, void const *el2),
         void (*decrease_key)(void *el, void *newkey));
 
+min_heap_t heap_cheap_init(void **array, uint32_t array_size,
+        int (*compare)(void const *el1, void const *el2),
+        void (*decrease_key)(void *el, void *newkey),
+        void const *first);
+
 /* Finds the smallest element in the heap, but keeps it in the heap. */
 void * heap_peek_min(min_heap_t const *heap);
 

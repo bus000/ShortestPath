@@ -72,8 +72,8 @@ int dijkstra(path_t *path, digraph_t *graph, vertex_t *start, vertex_t *end)
     for (i = 0; i < graph->vertices_len; i++)
         vertex_pointers[i] = graph->vertices[i];
 
-    heap_init(&heap, (void **) vertex_pointers, graph->vertices_len,
-            compare_vertices, decrease_weight);
+    heap = heap_cheap_init((void **) vertex_pointers, graph->vertices_len,
+            compare_vertices, decrease_weight, start);
 
     ret_code = dijkstra_algo(path, graph, end->unique_id, &heap);
     end_vertex_label = (dijkstra_l_t *) end->label;
