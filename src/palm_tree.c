@@ -43,7 +43,7 @@ static uint32_t edge_score(edge_t const *edge)
         return 2 * palm_lowest(edge->end) + 1;
 
 
-    fprintf(stderr, "Error should never not hit any of the cases above\n");
+    fprintf(stderr, "Error not hit any of the cases above\n");
     return -1;
 }
 
