@@ -1,3 +1,4 @@
+#include "dijkstra.h"
 #include "graph.h"
 #include "heap.h"
 #include "error.h"
@@ -7,7 +8,7 @@
 #include <stdio.h>
 
 /* The label given to the vertices in the graph when using Dijkstra. */
-typedef struct DijkstraLabel {
+typedef struct dijkstra_label_s {
     /* True if the distance to the vertex is infinity, false otherwise. */
     int infinity;
 
@@ -16,7 +17,7 @@ typedef struct DijkstraLabel {
 
     /* Pointer to the previous vertex in the shortest path. NULL if not
      * known. */
-    struct DijkstraLabel *prev;
+    struct dijkstra_label_s *prev;
 } dijkstra_l_t;
 
 static dijkstra_l_t default_label = { .infinity = 1, .weight = 0, .prev = NULL };
@@ -25,13 +26,16 @@ static dijkstra_l_t start_label = { .infinity = 0, .weight = 0, .prev = NULL };
 /* Returns true as long as the Dijkstra algorithm should continue. The algorithm
  * stops when current is NULL, current is end or the current node is infinitely
  * far away. */
-static inline int dijkstra_finish(vertex_t *current, vertex_id_t end)
+static inline int dijkstra_finish(vertex_t *current, vertex_t *end)
 {
     dijkstra_l_t *current_label = (dijkstra_l_t *) current->label;
 
-    return current != NULL &&
-        current->unique_id != end &&
-        !current_label->infinity;
+    if (end == NULL)
+        return 1;
+    else
+        return current != NULL &&
+            current->unique_id != end->unique_id &&
+            !current_label->infinity;
 }
 
 /* Returns true if the dist given is less than the distance already in the
@@ -46,7 +50,7 @@ static inline int shorter_dist(dijkstra_l_t *label, uint32_t dist)
  * min heap should be a heap of all vertices sorted by their current distances
  * in their Dijkstra labels, the end vertex should be the vertex ID of where the
  * algorithm should search for a path to. */
-static int dijkstra_algo(path_t *path, digraph_t *graph, vertex_id_t end_vertex,
+static int dijkstra_algo(path_t *path, digraph_t *graph, vertex_t *end_vertex,
         min_heap_t *vertices)
 {
     int i;
@@ -55,7 +59,7 @@ static int dijkstra_algo(path_t *path, digraph_t *graph, vertex_id_t end_vertex,
     uint32_t current_dist = current_label->weight, newdist;
     edge_t *edges = current->outgoing, *edge;
 
-    while (dijkstra_finish(current, end_vertex)) {
+    while (dijkstra_finish(current, end_vertex) && !heap_empty(vertices)) {
         /* Loop through edges. */
         for (i = 0; i < current->outgoing_len; i++) {
             edge = &edges[i];
@@ -74,7 +78,10 @@ static int dijkstra_algo(path_t *path, digraph_t *graph, vertex_id_t end_vertex,
         current_dist = current_label->weight;
     }
 
-    return current->unique_id == end_vertex ? 0 : -1;
+    if (end_vertex != NULL)
+        return current->unique_id == end_vertex->unique_id ? 0 : -1;
+    else
+        return 0;
 }
 
 /* Compare two Dijkstra labels, returns 0 if equal, 1 if l1 > l2 and -1 if
@@ -128,7 +135,7 @@ int dijkstra(path_t *path, digraph_t *graph, vertex_t *start, vertex_t *end)
     vertex_t **vertex_pointers;
     int ret_code;
 
-    if (start == NULL || end == NULL)
+    if (start == NULL)
         return -1;
 
     /* Prepare for running the algorithm. */
@@ -143,11 +150,36 @@ int dijkstra(path_t *path, digraph_t *graph, vertex_t *start, vertex_t *end)
     heap = heap_cheap_init((void **) vertex_pointers, graph->vertices_len,
             compare_vertices, decrease_weight, start);
 
-    ret_code = dijkstra_algo(path, graph, end->unique_id, &heap);
-    end_vertex_label = (dijkstra_l_t *) end->label;
-    path->length = end_vertex_label->weight;
+    ret_code = dijkstra_algo(path, graph, end, &heap);
+
+    if (end != NULL) {
+        end_vertex_label = (dijkstra_l_t *) end->label;
+        path->length = end_vertex_label->weight;
+    }
 
     FREE(vertex_pointers);
 
     return ret_code;
+}
+
+dijkstra_oracle_t dijkstra_init(digraph_t *graph, vertex_t *source)
+{
+    path_t path;
+    dijkstra_oracle_t oracle = { .source = source, .graph = graph };
+
+    dijkstra(&path, graph, source, NULL);
+
+    return oracle;
+}
+
+int dijkstra_reaches(dijkstra_oracle_t const *oracle, vertex_t const *end)
+{
+    dijkstra_l_t *label = end->label;
+
+    return !label->infinity;
+}
+
+void dijkstra_free(dijkstra_oracle_t *oracle)
+{
+    graph_free(oracle->graph);
 }

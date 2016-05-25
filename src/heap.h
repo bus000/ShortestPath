@@ -55,4 +55,7 @@ int heap_decrease_element(min_heap_t *heap, void *el, void *newkey);
  * in the heap. */
 void heap_print(void *h, FILE *f, void (*print_el)(void *, FILE *));
 
+/* Return true if heap is empty and false otherwise. */
+int heap_empty(min_heap_t const *heap);
+
 #endif

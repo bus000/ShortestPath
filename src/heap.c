@@ -129,3 +129,8 @@ int heap_decrease_element(min_heap_t *heap, void *el, void *newkey)
 
     return -1;
 }
+
+int heap_empty(min_heap_t const *heap)
+{
+    return heap->array_size == 0;
+}
