@@ -1,15 +1,15 @@
 #include "../src/thorup_dist.h"
 #include "../src/graph.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 #define VERTEX_NUMBER (32)
 
-int main(int argc, char const *argv[])
+static digraph_t construct_graph()
 {
     uint32_t i;
     digraph_t graph;
     vertex_id_t vertices[VERTEX_NUMBER + 1] = { 0 };
-    reachability_oracle_t oracle;
 
     vertices_init();
     graph_init(&graph);
@@ -57,24 +57,28 @@ int main(int argc, char const *argv[])
     graph_add_edge(&graph, vertices[13], vertices[27], 2);
     graph_add_edge(&graph, vertices[13], vertices[28], 2);
     graph_add_edge(&graph, vertices[13], vertices[29], 2);
-
     graph_add_edge(&graph, vertices[30], vertices[16], 2);
     graph_add_edge(&graph, vertices[30], vertices[31], 2);
     graph_add_edge(&graph, vertices[32], vertices[31], 2);
 
-    thorup_reach_oracle(&oracle, &graph);
+    return graph;
+}
 
-    printf("number of graphs %" PRId64 "\n", oracle.graphs.len);
+int main(int argc, char const *argv[])
+{
+    uint32_t i;
+    digraph_t graph = construct_graph();
+    vertex_t *vertex;
+    thorup_label_t *thorup_label;
 
-    actual_list_t *next;
-    for (next = oracle.graphs.start; next != NULL; next = next->next) {
-        digraph_t *current_graph = (digraph_t *) next->element;
-        printf("graph %u has %u vertices\n", i, current_graph->vertices_len);
+    layering(&graph);
+
+    for (i = 0; i < graph.vertices_len; i++) {
+        vertex = graph.vertices[i];
+        thorup_label = vertex->label;
+
+        printf("vertex %u has layer %u\n", vertex->unique_id, thorup_label->layer);
     }
 
-    graph_free(&graph);
-    reach_oracle_free(&oracle);
-    vertices_free();
-
-    return 0;
+    return EXIT_SUCCESS;
 }

@@ -17,11 +17,13 @@ int vertex_list_init(vertex_list_t *list)
 int vertex_list_init_array(vertex_list_t *list, vertex_t **vertices,
         size_t len)
 {
-    MALLOC(list->vertices, sizeof(vertex_t *) * len);
+    if (len != 0) {
+        MALLOC(list->vertices, sizeof(vertex_t *) * len);
+        memcpy(list->vertices, vertices, sizeof(vertex_t *) * len);
+    }
 
     list->len = len;
     list->size = len;
-    memcpy(list->vertices, vertices, sizeof(vertex_t *) * len);
 
     return 0;
 }

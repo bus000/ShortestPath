@@ -3,6 +3,10 @@
 
 #include "graph.h"
 
+typedef struct thorup_label_s {
+    uint32_t layer;
+} thorup_label_t;
+
 typedef struct reachability_oracle_s {
     /* A list of graphs, each consisting of two consecutive layers in the
      * layering algorithm. */
@@ -28,5 +32,7 @@ int reachability(reachability_oracle_t const *oracle, vertex_t const *v1,
 
 /* Free the resources used by the reachability oracle. */
 void reach_oracle_free(reachability_oracle_t *oracle);
+
+int layering(digraph_t *graph);
 
 #endif

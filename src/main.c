@@ -1,6 +1,7 @@
 #include "error.h"
 #include "graph.h"
 #include "tabular_reachability.h"
+#include "thorup_dist.h"
 #include "util.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,7 +9,7 @@
 #include <time.h>
 
 typedef enum algorithms_e {
-    ALGO_NO, ALGO_DIJKSTRA, ALGO_TABLE, ALGO_THORUP, ALGO_DFS
+    ALGO_NO, ALGO_DIJKSTRA, ALGO_TABLE, ALGO_THORUP, ALGO_DFS, ALGO_LAYER,
 } algorithms_t;
 
 typedef struct function_s {
@@ -89,6 +90,11 @@ static function_t parse_args(int argc, char const *argv[])
                 usage(argv[0]);
 
             function.algorithms = ALGO_DFS;
+        } else if (strcmp("--layer", arg) == 0) {
+            if (function.algorithms != ALGO_NO)
+                usage(argv[0]);
+
+            function.algorithms = ALGO_LAYER;
         } else if (sscanf(arg, "--size=%u", &function.size) == 1) {
             /* Nop. */
         } else {
@@ -192,6 +198,20 @@ static int run_dfs(digraph_t *graph, uint32_t tests)
     return 0;
 }
 
+static int run_layer(digraph_t *graph, uint32_t tests)
+{
+    clock_t begin, end;
+    double time_spent;
+
+    begin = clock();
+    layering(graph);
+    end = clock();
+    time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    printf("Layering construction time %f\n", time_spent);
+
+    return 0;
+}
+
 int main(int argc, char const *argv[])
 {
     digraph_t graph;
@@ -217,6 +237,9 @@ int main(int argc, char const *argv[])
         break;
     case ALGO_DFS:
         run_dfs(&graph, 1000);
+        break;
+    case ALGO_LAYER:
+        run_layer(&graph, 1000);
         break;
     case ALGO_NO:
     default:
