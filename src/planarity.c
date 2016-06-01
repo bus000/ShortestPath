@@ -224,18 +224,8 @@ static void planarity(vertex_t *cstart, vertex_t *u, vertex_t *v, int *x,
         linked_list_t *b, uint32_t *n_side)
 {
     vertex_t *w = v;
-    /*printf("spine of %u -> %u\n", u->unique_id, w->unique_id);*/
     linked_list_t spi = spine(&w, u); /* List of vertices. */
     linked_list_t q;
-
-    printf("cycle start %u\n", cstart->unique_id);
-
-    /*[> Print spine. <]*/
-    /*printf("spine %u ", u->unique_id);*/
-    /*for (actual_list_t *next = spi.start; next != NULL; next = next->next) {*/
-        /*printf("-> %u ", ((vertex_t *) next->element)->unique_id);*/
-    /*}*/
-    /*printf("-> %u\n", w->unique_id);*/
 
     add_s_to_sp(b, cstart, w, n_side, x);
 
@@ -273,28 +263,10 @@ int planar(digraph_t *graph)
         x = 1;
         b = linked_list_init();
 
-        /*for (uint32_t i = 0; i < biconnected->vertices_len; i++) {*/
-            /*printf("vertex %u\n", biconnected->vertices[i]->unique_id);*/
-            /*printf("\tincoming %u\n", biconnected->vertices[i]->incoming_len);*/
-            /*printf("\toutgoing %u\n", biconnected->vertices[i]->outgoing_len);*/
-        /*}*/
-
-        /*for (uint32_t i = 0; i < biconnected->vertices_len; i++) {*/
-            /*vertex_t *vertex = biconnected->vertices[i];*/
-            /*vertex_t *adjasent = vertex->outgoing[0].end;*/
-            /*printf("spine of %u - %u\n", vertex->unique_id, adjasent->unique_id);*/
-            /*linked_list_t spi = spine(&adjasent, vertex);*/
-
-            /*printf("start %u\n", vertex->unique_id);*/
-            /*for (actual_list_t *next = spi.start; next != NULL; next = next->next) {*/
-                /*printf("during %u\n", ((vertex_t *) next->element)->unique_id);*/
-            /*}*/
-            /*printf("after %u\n", adjasent->unique_id);*/
-        /*}*/
-
-        planarity(palm0, palm0, palm0->outgoing[0].end, &x, &b, &n_side);
-
-        return x ? 0 : -3;
+        if (palm0->outgoing[0].end == NULL)
+            printf("Graph consist of a single vertex.\n");
+        else
+            planarity(palm0, palm0, palm0->outgoing[0].end, &x, &b, &n_side);
     }
 
     /* TODO: Collect all the planar graphs created by planarity and embed them
@@ -302,6 +274,5 @@ int planar(digraph_t *graph)
 
     /* TODO: Free resources used in the function. */
 
-    fprintf(stderr, "problem\n");
     return 0;
 }

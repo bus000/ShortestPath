@@ -163,6 +163,7 @@ static void sort_adjasent(digraph_t *graph)
         vertex = graph->vertices[i];
 
         for (j = 0; j < vertex->outgoing_len; j++) {
+            MALLOC(edges_end, sizeof(edge_t));
             *edges_end = vertex->outgoing[j];
 
             set_add(&bucket[edge_score(edges_end)], edges_end);
@@ -170,6 +171,7 @@ static void sort_adjasent(digraph_t *graph)
         }
 
         for (j = 0; j < vertex->incoming_len; j++) {
+            MALLOC(edges_end, sizeof(edge_t));
             *edges_end = vertex->incoming[j];
 
             set_add(&bucket[edge_score(edges_end)], edges_end);

@@ -31,7 +31,7 @@ digraph_t read_graph(char const *graph_file)
 {
     digraph_t graph;
     char *content, *l;
-    file_t file;
+    file_t file = { 0 };
     uint32_t v0, v1, *newvertex;
     vertex_t *vertex0, *vertex1;
     map_t vertices;
