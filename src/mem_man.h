@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #define MALLOC(var, size) do {                                                 \
-    var = malloc(size);                                                        \
+    var = calloc(1, size);                                                     \
     if (var == NULL)                                                           \
         error_code(ERR_NO_MEM, "Out of memory, %s, %d\n", __FILE__, __LINE__); \
 } while (0);
