@@ -70,8 +70,9 @@ int main(int argc, char const *argv[])
     digraph_t graph = construct_graph();
     vertex_t *vertex;
     thorup_label_t *thorup_label;
+    reachability_oracle_t oracle;
 
-    layering(&graph);
+    thorup_reach_oracle(&oracle, &graph);
 
     for (i = 0; i < graph.vertices_len; i++) {
         vertex = graph.vertices[i];
