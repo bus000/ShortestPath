@@ -3,6 +3,7 @@
 #include "tabular_reachability.h"
 #include "thorup_dist.h"
 #include "util.h"
+#include "planarity.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,6 +11,7 @@
 
 typedef enum algorithms_e {
     ALGO_NO, ALGO_DIJKSTRA, ALGO_TABLE, ALGO_THORUP, ALGO_DFS, ALGO_LAYER,
+    ALGO_PLANAR,
 } algorithms_t;
 
 typedef struct function_s {
@@ -19,13 +21,16 @@ typedef struct function_s {
     /* List of algorithms to run. */
     algorithms_t algorithms;
 
-    uint32_t size;
+    /* True if the algorithms should be run as single source, false
+     * otherwise. */
+    int8_t single_source;
 } function_t;
 
 static void usage(char const *program_name)
 {
     printf("usage: %s [-v version] [-h help] [--dijkstra]"
-            " [--thorup] [--tabular] [--DFS] [--size=value] graph_file\n"
+            " [--thorup] [--tabular] [--DFS] [--layer] [--planarity]"
+            " graph_file\n"
 
             "   -v: display version information\n"
 
@@ -40,7 +45,9 @@ static void usage(char const *program_name)
             "   --DFS: run the depth first search algorithm to complete the"
                       "orders\n"
 
-            "   --size: the size of the graph\n"
+            "   --layer: run Thorup layering\n"
+
+            "   --planarity: run planarity\n"
 
             "   graph_file: name of file containing graph data\n",
 
@@ -61,7 +68,7 @@ static function_t parse_args(int argc, char const *argv[])
     int i;
     char const *arg;
     function_t function = { .graph_file = NULL, .algorithms = ALGO_NO,
-        .size = 0 };
+        .single_source = 0 };
 
     for (i = 1; i < argc; i++) {
         arg = argv[i];
@@ -95,8 +102,11 @@ static function_t parse_args(int argc, char const *argv[])
                 usage(argv[0]);
 
             function.algorithms = ALGO_LAYER;
-        } else if (sscanf(arg, "--size=%u", &function.size) == 1) {
-            /* Nop. */
+        } else if (strcmp("--planarity", arg) == 0) {
+            if (function.algorithms != ALGO_NO)
+                usage(argv[0]);
+
+            function.algorithms = ALGO_PLANAR;
         } else {
             function.graph_file = arg;
         }
@@ -122,7 +132,7 @@ static int run_dijkstra(digraph_t *graph, uint32_t tests)
 
     begin = clock();
     end = clock();
-    time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
     printf("dijkstra construction time %f\n", time_spent);
 
     begin = clock();
@@ -133,7 +143,7 @@ static int run_dijkstra(digraph_t *graph, uint32_t tests)
         path_free(&path);
     }
     end = clock();
-    time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
     printf("dijkstra querying time %f\n", time_spent);
 
     return 0;
@@ -150,7 +160,7 @@ static int run_tabular(digraph_t *graph, uint32_t tests)
     begin = clock();
     table = table_init(graph);
     end = clock();
-    time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
     printf("table construction time %f\n", time_spent);
 
     begin = clock();
@@ -160,7 +170,7 @@ static int run_tabular(digraph_t *graph, uint32_t tests)
         table_reaches(&table, v1, v2);
     }
     end = clock();
-    time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
     printf("table querying time %f\n", time_spent);
 
     table_free(&table);
@@ -182,7 +192,7 @@ static int run_dfs(digraph_t *graph, uint32_t tests)
 
     begin = clock();
     end = clock();
-    time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
     printf("DFS construction time %f\n", time_spent);
 
     begin = clock();
@@ -192,7 +202,7 @@ static int run_dfs(digraph_t *graph, uint32_t tests)
         reach_DFS(graph, v1, v2);
     }
     end = clock();
-    time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
     printf("DFS querying time %f\n", time_spent);
 
     return 0;
@@ -200,14 +210,30 @@ static int run_dfs(digraph_t *graph, uint32_t tests)
 
 static int run_layer(digraph_t *graph, uint32_t tests)
 {
+    reachability_oracle_t oracle;
     clock_t begin, end;
     double time_spent;
 
     begin = clock();
-    layering(graph);
+    thorup_reach_oracle(&oracle, graph);
     end = clock();
-    time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
     printf("Layering construction time %f\n", time_spent);
+
+    return 0;
+}
+
+static int run_planar(digraph_t *graph, uint32_t tests)
+{
+    clock_t begin, end;
+    double time_spent;
+
+    begin = clock();
+    planar(graph);
+    end = clock();
+    time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
+
+    printf("Planarity construction time %f\n", time_spent);
 
     return 0;
 }
@@ -240,6 +266,9 @@ int main(int argc, char const *argv[])
         break;
     case ALGO_LAYER:
         run_layer(&graph, 1000);
+        break;
+    case ALGO_PLANAR:
+        run_planar(&graph, 1000);
         break;
     case ALGO_NO:
     default:
