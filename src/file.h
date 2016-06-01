@@ -20,7 +20,7 @@ typedef struct file_s {
 
 /* Initialize a new file_t. If the file cannot be found, -1 is returned, 0 on no
  * error. */
-int file_init(file_t *file, char const *path);
+void file_init(file_t *file, char const *path);
 
 /* Read the file and return a pointer to the character array containing the
  * content. The string returned by this function should be freed by the

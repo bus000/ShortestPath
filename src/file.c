@@ -8,28 +8,29 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-int file_init(file_t *file, char const *path)
+void file_init(file_t *file, char const *path)
 {
     FILE *filepointer = fopen(path, "r");
 
     if (filepointer == NULL) {
         filepointer = fopen(path, "w+");
         if (filepointer == NULL)
-            return -1;
+            error_code(ERR_FILE_OPEN, "Could not open file %s\n", path);
     }
 
     file->file = filepointer;
     file->fileno = fileno(filepointer);
     file->content = NULL;
     file->path = strdup(path);
-
-    return 0;
 }
 
 char * file_read(file_t *file)
 {
     if (file->content == NULL)
         file_update(file);
+
+    if (file->content == NULL)
+        return NULL;
 
     return strdup(file->content);
 }
