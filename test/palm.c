@@ -3,7 +3,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static linked_list_t spine(vertex_t **w, vertex_t const *u);
+static linked_list_t spine(vertex_t **w, vertex_t const *u)
+{
+    linked_list_t spi = linked_list_init();
+
+    while (palm_number(*w) > palm_number(u)) {
+            linked_list_add_end(&spi, *w);
+            *w = (*w)->outgoing[0].end;
+        }
+
+    return spi;
+}
 
 int main(int argc, char const *argv[])
 {
@@ -52,16 +62,4 @@ int main(int argc, char const *argv[])
     vertices_free();
 
     return EXIT_SUCCESS;
-}
-
-static linked_list_t spine(vertex_t **w, vertex_t const *u)
-{
-    linked_list_t spi = linked_list_init();
-
-    while (palm_number(*w) > palm_number(u)) {
-            linked_list_add_end(&spi, *w);
-            *w = (*w)->outgoing[0].end;
-        }
-
-    return spi;
 }
