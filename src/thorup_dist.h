@@ -33,6 +33,6 @@ int reachability(reachability_oracle_t const *oracle, vertex_t const *v1,
 /* Free the resources used by the reachability oracle. */
 void reach_oracle_free(reachability_oracle_t *oracle);
 
-int layering(digraph_t *graph);
+uint32_t layering(digraph_t *graph);
 
 #endif
