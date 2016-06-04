@@ -432,7 +432,7 @@ digraph_t graph_subgraph(digraph_t const *graph, uint32_t size)
     for (added = 0; added < size && !queue_empty(&queue); ) {
         current = (vertex_t *) dequeue(&queue);
 
-        for (i = 0; i < current->outgoing_len; i++) {
+        for (i = 0; i < current->outgoing_len && added < size; i++) {
             adjasent = current->outgoing[i].end;
             if (!adjasent->visited) {
                 added += 1;
@@ -446,6 +446,23 @@ digraph_t graph_subgraph(digraph_t const *graph, uint32_t size)
             } else {
                 graph_add_edge(&newgraph, current->unique_id,
                         adjasent->unique_id, 1);
+            }
+        }
+
+        for (i = 0; i < current->incoming_len && added < size; i++) {
+            adjasent = current->incoming[i].end;
+            if (!adjasent->visited) {
+                added += 1;
+                newvertex = new_vertex_id(adjasent->unique_id);
+                graph_add_vertex_pointer(&newgraph, newvertex);
+                graph_add_edge(&newgraph, newvertex->unique_id,
+                        current->unique_id, 1);
+
+                adjasent->visited = 1;
+                enqueue(&queue, adjasent);
+            } else {
+                graph_add_edge(&newgraph, adjasent->unique_id,
+                        current->unique_id, 1);
             }
         }
     }
