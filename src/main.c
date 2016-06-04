@@ -1,9 +1,6 @@
 #include "error.h"
 #include "graph.h"
-#include "tabular_reachability.h"
-#include "thorup_dist.h"
-#include "util.h"
-#include "planarity.h"
+#include "algorithms.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -30,24 +27,26 @@ static void usage(char const *program_name)
 {
     printf("usage: %s [-v version] [-h help] [--dijkstra]"
             " [--thorup] [--tabular] [--DFS] [--layer] [--planarity]"
-            " graph_file\n"
+            " [-ss single-source] graph_file\n"
 
-            "   -v: display version information\n"
+            "   -v: display version information.\n"
 
-            "   -h: display usage information\n"
+            "   -h: display usage information.\n"
 
-            "   --dijkstra: run the dijkstra algorithm to complete the orders\n"
+            "   --dijkstra: run the dijkstra algorithm.\n"
 
-            "   --thorup: run the thorup algorithm to complete the orders\n"
+            "   --thorup: run the Thorup algorithm.\n"
 
-            "   --tabular: run the table algorithm to complete the orders\n"
+            "   --tabular: run the table algorithm.\n"
 
-            "   --DFS: run the depth first search algorithm to complete the"
-                      "orders\n"
+            "   --DFS: run the depth first search algorithm.\n"
 
-            "   --layer: run Thorup layering\n"
+            "   --layer: run Thorup layering.\n"
 
-            "   --planarity: run planarity\n"
+            "   --planarity: run planarity.\n"
+
+            "   -ss: single-source, will run the algorithm with a fixed source"
+            " instead of changing it on each run.\n"
 
             "   graph_file: name of file containing graph data\n",
 
@@ -63,6 +62,34 @@ static void version(void)
     exit(EXIT_SUCCESS);
 }
 
+__attribute__((const)) static algorithms_t algorithm(char const *arg)
+{
+    if (strcmp("--dijkstra", arg) == 0)
+        return ALGO_DIJKSTRA;
+
+    if (strcmp("--tabular", arg) == 0)
+        return ALGO_TABLE;
+
+    if (strcmp("--thorup", arg) == 0)
+        return ALGO_THORUP;
+
+    if (strcmp("--DFS", arg) == 0)
+        return ALGO_DFS;
+
+    if (strcmp("--layer", arg) == 0)
+        return ALGO_LAYER;
+
+    if (strcmp("--planarity", arg) == 0)
+        return ALGO_PLANAR;
+
+    return ALGO_NO;
+}
+
+static int arg_match(char const *match, char const *s, char const *l)
+{
+    return strcmp(match, s) == 0 || strcmp(match, l) == 0;
+}
+
 static function_t parse_args(int argc, char const *argv[])
 {
     int i;
@@ -73,169 +100,23 @@ static function_t parse_args(int argc, char const *argv[])
     for (i = 1; i < argc; i++) {
         arg = argv[i];
 
-        if (strcmp("-h", arg) == 0 || strcmp("--help", arg) == 0) {
+        if (arg_match(arg, "-h", "--help")) {
             usage(argv[0]);
-        } else if (strcmp("-v", arg) == 0 || strcmp("--version", arg) == 0) {
+        } else if (arg_match(arg, "-v", "--version")) {
             version();
-        } else if (strcmp("--dijkstra", arg) == 0) {
+        } else if (algorithm(arg) != ALGO_NO) {
             if (function.algorithms != ALGO_NO)
                 usage(argv[0]);
-
-            function.algorithms = ALGO_DIJKSTRA;
-        } else if (strcmp("--tabular", arg) == 0) {
-            if (function.algorithms != ALGO_NO)
-                usage(argv[0]);
-
-            function.algorithms = ALGO_TABLE;
-        } else if (strcmp("--thorup", arg) == 0) {
-            if (function.algorithms != ALGO_NO)
-                usage(argv[0]);
-
-            function.algorithms = ALGO_THORUP;
-        } else if (strcmp("--DFS", arg) == 0) {
-            if (function.algorithms != ALGO_NO)
-                usage(argv[0]);
-
-            function.algorithms = ALGO_DFS;
-        } else if (strcmp("--layer", arg) == 0) {
-            if (function.algorithms != ALGO_NO)
-                usage(argv[0]);
-
-            function.algorithms = ALGO_LAYER;
-        } else if (strcmp("--planarity", arg) == 0) {
-            if (function.algorithms != ALGO_NO)
-                usage(argv[0]);
-
-            function.algorithms = ALGO_PLANAR;
+            else
+                function.algorithms = algorithm(arg);
+        } else if (arg_match(arg, "-ss", "--single-source")) {
+            function.single_source = 1;
         } else {
             function.graph_file = arg;
         }
     }
 
     return function;
-}
-
-static vertex_t * random_vertex(digraph_t const *graph)
-{
-    int i = rand_range(0, graph->vertices_len);
-
-    return graph->vertices[i];
-}
-
-static int run_dijkstra(digraph_t *graph, uint32_t tests)
-{
-    clock_t begin, end;
-    double time_spent;
-    path_t path;
-    uint32_t test;
-    vertex_t *v1, *v2;
-
-    begin = clock();
-    end = clock();
-    time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
-    printf("dijkstra construction time %f\n", time_spent);
-
-    begin = clock();
-    for (test = 0; test < tests; test++) {
-        v1 = random_vertex(graph);
-        v2 = random_vertex(graph);
-        dijkstra(&path, graph, v1, v2);
-        path_free(&path);
-    }
-    end = clock();
-    time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
-    printf("dijkstra querying time %f\n", time_spent);
-
-    return 0;
-}
-
-static int run_tabular(digraph_t *graph, uint32_t tests)
-{
-    clock_t begin, end;
-    double time_spent;
-    uint32_t test;
-    table_reachability_t table;
-    vertex_t *v1, *v2;
-
-    begin = clock();
-    table = table_init(graph);
-    end = clock();
-    time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
-    printf("table construction time %f\n", time_spent);
-
-    begin = clock();
-    for (test = 0; test < tests; test++) {
-        v1 = random_vertex(graph);
-        v2 = random_vertex(graph);
-        table_reaches(&table, v1, v2);
-    }
-    end = clock();
-    time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
-    printf("table querying time %f\n", time_spent);
-
-    table_free(&table);
-
-    return 0;
-}
-
-static int run_thorup(digraph_t *graph, uint32_t tests)
-{
-    return 0;
-}
-
-static int run_dfs(digraph_t *graph, uint32_t tests)
-{
-    clock_t begin, end;
-    double time_spent;
-    uint32_t test;
-    vertex_t *v1, *v2;
-
-    begin = clock();
-    end = clock();
-    time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
-    printf("DFS construction time %f\n", time_spent);
-
-    begin = clock();
-    for (test = 0; test < tests; test++) {
-        v1 = random_vertex(graph);
-        v2 = random_vertex(graph);
-        reach_DFS(graph, v1, v2);
-    }
-    end = clock();
-    time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
-    printf("DFS querying time %f\n", time_spent);
-
-    return 0;
-}
-
-static int run_layer(digraph_t *graph, uint32_t tests)
-{
-    reachability_oracle_t oracle;
-    clock_t begin, end;
-    double time_spent;
-
-    begin = clock();
-    thorup_reach_oracle(&oracle, graph);
-    end = clock();
-    time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
-    printf("Layering construction time %f\n", time_spent);
-
-    return 0;
-}
-
-static int run_planar(digraph_t *graph, uint32_t tests)
-{
-    clock_t begin, end;
-    double time_spent;
-
-    begin = clock();
-    planar(graph);
-    end = clock();
-    time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
-
-    printf("Planarity construction time %f\n", time_spent);
-
-    return 0;
 }
 
 int main(int argc, char const *argv[])
@@ -246,6 +127,7 @@ int main(int argc, char const *argv[])
     srand(time(NULL));
 
     vertices_init();
+    printf("before reading\n");
     graph = read_graph(function.graph_file);
 
     printf("Read graph %s of size %u\n", function.graph_file,
@@ -253,22 +135,40 @@ int main(int argc, char const *argv[])
 
     switch (function.algorithms) {
     case ALGO_DIJKSTRA:
-        run_dijkstra(&graph, 1000);
+        if (function.single_source)
+            run_dijkstra_ss(&graph, 1000);
+        else
+            run_dijkstra(&graph, 1000);
         break;
     case ALGO_TABLE:
-        run_tabular(&graph, 1000);
+        if (function.single_source)
+            run_tabular_ss(&graph, 1000);
+        else
+            run_tabular(&graph, 1000);
         break;
     case ALGO_THORUP:
-        run_thorup(&graph, 1000);
+        if (function.single_source)
+            run_thorup_ss(&graph, 1000);
+        else
+            run_thorup(&graph, 1000);
         break;
     case ALGO_DFS:
-        run_dfs(&graph, 1000);
+        if (function.single_source)
+            run_dfs_ss(&graph, 1000);
+        else
+            run_dfs(&graph, 1000);
         break;
     case ALGO_LAYER:
-        run_layer(&graph, 1000);
+        if (function.single_source)
+            run_layer_ss(&graph, 1000);
+        else
+            run_layer(&graph, 1000);
         break;
     case ALGO_PLANAR:
-        run_planar(&graph, 1000);
+        if (function.single_source)
+            run_planar_ss(&graph, 1000);
+        else
+            run_planar(&graph, 1000);
         break;
     case ALGO_NO:
     default:
