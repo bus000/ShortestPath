@@ -180,6 +180,51 @@ valgrind --tool=massif --massif-out-file=./output/layer_9000.mem  ../bin/diff --
 valgrind --tool=massif --massif-out-file=./output/layer_9500.mem  ../bin/diff --layer ../data/graph_9500.txt  2> /dev/null > /dev/null
 valgrind --tool=massif --massif-out-file=./output/layer_10000.mem ../bin/diff --layer ../data/graph_10000.txt 2> /dev/null > /dev/null
 
+# Run planarity profiling.
+echo "Running planarity time profiling"
+../bin/diff --planarity ../data/graph_500.txt   > ./output/planarity_500.tim
+../bin/diff --planarity ../data/graph_1000.txt  > ./output/planarity_1000.tim
+../bin/diff --planarity ../data/graph_1500.txt  > ./output/planarity_1500.tim
+../bin/diff --planarity ../data/graph_2000.txt  > ./output/planarity_2000.tim
+../bin/diff --planarity ../data/graph_2500.txt  > ./output/planarity_2500.tim
+../bin/diff --planarity ../data/graph_3000.txt  > ./output/planarity_3000.tim
+../bin/diff --planarity ../data/graph_3500.txt  > ./output/planarity_3500.tim
+../bin/diff --planarity ../data/graph_4000.txt  > ./output/planarity_4000.tim
+../bin/diff --planarity ../data/graph_4500.txt  > ./output/planarity_4500.tim
+../bin/diff --planarity ../data/graph_5000.txt  > ./output/planarity_5000.tim
+../bin/diff --planarity ../data/graph_5500.txt  > ./output/planarity_5500.tim
+../bin/diff --planarity ../data/graph_6000.txt  > ./output/planarity_6000.tim
+../bin/diff --planarity ../data/graph_6500.txt  > ./output/planarity_6500.tim
+../bin/diff --planarity ../data/graph_7000.txt  > ./output/planarity_7000.tim
+../bin/diff --planarity ../data/graph_7500.txt  > ./output/planarity_7500.tim
+../bin/diff --planarity ../data/graph_8000.txt  > ./output/planarity_8000.tim
+../bin/diff --planarity ../data/graph_8500.txt  > ./output/planarity_8500.tim
+../bin/diff --planarity ../data/graph_9000.txt  > ./output/planarity_9000.tim
+../bin/diff --planarity ../data/graph_9500.txt  > ./output/planarity_9500.tim
+../bin/diff --planarity ../data/graph_10000.txt > ./output/planarity_10000.tim
+
+echo "Running planarity space profiling"
+valgrind --tool=massif --massif-out-file=./output/planarity_500.mem   ../bin/diff --planarity ../data/graph_500.txt   2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_1000.mem  ../bin/diff --planarity ../data/graph_1000.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_1500.mem  ../bin/diff --planarity ../data/graph_1500.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_2000.mem  ../bin/diff --planarity ../data/graph_2000.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_2500.mem  ../bin/diff --planarity ../data/graph_2500.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_3000.mem  ../bin/diff --planarity ../data/graph_3000.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_3500.mem  ../bin/diff --planarity ../data/graph_3500.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_4000.mem  ../bin/diff --planarity ../data/graph_4000.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_4500.mem  ../bin/diff --planarity ../data/graph_4500.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_5000.mem  ../bin/diff --planarity ../data/graph_5000.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_5500.mem  ../bin/diff --planarity ../data/graph_5500.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_6000.mem  ../bin/diff --planarity ../data/graph_6000.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_6500.mem  ../bin/diff --planarity ../data/graph_6500.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_7000.mem  ../bin/diff --planarity ../data/graph_7000.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_7500.mem  ../bin/diff --planarity ../data/graph_7500.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_8000.mem  ../bin/diff --planarity ../data/graph_8000.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_8500.mem  ../bin/diff --planarity ../data/graph_8500.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_9000.mem  ../bin/diff --planarity ../data/graph_9000.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_9500.mem  ../bin/diff --planarity ../data/graph_9500.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_10000.mem ../bin/diff --planarity ../data/graph_10000.txt 2> /dev/null > /dev/null
+
 # Run tabular SS profiling.
 echo "Running tabular SS time profiling"
 ../bin/diff --tabular -ss ../data/graph_500.txt   > ./output/tabular_ss_500.tim
@@ -317,26 +362,26 @@ valgrind --tool=massif --massif-out-file=./output/DFS_ss_10000.mem ../bin/diff -
 
 # Run layering profiling.
 echo "Running layer SS time profiling"
-../bin/diff --layer -ss ../data/graph_ss_500.txt   > ./output/layer_500.tim
-../bin/diff --layer -ss ../data/graph_ss_1000.txt  > ./output/layer_1000.tim
-../bin/diff --layer -ss ../data/graph_ss_1500.txt  > ./output/layer_1500.tim
-../bin/diff --layer -ss ../data/graph_ss_2000.txt  > ./output/layer_2000.tim
-../bin/diff --layer -ss ../data/graph_ss_2500.txt  > ./output/layer_2500.tim
-../bin/diff --layer -ss ../data/graph_ss_3000.txt  > ./output/layer_3000.tim
-../bin/diff --layer -ss ../data/graph_ss_3500.txt  > ./output/layer_3500.tim
-../bin/diff --layer -ss ../data/graph_ss_4000.txt  > ./output/layer_4000.tim
-../bin/diff --layer -ss ../data/graph_ss_4500.txt  > ./output/layer_4500.tim
-../bin/diff --layer -ss ../data/graph_ss_5000.txt  > ./output/layer_5000.tim
-../bin/diff --layer -ss ../data/graph_ss_5500.txt  > ./output/layer_5500.tim
-../bin/diff --layer -ss ../data/graph_ss_6000.txt  > ./output/layer_6000.tim
-../bin/diff --layer -ss ../data/graph_ss_6500.txt  > ./output/layer_6500.tim
-../bin/diff --layer -ss ../data/graph_ss_7000.txt  > ./output/layer_7000.tim
-../bin/diff --layer -ss ../data/graph_ss_7500.txt  > ./output/layer_7500.tim
-../bin/diff --layer -ss ../data/graph_ss_8000.txt  > ./output/layer_8000.tim
-../bin/diff --layer -ss ../data/graph_ss_8500.txt  > ./output/layer_8500.tim
-../bin/diff --layer -ss ../data/graph_ss_9000.txt  > ./output/layer_9000.tim
-../bin/diff --layer -ss ../data/graph_ss_9500.txt  > ./output/layer_9500.tim
-../bin/diff --layer -ss ../data/graph_ss_10000.txt > ./output/layer_10000.tim
+../bin/diff --layer -ss ../data/graph_500.txt   > ./output/layer_ss_500.tim
+../bin/diff --layer -ss ../data/graph_1000.txt  > ./output/layer_ss_1000.tim
+../bin/diff --layer -ss ../data/graph_1500.txt  > ./output/layer_ss_1500.tim
+../bin/diff --layer -ss ../data/graph_2000.txt  > ./output/layer_ss_2000.tim
+../bin/diff --layer -ss ../data/graph_2500.txt  > ./output/layer_ss_2500.tim
+../bin/diff --layer -ss ../data/graph_3000.txt  > ./output/layer_ss_3000.tim
+../bin/diff --layer -ss ../data/graph_3500.txt  > ./output/layer_ss_3500.tim
+../bin/diff --layer -ss ../data/graph_4000.txt  > ./output/layer_ss_4000.tim
+../bin/diff --layer -ss ../data/graph_4500.txt  > ./output/layer_ss_4500.tim
+../bin/diff --layer -ss ../data/graph_5000.txt  > ./output/layer_ss_5000.tim
+../bin/diff --layer -ss ../data/graph_5500.txt  > ./output/layer_ss_5500.tim
+../bin/diff --layer -ss ../data/graph_6000.txt  > ./output/layer_ss_6000.tim
+../bin/diff --layer -ss ../data/graph_6500.txt  > ./output/layer_ss_6500.tim
+../bin/diff --layer -ss ../data/graph_7000.txt  > ./output/layer_ss_7000.tim
+../bin/diff --layer -ss ../data/graph_7500.txt  > ./output/layer_ss_7500.tim
+../bin/diff --layer -ss ../data/graph_8000.txt  > ./output/layer_ss_8000.tim
+../bin/diff --layer -ss ../data/graph_8500.txt  > ./output/layer_ss_8500.tim
+../bin/diff --layer -ss ../data/graph_9000.txt  > ./output/layer_ss_9000.tim
+../bin/diff --layer -ss ../data/graph_9500.txt  > ./output/layer_ss_9500.tim
+../bin/diff --layer -ss ../data/graph_10000.txt > ./output/layer_ss_10000.tim
 
 echo "Running layer space profiling"
 valgrind --tool=massif --massif-out-file=./output/layer_ss_500.mem   ../bin/diff -ss --layer ../data/graph_500.txt   2> /dev/null > /dev/null
@@ -359,3 +404,48 @@ valgrind --tool=massif --massif-out-file=./output/layer_ss_8500.mem  ../bin/diff
 valgrind --tool=massif --massif-out-file=./output/layer_ss_9000.mem  ../bin/diff -ss --layer ../data/graph_9000.txt  2> /dev/null > /dev/null
 valgrind --tool=massif --massif-out-file=./output/layer_ss_9500.mem  ../bin/diff -ss --layer ../data/graph_9500.txt  2> /dev/null > /dev/null
 valgrind --tool=massif --massif-out-file=./output/layer_ss_10000.mem ../bin/diff -ss --layer ../data/graph_10000.txt 2> /dev/null > /dev/null
+
+# Run planarity SS profiling.
+echo "Running planarity SS time profiling"
+../bin/diff --planarity -ss ../data/graph_500.txt   > ./output/planarity_ss_500.tim
+../bin/diff --planarity -ss ../data/graph_1000.txt  > ./output/planarity_ss_1000.tim
+../bin/diff --planarity -ss ../data/graph_1500.txt  > ./output/planarity_ss_1500.tim
+../bin/diff --planarity -ss ../data/graph_2000.txt  > ./output/planarity_ss_2000.tim
+../bin/diff --planarity -ss ../data/graph_2500.txt  > ./output/planarity_ss_2500.tim
+../bin/diff --planarity -ss ../data/graph_3000.txt  > ./output/planarity_ss_3000.tim
+../bin/diff --planarity -ss ../data/graph_3500.txt  > ./output/planarity_ss_3500.tim
+../bin/diff --planarity -ss ../data/graph_4000.txt  > ./output/planarity_ss_4000.tim
+../bin/diff --planarity -ss ../data/graph_4500.txt  > ./output/planarity_ss_4500.tim
+../bin/diff --planarity -ss ../data/graph_5000.txt  > ./output/planarity_ss_5000.tim
+../bin/diff --planarity -ss ../data/graph_5500.txt  > ./output/planarity_ss_5500.tim
+../bin/diff --planarity -ss ../data/graph_6000.txt  > ./output/planarity_ss_6000.tim
+../bin/diff --planarity -ss ../data/graph_6500.txt  > ./output/planarity_ss_6500.tim
+../bin/diff --planarity -ss ../data/graph_7000.txt  > ./output/planarity_ss_7000.tim
+../bin/diff --planarity -ss ../data/graph_7500.txt  > ./output/planarity_ss_7500.tim
+../bin/diff --planarity -ss ../data/graph_8000.txt  > ./output/planarity_ss_8000.tim
+../bin/diff --planarity -ss ../data/graph_8500.txt  > ./output/planarity_ss_8500.tim
+../bin/diff --planarity -ss ../data/graph_9000.txt  > ./output/planarity_ss_9000.tim
+../bin/diff --planarity -ss ../data/graph_9500.txt  > ./output/planarity_ss_9500.tim
+../bin/diff --planarity -ss ../data/graph_10000.txt > ./output/planarity_ss_10000.tim
+
+echo "Running planarity space profiling"
+valgrind --tool=massif --massif-out-file=./output/planarity_ss_500.mem   ../bin/diff -ss --planarity ../data/graph_500.txt   2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_ss_1000.mem  ../bin/diff -ss --planarity ../data/graph_1000.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_ss_1500.mem  ../bin/diff -ss --planarity ../data/graph_1500.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_ss_2000.mem  ../bin/diff -ss --planarity ../data/graph_2000.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_ss_2500.mem  ../bin/diff -ss --planarity ../data/graph_2500.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_ss_3000.mem  ../bin/diff -ss --planarity ../data/graph_3000.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_ss_3500.mem  ../bin/diff -ss --planarity ../data/graph_3500.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_ss_4000.mem  ../bin/diff -ss --planarity ../data/graph_4000.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_ss_4500.mem  ../bin/diff -ss --planarity ../data/graph_4500.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_ss_5000.mem  ../bin/diff -ss --planarity ../data/graph_5000.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_ss_5500.mem  ../bin/diff -ss --planarity ../data/graph_5500.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_ss_6000.mem  ../bin/diff -ss --planarity ../data/graph_6000.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_ss_6500.mem  ../bin/diff -ss --planarity ../data/graph_6500.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_ss_7000.mem  ../bin/diff -ss --planarity ../data/graph_7000.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_ss_7500.mem  ../bin/diff -ss --planarity ../data/graph_7500.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_ss_8000.mem  ../bin/diff -ss --planarity ../data/graph_8000.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_ss_8500.mem  ../bin/diff -ss --planarity ../data/graph_8500.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_ss_9000.mem  ../bin/diff -ss --planarity ../data/graph_9000.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_ss_9500.mem  ../bin/diff -ss --planarity ../data/graph_9500.txt  2> /dev/null > /dev/null
+valgrind --tool=massif --massif-out-file=./output/planarity_ss_10000.mem ../bin/diff -ss --planarity ../data/graph_10000.txt 2> /dev/null > /dev/null
