@@ -248,6 +248,11 @@ int planar(digraph_t *graph)
     for (list = bicomponents.start; list != NULL; list = list->next) {
         biconnected = (digraph_t *) list->element;
 
+        printf("first biconnected %u vertices\n", biconnected->vertices_len);
+
+        if (biconnected->vertices_len <= 3) /* Trivially planar. */
+            continue;
+
         if (palm_tree(biconnected) != 0)
             return -2;
 
