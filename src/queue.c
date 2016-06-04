@@ -36,6 +36,11 @@ int queue_empty(queue_t const *queue)
     return linked_list_empty(&queue->queue);
 }
 
+int64_t queue_size(queue_t const *queue)
+{
+    return queue->queue.len;
+}
+
 void queue_free(queue_t *queue)
 {
     linked_list_free(&queue->queue);
