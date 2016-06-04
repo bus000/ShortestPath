@@ -21,6 +21,9 @@ typedef struct function_s {
     /* True if the algorithms should be run as single source, false
      * otherwise. */
     int8_t single_source;
+
+    /* Generate the test graphs of different sizes from the input graph. */
+    int8_t generate_graph;
 } function_t;
 
 static void usage(char const *program_name)
@@ -95,7 +98,7 @@ static function_t parse_args(int argc, char const *argv[])
     int i;
     char const *arg;
     function_t function = { .graph_file = NULL, .algorithms = ALGO_NO,
-        .single_source = 0 };
+        .single_source = 0, .generate_graph = 0 };
 
     for (i = 1; i < argc; i++) {
         arg = argv[i];
@@ -109,6 +112,8 @@ static function_t parse_args(int argc, char const *argv[])
                 usage(argv[0]);
             else
                 function.algorithms = algorithm(arg);
+        } else if (arg_match(arg, "-gg", "--generate_graph")) {
+            function.generate_graph = 1;
         } else if (arg_match(arg, "-ss", "--single-source")) {
             function.single_source = 1;
         } else {
@@ -117,6 +122,31 @@ static function_t parse_args(int argc, char const *argv[])
     }
 
     return function;
+}
+
+static void generate_graphs(digraph_t *graph)
+{
+    uint32_t size;
+    digraph_t newgraph;
+    file_t file;
+    char filename[128] = { 0 };
+
+    for (size = 500; size <= 10000; size += 500) {
+        sprintf(filename, "../data/graph_%u.txt", size);
+        file_init(&file, filename);
+        newgraph = graph_subgraph(graph, size);
+
+        if (newgraph.vertices_len != size) {
+            fprintf(stderr, "Error graph should be size %u, but was %u\n", size,
+                    newgraph.vertices_len);
+
+            exit(EXIT_FAILURE);
+        }
+
+        graph_save(&newgraph, &file);
+        file_free(&file);
+        graph_free(&newgraph);
+    }
 }
 
 int main(int argc, char const *argv[])
@@ -129,9 +159,15 @@ int main(int argc, char const *argv[])
     vertices_init();
     printf("before reading\n");
     graph = read_graph(function.graph_file);
-
     printf("Read graph %s of size %u\n", function.graph_file,
             graph.vertices_len);
+
+    if (function.generate_graph) {
+        generate_graphs(&graph);
+        graph_free(&graph);
+        vertices_free();
+        return EXIT_SUCCESS;
+    }
 
     switch (function.algorithms) {
     case ALGO_DIJKSTRA:
