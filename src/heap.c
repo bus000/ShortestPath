@@ -1,12 +1,19 @@
 #include "heap.h"
 #include <stdlib.h>
 
-static inline void exchange(void **array, uint32_t i1, uint32_t i2)
+static inline void exchange(void **array, uint32_t i1, uint32_t i2,
+        void (*set_index)(void *el, uint32_t index))
 {
-    void *a = array[i1];
+    void *p1 = array[i1];
+    void *p2 = array[i2];
 
-    array[i1] = array[i2];
-    array[i2] = a;
+    if (set_index != NULL) {
+        set_index(p1, i2);
+        set_index(p2, i1);
+    }
+
+    array[i1] = p2;
+    array[i2] = p1;
 }
 
 static int heap_min_heapify(min_heap_t *heap, uint32_t index)
@@ -27,7 +34,7 @@ static int heap_min_heapify(min_heap_t *heap, uint32_t index)
         smallest = r_index;
 
     if (smallest != index) {
-        exchange(array, index, smallest);
+        exchange(array, index, smallest, heap->set_index);
         heap_min_heapify(heap, smallest);
     }
 
@@ -50,6 +57,7 @@ int heap_init(min_heap_t *heap, void **array, uint32_t array_size,
     heap->array_size = array_size;
     heap->compare = compare;
     heap->decrease_key = decrease_key;
+    heap->set_index = NULL;
 
     build_min_heap(heap);
 
@@ -59,25 +67,35 @@ int heap_init(min_heap_t *heap, void **array, uint32_t array_size,
 min_heap_t heap_cheap_init(void **array, uint32_t array_size,
         int (*compare)(void const *el1, void const *el2),
         void (*decrease_key)(void *el, void *newkey),
-        void const *first)
+        void const *first, void (*set_index)(void *el, uint32_t index))
 {
     uint32_t i;
-    void const *current;
+    void *current;
     min_heap_t heap;
 
     heap.array = array;
     heap.array_size = array_size;
     heap.compare = compare;
     heap.decrease_key = decrease_key;
+    heap.set_index = set_index;
 
     for (i = 0; i < array_size; i++) {
         current = array[i];
 
+        if (heap.set_index != NULL)
+            heap.set_index(current, i);
+
         if (first == current)
-            exchange(array, 0, i);
+            exchange(array, 0, i, heap.set_index);
     }
 
     return heap;
+}
+
+void inline heap_set_index(min_heap_t *heap,
+        void (*set_index)(void *el, uint32_t index))
+{
+    heap->set_index = set_index;
 }
 
 inline void * heap_peek_min(min_heap_t const *heap)
@@ -111,23 +129,12 @@ int heap_decrease_key(min_heap_t *heap, uint32_t index, void *newkey)
     decrease_key(array[index], newkey);
 
     while (index > 0 && compare(array[parent], array[index]) > 0) {
-        exchange(array, index, parent);
+        exchange(array, index, parent, heap->set_index);
         index = parent;
         parent = PARENT(parent);
     }
 
     return 0;
-}
-
-int heap_decrease_element(min_heap_t *heap, void *el, void *newkey)
-{
-    uint32_t i;
-
-    for (i = 0; i < heap->array_size; i++)
-        if (heap->array[i] == el)
-            return heap_decrease_key(heap, i, newkey);
-
-    return -1;
 }
 
 int heap_empty(min_heap_t const *heap)

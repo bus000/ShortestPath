@@ -18,6 +18,9 @@ typedef struct dijkstra_label_s {
     /* Pointer to the previous vertex in the shortest path. NULL if not
      * known. */
     struct dijkstra_label_s *prev;
+
+    /* The index of the vertices current position in the heap. */
+    uint32_t heap_index;
 } dijkstra_l_t;
 
 static dijkstra_l_t default_label = { .infinity = 1, .weight = 0, .prev = NULL };
@@ -68,7 +71,7 @@ static int dijkstra_algo(path_t *path, digraph_t *graph, vertex_t *end_vertex,
             newdist = current_dist + edge->weight;
 
             if (shorter_dist(end_label, newdist))
-                heap_decrease_element(vertices, end, &newdist);
+                heap_decrease_key(vertices, end_label->heap_index, &newdist);
         }
 
         /* Update current node to new shortest distance. */
@@ -126,6 +129,14 @@ static void decrease_weight(void *v, void *w)
     label->weight = *weight;
 }
 
+static void set_index(void *v, uint32_t index)
+{
+    vertex_t *vertex = v;
+    dijkstra_l_t *label = vertex->label;
+
+    label->heap_index = index;
+}
+
 /* TODO: Make prettier. */
 int dijkstra(path_t *path, digraph_t *graph, vertex_t *start, vertex_t *end)
 {
@@ -148,7 +159,7 @@ int dijkstra(path_t *path, digraph_t *graph, vertex_t *start, vertex_t *end)
         vertex_pointers[i] = graph->vertices[i];
 
     heap = heap_cheap_init((void **) vertex_pointers, graph->vertices_len,
-            compare_vertices, decrease_weight, start);
+            compare_vertices, decrease_weight, start, set_index);
 
     ret_code = dijkstra_algo(path, graph, end, &heap);
 
