@@ -272,26 +272,26 @@ valgrind --tool=massif --massif-out-file=./output/dijkstra_ss_10000.mem ../bin/d
 
 # Run DFS SS profiling.
 echo "Running DFS SS time profiling"
-../bin/diff --DFS -ss ../data/graph_ss_500.txt   > ./output/DFS_500.tim
-../bin/diff --DFS -ss ../data/graph_ss_1000.txt  > ./output/DFS_1000.tim
-../bin/diff --DFS -ss ../data/graph_ss_1500.txt  > ./output/DFS_1500.tim
-../bin/diff --DFS -ss ../data/graph_ss_2000.txt  > ./output/DFS_2000.tim
-../bin/diff --DFS -ss ../data/graph_ss_2500.txt  > ./output/DFS_2500.tim
-../bin/diff --DFS -ss ../data/graph_ss_3000.txt  > ./output/DFS_3000.tim
-../bin/diff --DFS -ss ../data/graph_ss_3500.txt  > ./output/DFS_3500.tim
-../bin/diff --DFS -ss ../data/graph_ss_4000.txt  > ./output/DFS_4000.tim
-../bin/diff --DFS -ss ../data/graph_ss_4500.txt  > ./output/DFS_4500.tim
-../bin/diff --DFS -ss ../data/graph_ss_5000.txt  > ./output/DFS_5000.tim
-../bin/diff --DFS -ss ../data/graph_ss_5500.txt  > ./output/DFS_5500.tim
-../bin/diff --DFS -ss ../data/graph_ss_6000.txt  > ./output/DFS_6000.tim
-../bin/diff --DFS -ss ../data/graph_ss_6500.txt  > ./output/DFS_6500.tim
-../bin/diff --DFS -ss ../data/graph_ss_7000.txt  > ./output/DFS_7000.tim
-../bin/diff --DFS -ss ../data/graph_ss_7500.txt  > ./output/DFS_7500.tim
-../bin/diff --DFS -ss ../data/graph_ss_8000.txt  > ./output/DFS_8000.tim
-../bin/diff --DFS -ss ../data/graph_ss_8500.txt  > ./output/DFS_8500.tim
-../bin/diff --DFS -ss ../data/graph_ss_9000.txt  > ./output/DFS_9000.tim
-../bin/diff --DFS -ss ../data/graph_ss_9500.txt  > ./output/DFS_9500.tim
-../bin/diff --DFS -ss ../data/graph_ss_10000.txt > ./output/DFS_10000.tim
+../bin/diff --DFS -ss ../data/graph_500.txt   > ./output/DFS_ss_500.tim
+../bin/diff --DFS -ss ../data/graph_1000.txt  > ./output/DFS_ss_1000.tim
+../bin/diff --DFS -ss ../data/graph_1500.txt  > ./output/DFS_ss_1500.tim
+../bin/diff --DFS -ss ../data/graph_2000.txt  > ./output/DFS_ss_2000.tim
+../bin/diff --DFS -ss ../data/graph_2500.txt  > ./output/DFS_ss_2500.tim
+../bin/diff --DFS -ss ../data/graph_3000.txt  > ./output/DFS_ss_3000.tim
+../bin/diff --DFS -ss ../data/graph_3500.txt  > ./output/DFS_ss_3500.tim
+../bin/diff --DFS -ss ../data/graph_4000.txt  > ./output/DFS_ss_4000.tim
+../bin/diff --DFS -ss ../data/graph_4500.txt  > ./output/DFS_ss_4500.tim
+../bin/diff --DFS -ss ../data/graph_5000.txt  > ./output/DFS_ss_5000.tim
+../bin/diff --DFS -ss ../data/graph_5500.txt  > ./output/DFS_ss_5500.tim
+../bin/diff --DFS -ss ../data/graph_6000.txt  > ./output/DFS_ss_6000.tim
+../bin/diff --DFS -ss ../data/graph_6500.txt  > ./output/DFS_ss_6500.tim
+../bin/diff --DFS -ss ../data/graph_7000.txt  > ./output/DFS_ss_7000.tim
+../bin/diff --DFS -ss ../data/graph_7500.txt  > ./output/DFS_ss_7500.tim
+../bin/diff --DFS -ss ../data/graph_8000.txt  > ./output/DFS_ss_8000.tim
+../bin/diff --DFS -ss ../data/graph_8500.txt  > ./output/DFS_ss_8500.tim
+../bin/diff --DFS -ss ../data/graph_9000.txt  > ./output/DFS_ss_9000.tim
+../bin/diff --DFS -ss ../data/graph_9500.txt  > ./output/DFS_ss_9500.tim
+../bin/diff --DFS -ss ../data/graph_10000.txt > ./output/DFS_ss_10000.tim
 
 echo "Running DFS SS space profiling"
 valgrind --tool=massif --massif-out-file=./output/DFS_ss_500.mem   ../bin/diff -ss --DFS ../data/graph_500.txt   2> /dev/null > /dev/null
