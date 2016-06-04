@@ -414,27 +414,26 @@ int connected_undirected(digraph_t *graph)
     return res;
 }
 
-digraph_t graph_subgraph(digraph_t const *graph, uint32_t size)
+digraph_t graph_subgraph(digraph_t *graph, uint32_t size)
 {
     uint32_t i, added;
     digraph_t newgraph;
     queue_t queue;
     vertex_t *current, *adjasent, *newvertex;
 
-    graph_init(&newgraph);
-
     current = graph_first_vertex(graph);
+    graph_init(&newgraph);
+    graph_add_vertex_pointer(&newgraph, new_vertex_id(current->unique_id));
+
     current->visited = 1;
     queue = queue_singular(current);
-    if (queue_empty(&queue))
-        printf("queue is empty.\n");
 
-    for (added = 0; added < size && !queue_empty(&queue); ) {
+    for (added = 1; !queue_empty(&queue); ) {
         current = (vertex_t *) dequeue(&queue);
 
-        for (i = 0; i < current->outgoing_len && added < size; i++) {
+        for (i = 0; i < current->outgoing_len; i++) {
             adjasent = current->outgoing[i].end;
-            if (!adjasent->visited) {
+            if (!adjasent->visited && added < size) {
                 added += 1;
                 newvertex = new_vertex_id(adjasent->unique_id);
                 graph_add_vertex_pointer(&newgraph, newvertex);
@@ -443,31 +442,31 @@ digraph_t graph_subgraph(digraph_t const *graph, uint32_t size)
 
                 adjasent->visited = 1;
                 enqueue(&queue, adjasent);
-            } else {
+            } else if (adjasent->visited) {
                 graph_add_edge(&newgraph, current->unique_id,
                         adjasent->unique_id, 1);
             }
         }
 
-        for (i = 0; i < current->incoming_len && added < size; i++) {
+        for (i = 0; i < current->incoming_len; i++) {
             adjasent = current->incoming[i].end;
-            if (!adjasent->visited) {
+            if (!adjasent->visited && added < size) {
                 added += 1;
                 newvertex = new_vertex_id(adjasent->unique_id);
                 graph_add_vertex_pointer(&newgraph, newvertex);
-                graph_add_edge(&newgraph, newvertex->unique_id,
+                graph_add_edge(&newgraph, adjasent->unique_id,
                         current->unique_id, 1);
 
                 adjasent->visited = 1;
                 enqueue(&queue, adjasent);
-            } else {
+            } else if (adjasent->visited) {
                 graph_add_edge(&newgraph, adjasent->unique_id,
                         current->unique_id, 1);
             }
         }
     }
 
-    graph_reset_visited((digraph_t *) graph);
+    graph_reset_visited(graph);
     queue_free(&queue);
 
     return newgraph;
