@@ -495,7 +495,7 @@ void graph_save(digraph_t const *graph, file_t *file)
             end = vertex->outgoing[j].end;
             v1 = end->unique_id;
             if (snprintf(line, line_size, "%u\t%u\n", v0, v1) >= line_size)
-                error_code(ERR_FORMAT, "snprintf truncate %ld chars",
+                error_code(ERR_FORMAT, "snprintf truncate %lld chars",
                         (long long) line_size);
 
             file_write(file, line);

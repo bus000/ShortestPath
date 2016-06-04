@@ -12,10 +12,12 @@ typedef enum error_e {
 } error_t;
 
 /* Print error from error code and exit program. */
-void error_code(error_t error, char const *fmt_msg, ...);
+void error_code(error_t error, char const *fmt_msg, ...)
+    __attribute__((format (printf, 2, 3)));
 
 /* Print error and return. */
-void error_report(error_t error, char const *fmt_msg, ...);
+void error_report(error_t error, char const *fmt_msg, ...)
+    __attribute__((format (printf, 2, 3)));
 
 /* Convert an error code to a string. */
 char * error_string(error_t error);
